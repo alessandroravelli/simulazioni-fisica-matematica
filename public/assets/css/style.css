@@ -1,39 +1,130 @@
 :root {
   color-scheme: light dark;
-  --fg: #1a1a1a;
-  --bg: #ffffff;
-  --accent: #2563eb;
+  --fg: #1c1f26;
+  --fg-muted: #5b6472;
+  --bg: #fbfbfd;
+  --bg-alt: #ffffff;
+  --border: #e3e6eb;
+  --accent: #3452e1;
+  --accent-fg: #ffffff;
+  --shadow: 0 1px 2px rgba(20, 24, 33, 0.04), 0 4px 16px rgba(20, 24, 33, 0.06);
+  --radius: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #eceef2;
+    --fg-muted: #9aa3b2;
+    --bg: #14161c;
+    --bg-alt: #1b1e26;
+    --border: #2b2f3a;
+    --accent: #7c93ff;
+    --accent-fg: #10131a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--fg);
   background: var(--bg);
   margin: 0;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
+  line-height: 1.5;
 }
 
 header {
-  max-width: 60rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding: 2rem 0 1rem;
+  padding: 3rem 0 2rem;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+header p {
+  color: var(--fg-muted);
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+header .torna {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--fg-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+header .torna:hover {
+  color: var(--accent);
 }
 
 main {
-  max-width: 60rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding-bottom: 3rem;
+  padding-bottom: 4rem;
 }
 
 a { color: var(--accent); }
 
-.elenco-esperimenti {
-  list-style: none;
-  padding: 0;
+.categoria {
+  margin-bottom: 2.5rem;
 }
 
-.elenco-esperimenti li {
-  padding: 0.5rem 0;
+.categoria h2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  margin: 0 0 0.9rem;
+}
+
+.griglia-esperimenti {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+
+.card-esperimento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.25rem;
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 500;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.card-esperimento:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.card-freccia {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.pagina-esperimento main {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
 }
