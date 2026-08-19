@@ -31,14 +31,83 @@ body {
   color: var(--fg);
   background: var(--bg);
   margin: 0;
-  padding: 0 1.5rem;
   line-height: 1.5;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem;
+  min-height: 20rem;
+  padding: 1.5rem 2rem;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(8, 10, 20, 0.2), rgba(8, 10, 20, 0.75)),
+    url("../img/pillars-of-creation.jpg") center 25% / cover no-repeat;
+}
+
+.hero-autore {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-titolo {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+}
+
+.hero-citazione {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: end;
+  justify-self: end;
+  max-width: 22rem;
+  margin: 0;
+  text-align: right;
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.45;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-citazione p { margin: 0; }
+
+.hero-citazione cite {
+  display: block;
+  margin-top: 0.4rem;
+  font-style: normal;
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 40rem) {
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: 24rem;
+  }
+  .hero-autore { grid-column: 1; grid-row: 1; justify-self: end; }
+  .hero-titolo { grid-column: 1; grid-row: 2; }
+  .hero-citazione { grid-column: 1; grid-row: 3; justify-self: start; align-self: start; text-align: left; max-width: 100%; }
 }
 
 header {
   max-width: 56rem;
   margin: 0 auto;
-  padding: 3rem 0 2rem;
+  padding: 3rem 1.5rem 2rem;
 }
 
 header h1 {
@@ -71,7 +140,7 @@ header .torna:hover {
 main {
   max-width: 56rem;
   margin: 0 auto;
-  padding-bottom: 4rem;
+  padding: 0 1.5rem 4rem;
 }
 
 a { color: var(--accent); }
