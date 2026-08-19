@@ -45,6 +45,33 @@ function attesa(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Valori "tondi" per i tick di un asse (passo 1/2/5 * potenza di 10).
+function calcolaTick(min, max, countCirca) {
+  if (max <= min) return [min];
+  const grezzo = (max - min) / countCirca;
+  const esponente = Math.floor(Math.log10(grezzo));
+  const base = Math.pow(10, esponente);
+  const frazione = grezzo / base;
+  let passo;
+  if (frazione < 1.5) passo = base;
+  else if (frazione < 3) passo = 2 * base;
+  else if (frazione < 7) passo = 5 * base;
+  else passo = 10 * base;
+
+  const tick = [];
+  const primo = Math.ceil(min / passo) * passo;
+  for (let v = primo; v <= max + passo * 1e-9; v += passo) tick.push(v);
+  return tick;
+}
+
+function formattaIntero(v) {
+  return Math.round(v).toLocaleString("it-IT");
+}
+
+function formattaDecimale(v) {
+  return Number(v.toPrecision(6)).toString().replace(".", ",");
+}
+
 // --- Grafico 1: singolo esperimento (due barre: successo / insuccesso) ---
 
 function disegnaSingolo(ctx, larghezza, altezza, { successi, insuccessi, n }) {
@@ -125,19 +152,50 @@ function disegnaDistribuzione(ctx, larghezza, altezza, dati) {
   const colori = coloriTema();
   ctx.clearRect(0, 0, larghezza, altezza);
 
-  const margine = { sopra: 16, sotto: 34, sinistra: 8, destra: 8 };
+  const margine = { sopra: 16, sotto: 48, sinistra: 52, destra: 12 };
   const areaAltezza = altezza - margine.sopra - margine.sotto;
   const areaLarghezza = larghezza - margine.sinistra - margine.destra;
   const xDominio = [kMin - 1, kMax + 1];
   const xScala = (k) => margine.sinistra + areaLarghezza * ((k - xDominio[0]) / (xDominio[1] - xDominio[0]));
   const yScala = (v) => margine.sopra + areaAltezza * (1 - v / yMax);
 
+  // griglia orizzontale + etichette asse y
+  const tickY = calcolaTick(0, yMax, 4);
   ctx.strokeStyle = colori.griglia;
   ctx.lineWidth = 1;
+  ctx.fillStyle = colori.testoMuto;
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+  for (const v of tickY) {
+    const y = yScala(v);
+    ctx.beginPath();
+    ctx.moveTo(margine.sinistra, y);
+    ctx.lineTo(larghezza - margine.destra, y);
+    ctx.stroke();
+    ctx.fillText(formattaDecimale(v), margine.sinistra - 8, y);
+  }
+  ctx.textBaseline = "alphabetic";
+
+  // asse base + tick/etichette asse x
+  ctx.strokeStyle = colori.testoMuto;
   ctx.beginPath();
   ctx.moveTo(margine.sinistra, yScala(0));
   ctx.lineTo(larghezza - margine.destra, yScala(0));
   ctx.stroke();
+
+  const tickX = calcolaTick(kMin, kMax, Math.min(7, Math.floor(areaLarghezza / 70)));
+  ctx.strokeStyle = colori.testoMuto;
+  ctx.fillStyle = colori.testoMuto;
+  ctx.textAlign = "center";
+  for (const v of tickX) {
+    const x = xScala(v);
+    ctx.beginPath();
+    ctx.moveTo(x, yScala(0));
+    ctx.lineTo(x, yScala(0) + 5);
+    ctx.stroke();
+    ctx.fillText(formattaIntero(v), x, yScala(0) + 18);
+  }
 
   // barre (frequenza osservata)
   ctx.fillStyle = colori.serie1;
@@ -174,7 +232,7 @@ function disegnaDistribuzione(ctx, larghezza, altezza, dati) {
   ctx.fillStyle = colori.testoMuto;
   ctx.font = "12px -apple-system, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("Numero di successi su n prove", larghezza / 2, altezza - 6);
+  ctx.fillText("Numero di successi su n prove", (margine.sinistra + larghezza - margine.destra) / 2, altezza - 6);
 }
 
 async function animaDistribuzione(p, n, numRipetizioni) {
