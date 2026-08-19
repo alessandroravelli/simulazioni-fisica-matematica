@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light dark;
+  --fg: #1a1a1a;
+  --bg: #ffffff;
+  --accent: #2563eb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: system-ui, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  margin: 0;
+  padding: 0 1rem;
+}
+
+header {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 0 1rem;
+}
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+a { color: var(--accent); }
+
+.elenco-esperimenti {
+  list-style: none;
+  padding: 0;
+}
+
+.elenco-esperimenti li {
+  padding: 0.5rem 0;
+}
