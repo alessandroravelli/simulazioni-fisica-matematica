@@ -147,6 +147,22 @@ main.dashboard {
   padding-top: 2.5rem;
 }
 
+.banda-contatto {
+  display: block;
+  text-align: center;
+  padding: 1.75rem 1.5rem;
+  background: var(--accent);
+  color: var(--accent-fg);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: opacity 0.12s ease;
+}
+
+.banda-contatto:hover {
+  opacity: 0.88;
+}
+
 a { color: var(--accent); }
 
 .categoria {
