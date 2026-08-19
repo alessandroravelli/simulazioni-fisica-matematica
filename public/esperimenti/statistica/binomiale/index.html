@@ -5,15 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Distribuzione binomiale</title>
 <link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
 </head>
-<body class="pagina-esperimento">
+<body>
 <header>
   <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
   <h1>Distribuzione binomiale</h1>
 </header>
 <main>
-  <p>In costruzione.</p>
+
+  <section class="riquadro">
+    <p>
+      La distribuzione binomiale descrive il numero di successi ottenuti ripetendo,
+      in modo indipendente, <strong>n</strong> volte lo stesso esperimento con due
+      soli esiti possibili (successo / insuccesso), dove la probabilità di successo
+      <strong>p</strong> resta la stessa a ogni prova. Se X è il numero di successi
+      su n prove, la probabilità di osservarne esattamente k è:
+    </p>
+    <div id="formula" class="formula"></div>
+    <p>
+      dove il coefficiente binomiale conta in quanti modi si possono scegliere le
+      k prove andate a buon fine fra le n disponibili.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo">
+        <label for="input-p">Probabilità di successo p</label>
+        <input id="input-p" name="p" type="number" min="0.001" max="0.999" step="0.001" value="0.5" required>
+      </div>
+      <div class="campo">
+        <label for="input-n">Numero di prove n</label>
+        <input id="input-n" name="n" type="number" min="1" step="1" value="20" required>
+      </div>
+      <div class="campo">
+        <label for="input-ripetizioni">Numero di ripetizioni</label>
+        <input id="input-ripetizioni" name="ripetizioni" type="number" min="1" step="1" value="500" required>
+      </div>
+      <button id="bottone-genera" class="bottone" type="submit">Genera</button>
+    </form>
+  </section>
+
+  <div class="grafici">
+    <section class="riquadro">
+      <p class="grafico-titolo" id="titolo-singolo">Singolo esperimento binomiale</p>
+      <canvas id="canvas-singolo" class="grafico-area"></canvas>
+    </section>
+    <section class="riquadro">
+      <p class="grafico-titolo" id="titolo-distribuzione">Distribuzione da ripetizioni</p>
+      <div class="legenda">
+        <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Frequenza osservata</span>
+        <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Distribuzione teorica B(n, p)</span>
+      </div>
+      <canvas id="canvas-distribuzione" class="grafico-area"></canvas>
+    </section>
+  </div>
+
 </main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
 <script type="module" src="./main.js"></script>
 </body>
 </html>

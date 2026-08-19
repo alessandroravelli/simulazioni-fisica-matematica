@@ -7,6 +7,7 @@
   --border: #e3e6eb;
   --accent: #3452e1;
   --accent-fg: #ffffff;
+  --serie-2: #c9591f;
   --shadow: 0 1px 2px rgba(20, 24, 33, 0.04), 0 4px 16px rgba(20, 24, 33, 0.06);
   --radius: 0.75rem;
 }
@@ -20,6 +21,7 @@
     --border: #2b2f3a;
     --accent: #7c93ff;
     --accent-fg: #10131a;
+    --serie-2: #ff9d5c;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
   }
 }
@@ -217,3 +219,110 @@ a { color: var(--accent); }
   box-shadow: var(--shadow);
   padding: 2rem;
 }
+
+.riquadro {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.riquadro p { line-height: 1.6; }
+.riquadro p:first-child { margin-top: 0; }
+.riquadro p:last-child { margin-bottom: 0; }
+
+.formula {
+  overflow-x: auto;
+  text-align: center;
+  padding: 0.75rem 0;
+  font-size: 1.15rem;
+}
+
+.form-parametri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1.25rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+}
+
+.campo input {
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  width: 9rem;
+}
+
+.bottone {
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-fg);
+  background: var(--accent);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+}
+
+.bottone:hover { opacity: 0.9; }
+.bottone:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.grafici {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 48rem) {
+  .grafici { grid-template-columns: 1fr; }
+}
+
+.grafico-titolo {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: var(--fg-muted);
+}
+
+.grafico-area {
+  display: block;
+  width: 100%;
+  height: 320px;
+}
+
+.legenda {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+}
+
+.legenda-voce {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legenda-pallino {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.legenda-pallino.serie-1 { background: var(--accent); }
+.legenda-pallino.serie-2 { background: var(--serie-2); }
