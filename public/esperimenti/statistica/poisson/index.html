@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distribuzione di Poisson</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Distribuzione di Poisson</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      La distribuzione di Poisson descrive il numero di eventi che si osservano
+      in un intervallo fissato (di tempo, spazio, ...) quando gli eventi si
+      verificano in modo indipendente e con una frequenza media costante
+      <strong>&lambda;</strong> (lambda). Se X è il numero di eventi osservati,
+      la probabilità di osservarne esattamente k è:
+    </p>
+    <div id="formula" class="formula"></div>
+    <p>
+      La distribuzione di Poisson può essere vista come un <strong>caso limite
+      della binomiale</strong>: se si ripete un esperimento un numero n molto
+      grande di volte, ciascuna con probabilità di successo p molto piccola,
+      mantenendo il prodotto n&middot;p = &lambda; costante, la distribuzione
+      binomiale B(n, p) si avvicina sempre di più a quella di Poisson P(&lambda;).
+      Per questo qui sotto i campioni vengono generati ripetendo n prove
+      Bernoulliane con probabilità p = &lambda;/n, e nel secondo grafico sono
+      sovrapposte sia la curva teorica binomiale sia quella di Poisson: con n
+      grande le due curve coincidono quasi perfettamente. <strong>Prova a
+      impostare un n piccolo</strong> (vicino a &lambda;) per vedere cosa succede
+      quando i parametri escono dal regime in cui l'approssimazione di Poisson
+      vale.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo">
+        <label for="input-lambda">Frequenza media &lambda;</label>
+        <input id="input-lambda" name="lambda" type="number" min="0.01" step="any" value="5" required>
+      </div>
+      <div class="campo">
+        <label for="input-n">Numero di prove n (approssimazione binomiale)</label>
+        <input id="input-n" name="n" type="number" min="2" step="1" value="200" required>
+      </div>
+      <div class="campo">
+        <label for="input-ripetizioni">Numero di ripetizioni</label>
+        <input id="input-ripetizioni" name="ripetizioni" type="number" min="1" step="1" value="500" required>
+      </div>
+      <button id="bottone-genera" class="bottone" type="submit">Genera</button>
+    </form>
+    <p id="testo-p" class="testo-derivato"></p>
+  </section>
+
+  <div class="grafici">
+    <section class="riquadro">
+      <p class="grafico-titolo" id="titolo-singolo">Singolo esperimento</p>
+      <canvas id="canvas-singolo" class="grafico-area"></canvas>
+    </section>
+    <section class="riquadro">
+      <p class="grafico-titolo" id="titolo-distribuzione">Distribuzione da ripetizioni</p>
+      <div class="legenda">
+        <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Frequenza osservata</span>
+        <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Binomiale B(n, p)</span>
+        <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Poisson P(&lambda;)</span>
+      </div>
+      <canvas id="canvas-distribuzione" class="grafico-area"></canvas>
+    </section>
+  </div>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

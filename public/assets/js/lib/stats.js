@@ -36,6 +36,15 @@ export function binomialPmf(k, n, p) {
   return Math.exp(logBinomialPmf(k, n, p));
 }
 
+export function logPoissonPmf(k, lambda) {
+  if (lambda <= 0) return k === 0 ? 0 : -Infinity;
+  return k * Math.log(lambda) - lambda - logGamma(k + 1);
+}
+
+export function poissonPmf(k, lambda) {
+  return Math.exp(logPoissonPmf(k, lambda));
+}
+
 export function mediaDevStd(n, p) {
   const media = n * p;
   const devStd = Math.sqrt(n * p * (1 - p));

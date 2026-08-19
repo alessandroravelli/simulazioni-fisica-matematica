@@ -10,4 +10,10 @@ export const ESPERIMENTI = [
     categoria: "statistica",
     path: "../esperimenti/statistica/binomiale/",
   },
+  {
+    id: "poisson",
+    titolo: "Distribuzione di Poisson",
+    categoria: "statistica",
+    path: "../esperimenti/statistica/poisson/",
+  },
 ];

@@ -5,6 +5,7 @@ import {
   creaTabellaCampionamento,
   finestraVisualizzazione,
   indiciFotogrammi,
+  poissonPmf,
 } from "../../../assets/js/lib/stats.js";
 import {
   animaBernoulliRipetuto,
@@ -20,14 +21,30 @@ const canvasSingolo = document.getElementById("canvas-singolo");
 const canvasDistribuzione = document.getElementById("canvas-distribuzione");
 const titoloSingolo = document.getElementById("titolo-singolo");
 const titoloDistribuzione = document.getElementById("titolo-distribuzione");
+const testoP = document.getElementById("testo-p");
 
 const INTERVALLO_MS = 90;
 
-window.katex.render("P(X = k) = \\binom{n}{k}\\, p^{k} (1-p)^{n-k}", document.getElementById("formula"), {
+window.katex.render("P(X = k) = \\dfrac{\\lambda^{k} e^{-\\lambda}}{k!}", document.getElementById("formula"), {
   throwOnError: false,
 });
 
-async function animaDistribuzione(p, n, numRipetizioni) {
+function aggiornaTestoP() {
+  const lambda = Number(form.lambda.value);
+  const n = Number(form.n.value);
+  if (!(lambda > 0) || !(n > lambda)) {
+    testoP.textContent = "n deve essere maggiore di λ, altrimenti p = λ/n non è una probabilità valida.";
+    return null;
+  }
+  const p = lambda / n;
+  testoP.textContent = `p = λ/n = ${p.toPrecision(4)}`;
+  return p;
+}
+
+form.lambda.addEventListener("input", aggiornaTestoP);
+form.n.addEventListener("input", aggiornaTestoP);
+
+async function animaDistribuzione(p, n, lambda, numRipetizioni) {
   const tabella = creaTabellaCampionamento(n, p);
   const campione = new Float64Array(numRipetizioni);
   for (let i = 0; i < numRipetizioni; i++) campione[i] = campionaDaTabella(tabella);
@@ -39,7 +56,8 @@ async function animaDistribuzione(p, n, numRipetizioni) {
 
   const valoriK = [];
   for (let k = kMin; k <= kMax; k++) valoriK.push(k);
-  const pmfTeorica = valoriK.map((k) => binomialPmf(k, n, p));
+  const pmfBinomiale = valoriK.map((k) => binomialPmf(k, n, p));
+  const pmfPoisson = valoriK.map((k) => poissonPmf(k, lambda));
 
   const binDi = (k) => {
     let idx = Math.floor((k - kMin) / larghezzaBin);
@@ -48,12 +66,10 @@ async function animaDistribuzione(p, n, numRipetizioni) {
     return idx;
   };
 
-  // y massimo fissato prima dell'animazione (come nel prototipo Python),
-  // così l'asse non "salta" durante la costruzione dell'istogramma.
   const conteggiFinali = new Int32Array(nBin);
   for (let i = 0; i < numRipetizioni; i++) conteggiFinali[binDi(campione[i])] += 1;
   let yMax = 0;
-  for (let i = 0; i < pmfTeorica.length; i++) yMax = Math.max(yMax, pmfTeorica[i]);
+  for (let i = 0; i < pmfBinomiale.length; i++) yMax = Math.max(yMax, pmfBinomiale[i], pmfPoisson[i]);
   for (let i = 0; i < nBin; i++) yMax = Math.max(yMax, conteggiFinali[i] / numRipetizioni / larghezzaBin);
   yMax *= 1.3;
 
@@ -73,10 +89,13 @@ async function animaDistribuzione(p, n, numRipetizioni) {
 
     disegnaIstogrammaConCurve(ctx, larghezza, altezza, {
       kMin, kMax, centri, larghezzaBin, altezzeBarre, yMax,
-      curve: [{ valoriK, pmf: pmfTeorica, colore: colori.serie2, mostraMarker }],
-      etichettaAsseX: "Numero di successi su n prove",
+      curve: [
+        { valoriK, pmf: pmfBinomiale, colore: colori.serie2, mostraMarker },
+        { valoriK, pmf: pmfPoisson, colore: colori.serie3, mostraMarker },
+      ],
+      etichettaAsseX: "Numero di eventi",
     });
-    titoloDistribuzione.textContent = `Distribuzione binomiale — ripetizione ${fin}/${numRipetizioni}`;
+    titoloDistribuzione.textContent = `Distribuzione da ripetizioni — ripetizione ${fin}/${numRipetizioni}`;
     await attesa(INTERVALLO_MS);
   }
 }
@@ -85,17 +104,17 @@ async function animaDistribuzione(p, n, numRipetizioni) {
 
 let animazioneInCorso = false;
 
-async function avvia(p, n, numRipetizioni) {
+async function avvia(p, n, lambda, numRipetizioni) {
   animazioneInCorso = true;
   bottoneGenera.disabled = true;
   try {
     await Promise.all([
       animaBernoulliRipetuto(canvasSingolo, titoloSingolo, p, n, {
         intervalloMs: INTERVALLO_MS,
-        prefissoTitolo: "Singolo esperimento binomiale",
+        prefissoTitolo: "Singolo esperimento",
         indiciFotogrammi,
       }),
-      animaDistribuzione(p, n, numRipetizioni),
+      animaDistribuzione(p, n, lambda, numRipetizioni),
     ]);
   } finally {
     animazioneInCorso = false;
@@ -106,11 +125,15 @@ async function avvia(p, n, numRipetizioni) {
 form.addEventListener("submit", (evento) => {
   evento.preventDefault();
   if (animazioneInCorso) return;
-  const p = Number(form.p.value);
+  const lambda = Number(form.lambda.value);
   const n = Math.round(Number(form.n.value));
   const numRipetizioni = Math.round(Number(form.ripetizioni.value));
-  if (!(p > 0 && p < 1) || !(n >= 1) || !(numRipetizioni >= 1)) return;
-  avvia(p, n, numRipetizioni);
+  const p = aggiornaTestoP();
+  if (p === null || !(numRipetizioni >= 1)) return;
+  avvia(p, n, lambda, numRipetizioni);
 });
 
-avvia(Number(form.p.value), Math.round(Number(form.n.value)), Math.round(Number(form.ripetizioni.value)));
+const pIniziale = aggiornaTestoP();
+if (pIniziale !== null) {
+  avvia(pIniziale, Math.round(Number(form.n.value)), Number(form.lambda.value), Math.round(Number(form.ripetizioni.value)));
+}
