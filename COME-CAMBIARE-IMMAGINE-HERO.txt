@@ -1,0 +1,38 @@
+COME CAMBIARE L'IMMAGINE DI SFONDO DELLA BANDA HERO
+=====================================================
+
+1. Prendi una nuova immagine da una fonte affidabile (NASA, ESA,
+   Wikimedia Commons con licenza libera), formato jpg o png.
+
+2. Sostituiscila mantenendo lo stesso nome file, così non serve
+   toccare il CSS:
+
+   cp /percorso/della/nuova-immagine.jpg "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web/public/assets/img/pillars-of-creation.jpg"
+
+   (oppure trascina il file da Finder dentro quella cartella e
+   rinominalo a mano, stesso risultato)
+
+3. Ottimizzala: le immagini da NASA/ESA sono spesso enormi
+   (5-150 MB), troppo pesanti per il sito. Da Terminale, nella
+   cartella del progetto:
+
+   sips -s format jpeg -s formatOptions 45 "public/assets/img/pillars-of-creation.jpg" --out "public/assets/img/pillars-of-creation.jpg"
+
+   (sips è già installato su ogni Mac. Se il file di partenza è già
+   leggero, sotto 1 MB, puoi saltare questo passo)
+
+4. Pubblica:
+
+   cd "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web"
+   git add public/assets/img/pillars-of-creation.jpg
+   git commit -m "Cambia immagine hero"
+   git push
+
+   Cloudflare fa il deploy automatico, online in 20-40 secondi.
+
+5. Dettaglio da regolare a occhio: nel file
+   public/assets/css/style.css cerca la regola ".hero" e il valore
+   "background-position: center 25%". Indica quale porzione
+   dell'immagine si vede nella banda (in alto/basso/centro). Se col
+   nuovo sfondo il punto interessante viene tagliato, cambia quella
+   percentuale e ripeti il passo 4.

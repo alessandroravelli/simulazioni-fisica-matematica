@@ -143,6 +143,10 @@ main {
   padding: 0 1.5rem 4rem;
 }
 
+main.dashboard {
+  padding-top: 2.5rem;
+}
+
 a { color: var(--accent); }
 
 .categoria {

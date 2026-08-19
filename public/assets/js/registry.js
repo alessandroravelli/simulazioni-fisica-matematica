@@ -8,6 +8,6 @@ export const ESPERIMENTI = [
     id: "binomiale",
     titolo: "Distribuzione binomiale",
     categoria: "statistica",
-    path: "esperimenti/statistica/binomiale/",
+    path: "../esperimenti/statistica/binomiale/",
   },
 ];
