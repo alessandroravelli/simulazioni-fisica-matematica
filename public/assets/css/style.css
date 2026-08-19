@@ -151,8 +151,8 @@ main.dashboard {
   display: block;
   text-align: center;
   padding: 1.75rem 1.5rem;
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: #14161c;
+  color: #eceef2;
   text-decoration: none;
   font-weight: 600;
   font-size: 1.1rem;
@@ -160,7 +160,7 @@ main.dashboard {
 }
 
 .banda-contatto:hover {
-  opacity: 0.88;
+  opacity: 0.8;
 }
 
 a { color: var(--accent); }
