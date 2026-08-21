@@ -133,7 +133,7 @@ export async function animaBernoulliRipetuto(canvas, elementoTitolo, p, n, { int
 // Grafico a curve continue (es. soluzioni di equazioni differenziali).
 // `curve`: array di { valuta(x) => y, colore, tratteggiata }.
 export function disegnaLinee(ctx, larghezza, altezza, dati) {
-  const { xMin, xMax, yMin, yMax, curve, etichettaAsseX } = dati;
+  const { xMin, xMax, yMin, yMax, curve, aree, etichettaAsseX } = dati;
   const colori = coloriTema();
   ctx.clearRect(0, 0, larghezza, altezza);
 
@@ -181,6 +181,30 @@ export function disegnaLinee(ctx, larghezza, altezza, dati) {
   }
 
   const N = 400;
+
+  // aree ombreggiate sotto una curva (es. probabilità in un intervallo),
+  // disegnate prima delle linee così restano "sotto" al tratto della curva
+  if (aree) {
+    for (const reg of aree) {
+      const daClamp = Math.max(reg.da, xMin);
+      const aClamp = Math.min(reg.a, xMax);
+      if (aClamp <= daClamp) continue;
+      ctx.fillStyle = reg.colore;
+      ctx.beginPath();
+      ctx.moveTo(xScala(daClamp), yScala(yAsse));
+      for (let i = 0; i <= N; i++) {
+        const x = daClamp + ((aClamp - daClamp) * i) / N;
+        let y;
+        try { y = reg.valuta(x); } catch { y = 0; }
+        if (!Number.isFinite(y)) y = 0;
+        ctx.lineTo(xScala(x), yScala(Math.max(yMin, Math.min(yMax, y))));
+      }
+      ctx.lineTo(xScala(aClamp), yScala(yAsse));
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
   for (const c of curve) {
     ctx.strokeStyle = c.colore;
     ctx.lineWidth = 2;

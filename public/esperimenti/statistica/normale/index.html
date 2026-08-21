@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distribuzione normale</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Distribuzione normale</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      La distribuzione normale (o gaussiana) descrive fenomeni che si
+      concentrano attorno a un valore medio, con una densità di probabilità a
+      forma di campana simmetrica. È definita da due parametri: la media
+      <strong>&mu;</strong>, che ne fissa il centro, e la deviazione standard
+      <strong>&sigma;</strong>, che ne controlla la larghezza. La sua densità
+      è:
+    </p>
+    <div id="formula" class="formula"></div>
+    <p>
+      La probabilità che X cada in un intervallo è l'<strong>area sotto la
+      curva</strong> in quell'intervallo. Questa funzione non ha una
+      primitiva elementare: l'area qui sotto viene quindi calcolata per via
+      numerica (integrazione di Simpson), non con una formula chiusa.
+      Imposta &mu;, &sigma; e l'intervallo che ti interessa: l'area si
+      aggiorna subito sul grafico.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo">
+        <label for="input-mu">&mu;</label>
+        <input id="input-mu" name="mu" type="number" step="any" value="0" required>
+      </div>
+      <div class="campo">
+        <label for="input-sigma">&sigma;</label>
+        <input id="input-sigma" name="sigma" type="number" step="any" min="0.01" value="1" required>
+      </div>
+    </form>
+
+    <form id="form-area" class="form-parametri">
+      <div class="campo">
+        <label for="input-tipo">Area da calcolare</label>
+        <select id="input-tipo" name="tipo">
+          <option value="tra">a &le; X &le; b</option>
+          <option value="minore">X &le; a</option>
+          <option value="maggiore">X &ge; a</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="input-a">a</label>
+        <input id="input-a" name="a" type="number" step="any" value="-1">
+      </div>
+      <div class="campo" id="campo-b">
+        <label for="input-b">b</label>
+        <input id="input-b" name="b" type="number" step="any" value="1">
+      </div>
+    </form>
+
+    <div id="risultati" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Densità e area selezionata</p>
+    <canvas id="canvas-grafico" class="grafico-area"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

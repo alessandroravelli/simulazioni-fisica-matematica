@@ -18,6 +18,12 @@ export const ESPERIMENTI = [
     path: "../esperimenti/statistica/poisson/",
   },
   {
+    id: "normale",
+    titolo: "Distribuzione normale",
+    categoria: "statistica",
+    path: "../esperimenti/statistica/normale/",
+  },
+  {
     id: "ode-primo-ordine",
     titolo: "Equazioni differenziali del primo ordine",
     categoria: "matematica",

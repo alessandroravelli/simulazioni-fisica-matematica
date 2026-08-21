@@ -36,6 +36,24 @@ export function binomialPmf(k, n, p) {
   return Math.exp(logBinomialPmf(k, n, p));
 }
 
+export function densitaNormale(x, mu, sigma) {
+  const z = (x - mu) / sigma;
+  return Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2 * Math.PI));
+}
+
+// Integrazione numerica (Simpson) — la CDF della normale non ha una
+// primitiva elementare, quindi l'area sotto la curva si calcola così
+// invece che con una formula chiusa.
+export function integraSimpson(f, a, b, n = 1000) {
+  if (n % 2 !== 0) n += 1;
+  const h = (b - a) / n;
+  let somma = f(a) + f(b);
+  for (let i = 1; i < n; i++) {
+    somma += f(a + i * h) * (i % 2 === 0 ? 2 : 4);
+  }
+  return (somma * h) / 3;
+}
+
 export function logPoissonPmf(k, lambda) {
   if (lambda <= 0) return k === 0 ? 0 : -Infinity;
   return k * Math.log(lambda) - lambda - logGamma(k + 1);

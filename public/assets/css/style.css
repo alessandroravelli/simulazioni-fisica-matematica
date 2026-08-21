@@ -266,7 +266,8 @@ a { color: var(--accent); }
   color: var(--fg-muted);
 }
 
-.campo input {
+.campo input,
+.campo select {
   font: inherit;
   color: var(--fg);
   background: var(--bg);
@@ -275,6 +276,8 @@ a { color: var(--accent); }
   padding: 0.55rem 0.7rem;
   width: 9rem;
 }
+
+.campo select { width: 12rem; }
 
 .bottone {
   font: inherit;
