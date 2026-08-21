@@ -1,4 +1,4 @@
-import { risolviPrimoOrdine } from "../../../assets/js/lib/edo.js";
+import { creaInterpolatore, integraPrimoOrdine } from "../../../assets/js/lib/edo.js";
 import { compilaEspressione } from "../../../assets/js/lib/espressioni.js";
 import { coloriTema, disegnaLinee, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 
@@ -11,8 +11,7 @@ const erroreProposta = document.getElementById("errore-proposta");
 const risultati = document.getElementById("risultati");
 const canvas = document.getElementById("canvas-grafico");
 
-window.katex.render("y' + a\\,y = b", document.getElementById("formula-equazione"), { throwOnError: false });
-window.katex.render("y(x) = C\\,e^{-ax} + \\dfrac{b}{a}", document.getElementById("formula-soluzione"), { throwOnError: false });
+window.katex.render("y' + p(x)\\,y = q(x)", document.getElementById("formula-equazione"), { throwOnError: false });
 
 function aggiornaVisibilitaCauchy() {
   formCauchy.style.display = inputCauchy.checked ? "flex" : "none";
@@ -20,34 +19,45 @@ function aggiornaVisibilitaCauchy() {
 inputCauchy.addEventListener("change", aggiornaVisibilitaCauchy);
 aggiornaVisibilitaCauchy();
 
-function formattaNumero(v) {
+function fmt(v) {
   return Number(v.toFixed(4)).toString();
 }
 
 function disegna() {
   erroreProposta.classList.remove("visibile");
 
-  const a = Number(form.a.value);
-  const b = Number(form.b.value);
+  const testoP = form.p.value.trim();
+  const testoQ = form.q.value.trim();
+  let pFn, qFn;
+  try {
+    const compilataP = compilaEspressione(testoP || "0");
+    const compilataQ = compilaEspressione(testoQ || "0");
+    pFn = (x) => compilataP({ x });
+    qFn = (x) => compilataQ({ x });
+    pFn(0); qFn(0);
+  } catch (e) {
+    risultati.innerHTML = `<strong>Errore in p(x) o q(x):</strong> ${e.message}`;
+    return;
+  }
+
   const conCauchy = inputCauchy.checked;
-  const x0 = Number(formCauchy.x0.value);
-  const y0 = Number(formCauchy.y0.value);
+  const x0 = conCauchy ? Number(formCauchy.x0.value) : 0;
+  const y0 = conCauchy ? Number(formCauchy.y0.value) : 0;
+  avvisoCauchy.classList.toggle("visibile", !conCauchy);
 
-  const soluzione = risolviPrimoOrdine({
-    a, b,
-    cauchy: conCauchy ? { x0, y0 } : null,
-  });
+  const f = (x, y) => qFn(x) - pFn(x) * y;
+  const xMin = x0 - 6;
+  const xMax = x0 + 6;
+  const integrazione = integraPrimoOrdine(f, x0, y0, xMin, xMax);
+  const valutaCorretta = creaInterpolatore(integrazione);
 
-  avvisoCauchy.classList.toggle("visibile", soluzione.avviso);
-
-  const scope = { a, b, C: soluzione.C };
   let curveProposta = null;
   const testoProposta = inputProposta.value.trim();
   if (testoProposta) {
     try {
       const fn = compilaEspressione(testoProposta);
-      curveProposta = (x) => fn({ ...scope, x });
-      fn({ ...scope, x: x0 || 0 }); // valuta subito per far emergere eventuali errori
+      curveProposta = (x) => fn({ x });
+      fn({ x: x0 });
     } catch (e) {
       erroreProposta.textContent = `Soluzione proposta non valida: ${e.message}`;
       erroreProposta.classList.add("visibile");
@@ -55,18 +65,11 @@ function disegna() {
     }
   }
 
-  risultati.innerHTML = `<strong>C</strong> = ${formattaNumero(soluzione.C)}` +
-    (soluzione.caso === "generale" ? ` &nbsp; (b/a = ${formattaNumero(soluzione.bSuA)})` : "");
-
-  const centro = conCauchy ? x0 : 0;
-  const xMin = centro - 6;
-  const xMax = centro + 6;
+  risultati.innerHTML = `Condizione iniziale usata: <strong>x&#8320;</strong> = ${fmt(x0)}, <strong>y(x&#8320;)</strong> = ${fmt(y0)}`;
 
   let yMin = Infinity, yMax = -Infinity;
-  const N = 200;
-  for (let i = 0; i <= N; i++) {
-    const x = xMin + ((xMax - xMin) * i) / N;
-    const y = soluzione.valuta(x);
+  for (let i = 0; i < integrazione.puntiY.length; i++) {
+    const y = integrazione.puntiY[i];
     if (Number.isFinite(y)) { yMin = Math.min(yMin, y); yMax = Math.max(yMax, y); }
   }
   if (!Number.isFinite(yMin)) { yMin = -1; yMax = 1; }
@@ -75,7 +78,7 @@ function disegna() {
   yMax += margineY;
 
   const colori = coloriTema();
-  const curve = [{ valuta: soluzione.valuta, colore: colori.serie2 }];
+  const curve = [{ valuta: valutaCorretta, colore: colori.serie2 }];
   if (curveProposta) curve.push({ valuta: curveProposta, colore: colori.serie3, tratteggiata: true });
 
   const { ctx, larghezza, altezza } = preparaCanvas(canvas);

@@ -1,4 +1,4 @@
-import { risolviSecondoOrdineOmogenea } from "../../../assets/js/lib/edo.js";
+import { creaInterpolatore, integraSecondoOrdineOmogenea } from "../../../assets/js/lib/edo.js";
 import { compilaEspressione } from "../../../assets/js/lib/espressioni.js";
 import { coloriTema, disegnaLinee, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 
@@ -11,11 +11,7 @@ const erroreProposta = document.getElementById("errore-proposta");
 const risultati = document.getElementById("risultati");
 const canvas = document.getElementById("canvas-grafico");
 
-window.katex.render("y'' + p\\,y' + q\\,y = 0", document.getElementById("formula-equazione"), { throwOnError: false });
-window.katex.render("r^2 + p\\,r + q = 0", document.getElementById("formula-caratteristica"), { throwOnError: false });
-window.katex.render("\\Delta > 0:\\quad y(x) = C_1 e^{r_1 x} + C_2 e^{r_2 x}", document.getElementById("formula-caso1"), { throwOnError: false });
-window.katex.render("\\Delta = 0:\\quad y(x) = (C_1 + C_2 x)\\, e^{rx}", document.getElementById("formula-caso2"), { throwOnError: false });
-window.katex.render("\\Delta < 0:\\quad y(x) = e^{\\alpha x}\\big(C_1 \\cos(\\beta x) + C_2 \\sin(\\beta x)\\big)", document.getElementById("formula-caso3"), { throwOnError: false });
+window.katex.render("y'' + p(x)\\,y' + q(x)\\,y = 0", document.getElementById("formula-equazione"), { throwOnError: false });
 
 function aggiornaVisibilitaCauchy() {
   formCauchy.style.display = inputCauchy.checked ? "flex" : "none";
@@ -27,37 +23,41 @@ function fmt(v) {
   return Number(v.toFixed(4)).toString();
 }
 
-function descrizioneCaso(s) {
-  if (s.caso === "reali-distinte") return `Radici reali distinte: r&#8321; = ${fmt(s.r1)}, r&#8322; = ${fmt(s.r2)}`;
-  if (s.caso === "reale-doppia") return `Radice reale doppia: r = ${fmt(s.r)}`;
-  return `Radici complesse coniugate: &alpha; = ${fmt(s.alpha)}, &beta; = ${fmt(s.beta)}`;
-}
-
 function disegna() {
   erroreProposta.classList.remove("visibile");
 
-  const p = Number(form.p.value);
-  const q = Number(form.q.value);
+  const testoP = form.p.value.trim();
+  const testoQ = form.q.value.trim();
+  let pFn, qFn;
+  try {
+    const compilataP = compilaEspressione(testoP || "0");
+    const compilataQ = compilaEspressione(testoQ || "0");
+    pFn = (x) => compilataP({ x });
+    qFn = (x) => compilataQ({ x });
+    pFn(0); qFn(0);
+  } catch (e) {
+    risultati.innerHTML = `<strong>Errore in p(x) o q(x):</strong> ${e.message}`;
+    return;
+  }
+
   const conCauchy = inputCauchy.checked;
-  const x0 = Number(formCauchy.x0.value);
-  const y0 = Number(formCauchy.y0.value);
-  const y0prime = Number(formCauchy.y0prime.value);
+  const x0 = conCauchy ? Number(formCauchy.x0.value) : 0;
+  const y0 = conCauchy ? Number(formCauchy.y0.value) : 0;
+  const y0prime = conCauchy ? Number(formCauchy.y0prime.value) : 0;
+  avvisoCauchy.classList.toggle("visibile", !conCauchy);
 
-  const soluzione = risolviSecondoOrdineOmogenea({
-    p, q,
-    cauchy: conCauchy ? { x0, y0, y0prime } : null,
-  });
+  const xMin = x0 - 6;
+  const xMax = x0 + 6;
+  const integrazione = integraSecondoOrdineOmogenea(pFn, qFn, x0, y0, y0prime, xMin, xMax);
+  const valutaCorretta = creaInterpolatore(integrazione);
 
-  avvisoCauchy.classList.toggle("visibile", soluzione.avviso);
-
-  const scope = { p, q, C1: soluzione.C1, C2: soluzione.C2 };
   let curveProposta = null;
   const testoProposta = inputProposta.value.trim();
   if (testoProposta) {
     try {
       const fn = compilaEspressione(testoProposta);
-      curveProposta = (x) => fn({ ...scope, x });
-      fn({ ...scope, x: x0 || 0 });
+      curveProposta = (x) => fn({ x });
+      fn({ x: x0 });
     } catch (e) {
       erroreProposta.textContent = `Soluzione proposta non valida: ${e.message}`;
       erroreProposta.classList.add("visibile");
@@ -66,18 +66,12 @@ function disegna() {
   }
 
   risultati.innerHTML =
-    `${descrizioneCaso(soluzione)}<br>` +
-    `<strong>C&#8321;</strong> = ${fmt(soluzione.C1)} &nbsp; <strong>C&#8322;</strong> = ${fmt(soluzione.C2)}`;
-
-  const centro = conCauchy ? x0 : 0;
-  const xMin = centro - 6;
-  const xMax = centro + 6;
+    `Condizioni iniziali usate: <strong>x&#8320;</strong> = ${fmt(x0)}, ` +
+    `<strong>y(x&#8320;)</strong> = ${fmt(y0)}, <strong>y'(x&#8320;)</strong> = ${fmt(y0prime)}`;
 
   let yMin = Infinity, yMax = -Infinity;
-  const N = 200;
-  for (let i = 0; i <= N; i++) {
-    const x = xMin + ((xMax - xMin) * i) / N;
-    const y = soluzione.valuta(x);
+  for (let i = 0; i < integrazione.puntiY.length; i++) {
+    const y = integrazione.puntiY[i];
     if (Number.isFinite(y)) { yMin = Math.min(yMin, y); yMax = Math.max(yMax, y); }
   }
   if (!Number.isFinite(yMin)) { yMin = -1; yMax = 1; }
@@ -86,7 +80,7 @@ function disegna() {
   yMax += margineY;
 
   const colori = coloriTema();
-  const curve = [{ valuta: soluzione.valuta, colore: colori.serie2 }];
+  const curve = [{ valuta: valutaCorretta, colore: colori.serie2 }];
   if (curveProposta) curve.push({ valuta: curveProposta, colore: colori.serie3, tratteggiata: true });
 
   const { ctx, larghezza, altezza } = preparaCanvas(canvas);

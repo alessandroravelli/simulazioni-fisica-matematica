@@ -1,81 +1,99 @@
-// Risoluzione in forma chiusa di equazioni differenziali ordinarie lineari
-// a coefficienti costanti (primo ordine, e secondo ordine omogenee) — i casi
-// standard con soluzione nota, niente calcolo simbolico generico.
+// Integrazione numerica (Runge-Kutta 4) di equazioni differenziali con
+// coefficienti anche non costanti — niente forma chiusa: serve solo a
+// disegnare la curva "corretta" da confrontare con la soluzione proposta.
 
-function risolviSistema2x2(a11, a12, a21, a22, b1, b2) {
-  const det = a11 * a22 - a12 * a21;
-  return { C1: (b1 * a22 - a12 * b2) / det, C2: (a11 * b2 - b1 * a21) / det };
+function passoRK4(f, x, y, h) {
+  const k1 = f(x, y);
+  const k2 = f(x + h / 2, y + (h / 2) * k1);
+  const k3 = f(x + h / 2, y + (h / 2) * k2);
+  const k4 = f(x + h, y + h * k3);
+  return y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
 }
 
-// y' + a*y = b
-export function risolviPrimoOrdine({ a, b, cauchy }) {
-  const avviso = !cauchy;
+// y' = f(x, y), condizione iniziale y(x0) = y0. Integra in avanti fino a
+// xMax e indietro fino a xMin, partendo sempre da x0.
+export function integraPrimoOrdine(f, x0, y0, xMin, xMax, passiTotali = 400) {
+  const h = (xMax - xMin) / passiTotali;
 
-  if (a === 0) {
-    const C = cauchy ? cauchy.y0 - b * cauchy.x0 : 0;
-    return { caso: "a-zero", C, avviso, valuta: (x) => b * x + C };
+  const puntiX = [x0];
+  const puntiY = [y0];
+  let x = x0, y = y0;
+  const nAvanti = Math.round((xMax - x0) / h);
+  for (let i = 0; i < nAvanti && Number.isFinite(y); i++) {
+    y = passoRK4(f, x, y, h);
+    x += h;
+    if (Number.isFinite(y)) { puntiX.push(x); puntiY.push(y); }
   }
 
-  const bSuA = b / a;
-  const C = cauchy ? (cauchy.y0 - bSuA) * Math.exp(a * cauchy.x0) : 0;
-  return { caso: "generale", C, bSuA, avviso, valuta: (x) => C * Math.exp(-a * x) + bSuA };
+  const primaX = [], primaY = [];
+  x = x0; y = y0;
+  const nIndietro = Math.round((x0 - xMin) / h);
+  for (let i = 0; i < nIndietro && Number.isFinite(y); i++) {
+    y = passoRK4(f, x, y, -h);
+    x -= h;
+    if (Number.isFinite(y)) { primaX.unshift(x); primaY.unshift(y); }
+  }
+
+  return { puntiX: [...primaX, ...puntiX], puntiY: [...primaY, ...puntiY] };
 }
 
-// y'' + p*y' + q*y = 0
-export function risolviSecondoOrdineOmogenea({ p, q, cauchy }) {
-  const avviso = !cauchy;
-  const delta = p * p - 4 * q;
+function sommaStato(stato, derivata, scala) {
+  return [stato[0] + scala * derivata[0], stato[1] + scala * derivata[1]];
+}
 
-  if (delta > 1e-9) {
-    const r1 = (-p + Math.sqrt(delta)) / 2;
-    const r2 = (-p - Math.sqrt(delta)) / 2;
-    let C1 = 0, C2 = 0;
-    if (cauchy) {
-      const { x0, y0, y0prime } = cauchy;
-      ({ C1, C2 } = risolviSistema2x2(
-        Math.exp(r1 * x0), Math.exp(r2 * x0),
-        r1 * Math.exp(r1 * x0), r2 * Math.exp(r2 * x0),
-        y0, y0prime,
-      ));
+function passoRK4Sistema(f, x, stato, h) {
+  const k1 = f(x, stato);
+  const k2 = f(x + h / 2, sommaStato(stato, k1, h / 2));
+  const k3 = f(x + h / 2, sommaStato(stato, k2, h / 2));
+  const k4 = f(x + h, sommaStato(stato, k3, h));
+  return [
+    stato[0] + (h / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]),
+    stato[1] + (h / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]),
+  ];
+}
+
+// y'' + p(x)*y' + q(x)*y = 0, condizioni iniziali y(x0)=y0, y'(x0)=y0prime.
+// Integra il sistema equivalente u=y, v=y' (u'=v, v'=-p*v-q*u).
+export function integraSecondoOrdineOmogenea(pFn, qFn, x0, y0, y0prime, xMin, xMax, passiTotali = 400) {
+  const f = (x, stato) => [stato[1], -pFn(x) * stato[1] - qFn(x) * stato[0]];
+  const h = (xMax - xMin) / passiTotali;
+
+  const puntiX = [x0];
+  const puntiY = [y0];
+  let x = x0, stato = [y0, y0prime];
+  const nAvanti = Math.round((xMax - x0) / h);
+  for (let i = 0; i < nAvanti && Number.isFinite(stato[0]); i++) {
+    stato = passoRK4Sistema(f, x, stato, h);
+    x += h;
+    if (Number.isFinite(stato[0])) { puntiX.push(x); puntiY.push(stato[0]); }
+  }
+
+  const primaX = [], primaY = [];
+  x = x0; stato = [y0, y0prime];
+  const nIndietro = Math.round((x0 - xMin) / h);
+  for (let i = 0; i < nIndietro && Number.isFinite(stato[0]); i++) {
+    stato = passoRK4Sistema(f, x, stato, -h);
+    x -= h;
+    if (Number.isFinite(stato[0])) { primaX.unshift(x); primaY.unshift(stato[0]); }
+  }
+
+  return { puntiX: [...primaX, ...puntiX], puntiY: [...primaY, ...puntiY] };
+}
+
+// Trasforma la sequenza di punti (x crescenti) calcolata da RK4 in una
+// funzione valuta(x) => y, per poterla disegnare con la stessa API delle
+// altre curve (interpolazione lineare fra i due punti più vicini).
+export function creaInterpolatore({ puntiX, puntiY }) {
+  return (x) => {
+    if (puntiX.length === 0) return NaN;
+    if (x <= puntiX[0]) return puntiY[0];
+    if (x >= puntiX[puntiX.length - 1]) return puntiY[puntiY.length - 1];
+    let lo = 0, hi = puntiX.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1;
+      if (puntiX[mid] <= x) lo = mid; else hi = mid;
     }
-    return {
-      caso: "reali-distinte", r1, r2, C1, C2, avviso,
-      valuta: (x) => C1 * Math.exp(r1 * x) + C2 * Math.exp(r2 * x),
-    };
-  }
-
-  if (delta > -1e-9) {
-    const r = -p / 2;
-    let C1 = 0, C2 = 0;
-    if (cauchy) {
-      const { x0, y0, y0prime } = cauchy;
-      ({ C1, C2 } = risolviSistema2x2(
-        Math.exp(r * x0), x0 * Math.exp(r * x0),
-        r * Math.exp(r * x0), (1 + r * x0) * Math.exp(r * x0),
-        y0, y0prime,
-      ));
-    }
-    return {
-      caso: "reale-doppia", r, C1, C2, avviso,
-      valuta: (x) => (C1 + C2 * x) * Math.exp(r * x),
-    };
-  }
-
-  const alpha = -p / 2;
-  const beta = Math.sqrt(-delta) / 2;
-  let C1 = 0, C2 = 0;
-  if (cauchy) {
-    const { x0, y0, y0prime } = cauchy;
-    const e = Math.exp(alpha * x0);
-    ({ C1, C2 } = risolviSistema2x2(
-      e * Math.cos(beta * x0), e * Math.sin(beta * x0),
-      e * (alpha * Math.cos(beta * x0) - beta * Math.sin(beta * x0)),
-      e * (alpha * Math.sin(beta * x0) + beta * Math.cos(beta * x0)),
-      y0, y0prime,
-    ));
-  }
-  return {
-    caso: "complesse", alpha, beta, C1, C2, avviso,
-    valuta: (x) => Math.exp(alpha * x) * (C1 * Math.cos(beta * x) + C2 * Math.sin(beta * x)),
+    const t = (x - puntiX[lo]) / (puntiX[hi] - puntiX[lo]);
+    return puntiY[lo] + t * (puntiY[hi] - puntiY[lo]);
   };
 }

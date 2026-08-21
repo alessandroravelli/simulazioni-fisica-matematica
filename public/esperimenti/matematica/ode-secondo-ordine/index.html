@@ -17,37 +17,36 @@
   <section class="riquadro">
     <p>
       Consideriamo equazioni differenziali lineari del secondo ordine,
-      <strong>omogenee</strong> e a coefficienti costanti:
+      <strong>omogenee</strong>, anche a coefficienti non costanti:
     </p>
     <div id="formula-equazione" class="formula"></div>
-    <p>Si risolvono tramite l'equazione caratteristica:</p>
-    <div id="formula-caratteristica" class="formula"></div>
-    <p>A seconda del segno del discriminante &Delta; = p&sup2; &minus; 4q, la soluzione generale è:</p>
-    <div id="formula-caso1" class="formula"></div>
-    <div id="formula-caso2" class="formula"></div>
-    <div id="formula-caso3" class="formula"></div>
     <p>
-      Le due costanti C&#8321;, C&#8322; si determinano fissando due
-      condizioni iniziali y(x&#8320;) = y&#8320; e y'(x&#8320;) = y&#8320;'
-      (<strong>problema di Cauchy</strong>): senza condizioni iniziali
-      l'equazione ha infinite soluzioni.
+      Con p(x) e q(x) generiche non esiste in genere una formula chiusa per la
+      soluzione, quindi qui viene calcolata <strong>numericamente</strong>
+      (Runge-Kutta del quarto ordine, integrando il sistema equivalente del
+      primo ordine) a partire da due condizioni iniziali y(x&#8320;) = y&#8320;
+      e y'(x&#8320;) = y&#8320;' (<strong>problema di Cauchy</strong>). Se non
+      le specifichi, il sistema usa di default <strong>y(0) = 0</strong> e
+      <strong>y'(0) = 0</strong>: tienilo presente, di solito in un problema
+      di Cauchy le condizioni iniziali vanno date esplicitamente.
     </p>
     <p>
-      Imposta i coefficienti, prova a risolvere l'equazione a mano e scrivi la
+      Imposta p(x) e q(x), prova a risolvere l'equazione a mano e scrivi la
       tua soluzione qui sotto: il grafico sovrappone la tua curva
-      (tratteggiata) a quella corretta.
+      (tratteggiata) a quella corretta — uno strumento di verifica, non un
+      risolutore simbolico.
     </p>
   </section>
 
   <section class="riquadro">
     <form id="form-parametri" class="form-parametri">
       <div class="campo">
-        <label for="input-p">p</label>
-        <input id="input-p" name="p" type="number" step="any" value="0" required>
+        <label for="input-p">p(x)</label>
+        <input id="input-p" name="p" type="text" value="0" required>
       </div>
       <div class="campo">
-        <label for="input-q">q</label>
-        <input id="input-q" name="q" type="number" step="any" value="1" required>
+        <label for="input-q">q(x)</label>
+        <input id="input-q" name="q" type="text" value="1" required>
       </div>
       <button id="bottone-genera" class="bottone" type="submit">Confronta</button>
     </form>
@@ -74,13 +73,12 @@
 
     <div class="campo campo-larga">
       <label for="input-proposta">La tua soluzione proposta (funzione di x)</label>
-      <input id="input-proposta" type="text" placeholder="es. cos(x) oppure C1*cos(sqrt(q)*x)+C2*sin(sqrt(q)*x)">
+      <input id="input-proposta" type="text" placeholder="es. cos(x)">
     </div>
 
     <p id="avviso-cauchy" class="avviso">
-      Nessuna condizione iniziale specificata: il sistema imposta C&#8321; = C&#8322; = 0.
-      Normalmente in un problema di Cauchy vanno specificate due condizioni
-      iniziali per determinare le costanti.
+      Nessuna condizione iniziale specificata: il sistema usa y(0) = 0 e y'(0) = 0.
+      Normalmente in un problema di Cauchy vanno specificate esplicitamente.
     </p>
     <p id="errore-proposta" class="errore"></p>
 
@@ -90,7 +88,7 @@
   <section class="riquadro">
     <p class="grafico-titolo">Confronto grafico</p>
     <div class="legenda">
-      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Soluzione corretta</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Soluzione corretta (numerica)</span>
       <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>La tua soluzione (tratteggiata)</span>
     </div>
     <canvas id="canvas-grafico" class="grafico-area"></canvas>
