@@ -296,6 +296,52 @@ a { color: var(--accent); }
   color: var(--fg-muted);
 }
 
+.campo-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.6rem;
+}
+
+.campo-checkbox input { width: 1.1rem; height: 1.1rem; }
+.campo-checkbox label { font-size: 0.9rem; color: var(--fg); }
+
+.campo-larga input { width: 20rem; max-width: 100%; }
+
+.avviso {
+  display: none;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--serie-2) 15%, var(--bg-alt));
+  border: 1px solid color-mix(in srgb, var(--serie-2) 40%, var(--border));
+  color: var(--fg);
+  font-size: 0.85rem;
+}
+
+.avviso.visibile { display: block; }
+
+.errore {
+  display: none;
+  margin-top: 0.75rem;
+  color: var(--serie-2);
+  font-size: 0.85rem;
+}
+
+.errore.visibile { display: block; }
+
+.risultati {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+
+.risultati strong { color: var(--fg); font-weight: 600; }
+
 .grafici {
   display: grid;
   grid-template-columns: 1fr 1.6fr;

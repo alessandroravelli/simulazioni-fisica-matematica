@@ -130,6 +130,86 @@ export async function animaBernoulliRipetuto(canvas, elementoTitolo, p, n, { int
   }
 }
 
+// Grafico a curve continue (es. soluzioni di equazioni differenziali).
+// `curve`: array di { valuta(x) => y, colore, tratteggiata }.
+export function disegnaLinee(ctx, larghezza, altezza, dati) {
+  const { xMin, xMax, yMin, yMax, curve, etichettaAsseX } = dati;
+  const colori = coloriTema();
+  ctx.clearRect(0, 0, larghezza, altezza);
+
+  const margine = { sopra: 16, sotto: 48, sinistra: 56, destra: 12 };
+  const areaAltezza = altezza - margine.sopra - margine.sotto;
+  const areaLarghezza = larghezza - margine.sinistra - margine.destra;
+  const xScala = (x) => margine.sinistra + areaLarghezza * ((x - xMin) / (xMax - xMin));
+  const yScala = (v) => margine.sopra + areaAltezza * (1 - (v - yMin) / (yMax - yMin));
+
+  const tickY = calcolaTick(yMin, yMax, 5);
+  ctx.strokeStyle = colori.griglia;
+  ctx.lineWidth = 1;
+  ctx.fillStyle = colori.testoMuto;
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+  for (const v of tickY) {
+    const y = yScala(v);
+    ctx.beginPath();
+    ctx.moveTo(margine.sinistra, y);
+    ctx.lineTo(larghezza - margine.destra, y);
+    ctx.stroke();
+    ctx.fillText(formattaDecimale(v), margine.sinistra - 8, y);
+  }
+  ctx.textBaseline = "alphabetic";
+
+  // asse x: alla quota y=0 se ricade nel range visibile, altrimenti al bordo
+  const yAsse = Math.min(Math.max(0, yMin), yMax);
+  ctx.strokeStyle = colori.testoMuto;
+  ctx.beginPath();
+  ctx.moveTo(margine.sinistra, yScala(yAsse));
+  ctx.lineTo(larghezza - margine.destra, yScala(yAsse));
+  ctx.stroke();
+
+  const tickX = calcolaTick(xMin, xMax, Math.min(8, Math.floor(areaLarghezza / 60)));
+  ctx.fillStyle = colori.testoMuto;
+  ctx.textAlign = "center";
+  for (const v of tickX) {
+    const x = xScala(v);
+    ctx.beginPath();
+    ctx.moveTo(x, yScala(yAsse));
+    ctx.lineTo(x, yScala(yAsse) + 5);
+    ctx.stroke();
+    ctx.fillText(formattaDecimale(v), x, yScala(yAsse) + 18);
+  }
+
+  const N = 400;
+  for (const c of curve) {
+    ctx.strokeStyle = c.colore;
+    ctx.lineWidth = 2;
+    ctx.setLineDash(c.tratteggiata ? [7, 5] : []);
+    ctx.beginPath();
+    let inCorso = false;
+    for (let i = 0; i <= N; i++) {
+      const x = xMin + ((xMax - xMin) * i) / N;
+      let y;
+      try { y = c.valuta(x); } catch { y = NaN; }
+      if (!Number.isFinite(y) || y < yMin - (yMax - yMin) * 2 || y > yMax + (yMax - yMin) * 2) {
+        inCorso = false;
+        continue;
+      }
+      const px = xScala(x);
+      const py = yScala(y);
+      if (!inCorso) { ctx.moveTo(px, py); inCorso = true; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = colori.testoMuto;
+  ctx.font = "12px -apple-system, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(etichettaAsseX, (margine.sinistra + larghezza - margine.destra) / 2, altezza - 6);
+}
+
 // Istogramma (frequenza osservata) con una o più curve teoriche sovrapposte.
 // `curve`: array di { valoriK, pmf, colore, mostraMarker }.
 export function disegnaIstogrammaConCurve(ctx, larghezza, altezza, dati) {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equazioni differenziali del primo ordine</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Equazioni differenziali del primo ordine</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Consideriamo equazioni differenziali lineari del primo ordine a
+      coefficienti costanti, nella forma:
+    </p>
+    <div id="formula-equazione" class="formula"></div>
+    <p>La soluzione generale è:</p>
+    <div id="formula-soluzione" class="formula"></div>
+    <p>
+      dove <strong>C</strong> è una costante arbitraria (se a = 0 la soluzione
+      generale è y(x) = b&middot;x + C). Il valore di C si determina fissando
+      una condizione iniziale y(x&#8320;) = y&#8320; (<strong>problema di
+      Cauchy</strong>): senza condizione iniziale, l'equazione ha infinite
+      soluzioni, una per ogni valore di C.
+    </p>
+    <p>
+      Imposta i coefficienti, prova a risolvere l'equazione a mano e scrivi la
+      tua soluzione nel campo qui sotto: il grafico sovrappone la tua curva
+      (tratteggiata) a quella corretta, così puoi controllare subito se
+      coincidono.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo">
+        <label for="input-a">a</label>
+        <input id="input-a" name="a" type="number" step="any" value="1" required>
+      </div>
+      <div class="campo">
+        <label for="input-b">b</label>
+        <input id="input-b" name="b" type="number" step="any" value="0" required>
+      </div>
+      <button id="bottone-genera" class="bottone" type="submit">Confronta</button>
+    </form>
+
+    <div class="campo-checkbox">
+      <input id="input-cauchy" name="cauchy" type="checkbox" checked>
+      <label for="input-cauchy">Problema di Cauchy (condizione iniziale)</label>
+    </div>
+
+    <form id="form-cauchy" class="form-parametri">
+      <div class="campo">
+        <label for="input-x0">x&#8320;</label>
+        <input id="input-x0" name="x0" type="number" step="any" value="0">
+      </div>
+      <div class="campo">
+        <label for="input-y0">y(x&#8320;)</label>
+        <input id="input-y0" name="y0" type="number" step="any" value="1">
+      </div>
+    </form>
+
+    <div class="campo campo-larga">
+      <label for="input-proposta">La tua soluzione proposta (funzione di x)</label>
+      <input id="input-proposta" type="text" placeholder="es. 2*exp(-x) oppure C*exp(-a*x)+b/a">
+    </div>
+
+    <p id="avviso-cauchy" class="avviso">
+      Nessuna condizione iniziale specificata: il sistema imposta C = 0.
+      Normalmente in un problema di Cauchy va specificata una condizione
+      iniziale per determinare la costante.
+    </p>
+    <p id="errore-proposta" class="errore"></p>
+
+    <div id="risultati" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Confronto grafico</p>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Soluzione corretta</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>La tua soluzione (tratteggiata)</span>
+    </div>
+    <canvas id="canvas-grafico" class="grafico-area"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
