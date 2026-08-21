@@ -14,7 +14,7 @@ const FUNZIONI = {
   abs: Math.abs,
 };
 
-const COSTANTI = { pi: Math.PI, e: Math.E };
+const COSTANTI = { pi: Math.PI, "π": Math.PI, e: Math.E };
 
 function tokenizza(testo) {
   const tok = [];
@@ -29,9 +29,9 @@ function tokenizza(testo) {
       i = j;
       continue;
     }
-    if (/[a-zA-Z_]/.test(c)) {
+    if (/[a-zA-Z_π]/.test(c)) {
       let j = i;
-      while (j < testo.length && /[a-zA-Z_0-9]/.test(testo[j])) j++;
+      while (j < testo.length && /[a-zA-Z_0-9π]/.test(testo[j])) j++;
       tok.push({ tipo: "identificatore", valore: testo.slice(i, j) });
       i = j;
       continue;
@@ -150,4 +150,16 @@ export function compilaEspressione(testo) {
   }
 
   return (scope) => valuta(ast, scope);
+}
+
+// Inserisce del testo nella posizione del cursore di un campo di testo
+// (usato dai pulsanti "π" ecc.), sostituendo un'eventuale selezione.
+export function inserisciNelCampo(input, testo) {
+  const inizio = input.selectionStart ?? input.value.length;
+  const fine = input.selectionEnd ?? input.value.length;
+  input.value = input.value.slice(0, inizio) + testo + input.value.slice(fine);
+  const posizione = inizio + testo.length;
+  input.focus();
+  input.setSelectionRange(posizione, posizione);
+  input.dispatchEvent(new Event("input"));
 }

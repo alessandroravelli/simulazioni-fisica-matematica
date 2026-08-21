@@ -1,5 +1,5 @@
 import { creaInterpolatore, integraPrimoOrdine } from "../../../assets/js/lib/edo.js";
-import { compilaEspressione } from "../../../assets/js/lib/espressioni.js";
+import { compilaEspressione, inserisciNelCampo } from "../../../assets/js/lib/espressioni.js";
 import { coloriTema, disegnaLinee, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 
 const form = document.getElementById("form-parametri");
@@ -91,5 +91,12 @@ inputProposta.addEventListener("input", disegna);
 inputCauchy.addEventListener("change", disegna);
 formCauchy.addEventListener("input", disegna);
 window.addEventListener("resize", disegna);
+
+document.querySelectorAll(".bottone-simbolo").forEach((bottone) => {
+  bottone.addEventListener("click", () => {
+    inserisciNelCampo(document.getElementById(bottone.dataset.target), "π");
+    disegna();
+  });
+});
 
 disegna();

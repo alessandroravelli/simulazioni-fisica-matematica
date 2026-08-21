@@ -309,6 +309,27 @@ a { color: var(--accent); }
 
 .campo-larga input { width: 20rem; max-width: 100%; }
 
+.campo-con-simbolo {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.campo-con-simbolo input { flex: 1; }
+
+.bottone-simbolo {
+  flex-shrink: 0;
+  width: 2.4rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.bottone-simbolo:hover { border-color: var(--accent); color: var(--accent); }
+
 .avviso {
   display: none;
   margin-top: 1rem;

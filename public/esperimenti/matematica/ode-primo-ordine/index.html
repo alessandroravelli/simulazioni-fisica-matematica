@@ -41,11 +41,17 @@
     <form id="form-parametri" class="form-parametri">
       <div class="campo">
         <label for="input-p">p(x)</label>
-        <input id="input-p" name="p" type="text" value="1" required>
+        <div class="campo-con-simbolo">
+          <input id="input-p" name="p" type="text" value="1" required>
+          <button type="button" class="bottone-simbolo" data-target="input-p">&pi;</button>
+        </div>
       </div>
       <div class="campo">
         <label for="input-q">q(x)</label>
-        <input id="input-q" name="q" type="text" value="0" required>
+        <div class="campo-con-simbolo">
+          <input id="input-q" name="q" type="text" value="0" required>
+          <button type="button" class="bottone-simbolo" data-target="input-q">&pi;</button>
+        </div>
       </div>
       <button id="bottone-genera" class="bottone" type="submit">Confronta</button>
     </form>
@@ -68,7 +74,10 @@
 
     <div class="campo campo-larga">
       <label for="input-proposta">La tua soluzione proposta (funzione di x)</label>
-      <input id="input-proposta" type="text" placeholder="es. 2*exp(-x)">
+      <div class="campo-con-simbolo">
+        <input id="input-proposta" type="text" placeholder="es. 2*exp(-x)">
+        <button type="button" class="bottone-simbolo" data-target="input-proposta">&pi;</button>
+      </div>
     </div>
 
     <p id="avviso-cauchy" class="avviso">
