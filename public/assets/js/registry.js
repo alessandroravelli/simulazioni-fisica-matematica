@@ -35,4 +35,10 @@ export const ESPERIMENTI = [
     categoria: "matematica",
     path: "../esperimenti/matematica/ode-secondo-ordine/",
   },
+  {
+    id: "induzione-magnetica",
+    titolo: "Induzione elettromagnetica",
+    categoria: "fisica",
+    path: "../esperimenti/fisica/induzione-magnetica/",
+  },
 ];

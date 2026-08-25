@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Induzione elettromagnetica</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Induzione elettromagnetica</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Un magnete che si muove vicino a una spira ne fa variare il flusso del
+      campo magnetico concatenato. Per la legge di Faraday-Neumann-Lenz,
+      questa variazione induce una forza elettromotrice, e quindi una
+      corrente nella spira (se chiusa):
+    </p>
+    <div id="formula" class="formula"></div>
+    <p>
+      Il segno <strong>meno</strong> è la legge di Lenz: la corrente indotta
+      circola nel verso tale da generare un proprio campo magnetico che si
+      <strong>oppone</strong> alla variazione di flusso che l'ha generata
+      &mdash; se il flusso sta aumentando, il campo indotto punta in verso
+      opposto a quello del magnete; se sta diminuendo, punta nello stesso
+      verso, "cercando" di mantenerlo.
+    </p>
+    <p>
+      <strong>Trascina il magnete con il mouse</strong>: la spira è vista di
+      taglio (l'asse è la linea tratteggiata orizzontale). Muovendo il
+      magnete lungo l'asse lo avvicini o allontani; spostandolo in verticale
+      lo porti fuori asse. La corrente indotta dipende da <em>quanto
+      velocemente</em> muovi il magnete, non solo da dove si trova: fermo, non
+      c'è flusso variabile e quindi non c'è corrente.
+    </p>
+    <p class="testo-derivato">
+      Valori in unità arbitrarie (non SI): il modello usa un dipolo
+      puntiforme e un'approssimazione di campo uniforme sulla spira, utile
+      per l'andamento qualitativo ma non per calcoli quantitativi reali.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo">
+        <label for="input-intensita">Intensità magnete</label>
+        <input id="input-intensita" name="intensita" type="number" step="any" min="0.1" value="6">
+      </div>
+      <div class="campo">
+        <label for="input-raggio">Raggio spira</label>
+        <input id="input-raggio" name="raggio" type="number" step="any" min="0.2" value="1">
+      </div>
+      <div class="campo">
+        <label for="input-resistenza">Resistenza spira</label>
+        <input id="input-resistenza" name="resistenza" type="number" step="any" min="0.1" value="1">
+      </div>
+    </form>
+    <div id="risultati" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Magnete e spira (vista di taglio) &mdash; trascina il magnete</p>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino" style="background:#dc2626"></span>Magnete &mdash; polo N</span>
+      <span class="legenda-voce"><span class="legenda-pallino" style="background:#2563eb"></span>Magnete &mdash; polo S</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Corrente indotta nella spira</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Campo indotto dalla spira</span>
+    </div>
+    <canvas id="canvas-grafico" class="grafico-area grafico-alto"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

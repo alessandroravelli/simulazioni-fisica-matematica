@@ -388,6 +388,10 @@ a { color: var(--accent); }
   height: 320px;
 }
 
+.grafico-alto { height: 420px; touch-action: none; }
+.grafico-alto.trascinamento { cursor: grabbing; }
+.grafico-alto:not(.trascinamento) { cursor: grab; }
+
 .legenda {
   display: flex;
   gap: 1.25rem;
