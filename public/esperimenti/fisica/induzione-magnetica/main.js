@@ -4,6 +4,8 @@ import { coloriTema, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 const form = document.getElementById("form-parametri");
 const risultati = document.getElementById("risultati");
 const canvas = document.getElementById("canvas-grafico");
+const checkLineeMagnete = document.getElementById("check-linee-magnete");
+const checkLineeSpira = document.getElementById("check-linee-spira");
 
 window.katex.render(
   "\\varepsilon = -\\dfrac{d\\Phi}{dt}",
@@ -32,6 +34,7 @@ function parametri() {
 
 const COLORE_N = "#dc2626";
 const COLORE_S = "#2563eb";
+const COLORE_CORRENTE = "#f59e0b";
 
 // --- scala fisica <-> pixel ---
 let scala = 60; // px per unità fisica, ricalcolata a ogni frame in base al canvas
@@ -130,22 +133,20 @@ function disegnaScena(larghezza, altezza, ctx, corrente) {
   ctx.ellipse(centroPx.x, centroPx.y, rx, ry, 0, 0, Math.PI * 2);
   ctx.stroke();
 
-  // corrente indotta: frecce animate lungo l'ellisse
-  const nFrecce = 8;
+  // corrente indotta: pallini animati lungo l'ellisse
+  const nPallini = 14;
   const intensitaVisiva = Math.min(1, Math.abs(corrente) / 1.5);
   if (intensitaVisiva > 0.02) {
-    for (let k = 0; k < nFrecce; k++) {
-      const phi = faseCorrente + (k * Math.PI * 2) / nFrecce;
+    const raggioPallino = 3 + 2.5 * intensitaVisiva;
+    for (let k = 0; k < nPallini; k++) {
+      const phi = faseCorrente + (k * Math.PI * 2) / nPallini;
       const px = centroPx.x + rx * Math.cos(phi);
       const py = centroPx.y + ry * Math.sin(phi);
-      const tx = -rx * Math.sin(phi);
-      const ty = ry * Math.cos(phi);
-      const norma = Math.hypot(tx, ty) || 1;
-      const verso = corrente >= 0 ? 1 : -1;
-      const dx = (verso * tx) / norma;
-      const dy = (verso * ty) / norma;
-      ctx.globalAlpha = 0.35 + 0.65 * intensitaVisiva;
-      disegnaFreccia(ctx, px - dx * 7, py - dy * 7, px + dx * 7, py + dy * 7, colori.serie1, 2.5);
+      ctx.globalAlpha = 0.45 + 0.55 * intensitaVisiva;
+      ctx.fillStyle = COLORE_CORRENTE;
+      ctx.beginPath();
+      ctx.arc(px, py, raggioPallino, 0, Math.PI * 2);
+      ctx.fill();
       ctx.globalAlpha = 1;
     }
   }
@@ -163,30 +164,49 @@ function disegnaScena(larghezza, altezza, ctx, corrente) {
     ctx.globalAlpha = 1;
   }
 
-  // --- magnete: linee di campo decorative ---
+  // --- linee di campo del magnete: molto estese, per vedere quanto
+  // entrano nella spira. Disegnate in coordinate del magnete, orientate
+  // lungo +x (verso N), poi traslate nella posizione del magnete. ---
   const magnetPx = fisicaAPixel(magnetX, magnetY);
   const lunghezzaMagnete = scala * 0.95;
   const spessoreMagnete = scala * 0.34;
 
-  ctx.strokeStyle = colori.testoMuto;
-  ctx.lineWidth = 1.3;
-  ctx.globalAlpha = 0.55;
-  for (const C of [0.35, 0.6, 0.9]) {
-    const superiore = tracciaLineaCampo(C * scala * 0.5);
-    ctx.beginPath();
-    superiore.forEach((p, i) => {
-      const x = magnetPx.x + p.x, y = magnetPx.y + p.y;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  function disegnaFamigliaLineeCampo(centro, dimensioni, verso, colore) {
+    ctx.strokeStyle = colore;
+    ctx.lineWidth = 1.4;
+    dimensioni.forEach((dim, i) => {
+      if (dim <= 0) return;
+      const opacita = Math.max(0.12, 0.6 - i * 0.11);
+      ctx.globalAlpha = opacita;
+      const superiore = tracciaLineaCampo(dim * scala);
+      ctx.beginPath();
+      superiore.forEach((p, j) => {
+        const x = centro.x + verso * p.x, y = centro.y + p.y;
+        if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.beginPath();
+      superiore.forEach((p, j) => {
+        const x = centro.x + verso * p.x, y = centro.y - p.y;
+        if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
     });
-    ctx.stroke();
-    ctx.beginPath();
-    superiore.forEach((p, i) => {
-      const x = magnetPx.x + p.x, y = magnetPx.y - p.y;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
+    ctx.globalAlpha = 1;
   }
-  ctx.globalAlpha = 1;
+
+  if (checkLineeMagnete.checked) {
+    disegnaFamigliaLineeCampo(magnetPx, [0.5, 1.0, 1.7, 2.6, 3.7, 5.0], 1, colori.testoMuto);
+  }
+
+  // --- linee di campo indotte dalla spira: stesso tipo di curva, centrate
+  // sulla spira, orientate secondo il verso della corrente indotta (si
+  // oppongono a quelle del magnete quando il flusso aumenta) ---
+  if (checkLineeSpira.checked && intensitaVisiva > 0.03) {
+    const versoIndotto = corrente >= 0 ? 1 : -1;
+    const dimensioniIndotte = [0.4, 0.85, 1.4].map((d) => d * intensitaVisiva);
+    disegnaFamigliaLineeCampo(centroPx, dimensioniIndotte, versoIndotto, colori.serie3);
+  }
 
   // --- magnete: barra N/S (N verso +x, S verso -x — fisso) ---
   const mezzaLung = lunghezzaMagnete / 2;

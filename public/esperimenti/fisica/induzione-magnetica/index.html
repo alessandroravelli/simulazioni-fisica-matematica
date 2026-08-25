@@ -68,8 +68,16 @@
     <div class="legenda">
       <span class="legenda-voce"><span class="legenda-pallino" style="background:#dc2626"></span>Magnete &mdash; polo N</span>
       <span class="legenda-voce"><span class="legenda-pallino" style="background:#2563eb"></span>Magnete &mdash; polo S</span>
-      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Corrente indotta nella spira</span>
+      <span class="legenda-voce"><span class="legenda-pallino" style="background:#f59e0b"></span>Corrente indotta nella spira</span>
       <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Campo indotto dalla spira</span>
+    </div>
+    <div class="campo-checkbox">
+      <input id="check-linee-magnete" type="checkbox" checked>
+      <label for="check-linee-magnete">Linee di campo del magnete</label>
+    </div>
+    <div class="campo-checkbox">
+      <input id="check-linee-spira" type="checkbox" checked>
+      <label for="check-linee-spira">Linee di campo indotte dalla spira (si oppongono a quelle del magnete)</label>
     </div>
     <canvas id="canvas-grafico" class="grafico-area grafico-alto"></canvas>
   </section>
