@@ -393,6 +393,7 @@ a { color: var(--accent); }
 .grafico-alto:not(.trascinamento) { cursor: grab; }
 
 .grafico-onda { height: 200px; }
+.grafico-onda-larga { height: 260px; }
 
 input[type="range"] { width: 16rem; max-width: 100%; accent-color: var(--accent); }
 

@@ -46,16 +46,18 @@
     <p>
       Un <strong>polarizzatore lineare</strong> lascia passare solo la
       componente di E parallela al proprio asse di trasmissione, bloccando
-      il resto. Su luce non polarizzata, l'effetto è duplice: l'onda in
-      uscita è polarizzata lungo l'asse del filtro, e l'intensità si dimezza
-      (in media metà dell'oscillazione casuale è allineata con il filtro,
-      metà è perpendicolare e viene bloccata):
+      il resto. L'effetto sull'irradianza <strong>E<sub>R</sub></strong>
+      (l'energia trasportata dall'onda per unità di area e di tempo) dipende
+      da come arriva la luce. Su luce non polarizzata, l'onda in uscita è
+      polarizzata lungo l'asse del filtro e l'irradianza si dimezza (in
+      media metà dell'oscillazione casuale è allineata con il filtro, metà è
+      perpendicolare e viene bloccata):
     </p>
     <div id="formula-dimezza" class="formula"></div>
     <p>
-      Se la luce che arriva sul filtro è <strong>già polarizzata</strong>
-      lungo una direzione, e il filtro ha il proprio asse ruotato di un
-      angolo &theta; rispetto a quella direzione, l'intensità trasmessa
+      Se la luce che arriva sul filtro è <strong>già polarizzata
+      linearmente</strong>, e il filtro ha il proprio asse ruotato di un
+      angolo &theta; rispetto a quella direzione, l'irradianza trasmessa
       segue la <strong>legge di Malus</strong>:
     </p>
     <div id="formula-malus" class="formula"></div>
@@ -64,40 +66,52 @@
       "incrociati") non passa nulla. Un <strong>polarizzatore
       circolare</strong> trasforma invece la luce in un'onda in cui il
       vettore E ruota mantenendo modulo costante mentre l'onda avanza,
-      anziché oscillare avanti e indietro su un piano fisso.
+      anziché oscillare avanti e indietro su un piano fisso; qui lo trattiamo
+      come un filtro lineare seguito da una lamina a quarto d'onda, che
+      trasmette sempre metà dell'irradianza in ingresso.
     </p>
   </section>
 
   <section class="riquadro">
-    <form id="form-filtro" class="form-parametri">
+    <form id="form-filtri" class="form-parametri">
       <div class="campo">
-        <label for="input-tipo">Secondo filtro</label>
-        <select id="input-tipo" name="tipo">
+        <label for="input-numero">Numero di filtri</label>
+        <select id="input-numero" name="numero">
+          <option value="1">Uno</option>
+          <option value="2">Due</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="input-tipo1">Filtro 1 &mdash; tipo</label>
+        <select id="input-tipo1" name="tipo1">
           <option value="lineare">Lineare</option>
           <option value="circolare">Circolare</option>
         </select>
       </div>
-      <div class="campo" id="campo-angolo">
-        <label for="input-angolo">Angolo &theta; (gradi, dal primo filtro)</label>
-        <input id="input-angolo" name="angolo" type="range" min="0" max="180" step="1" value="45">
+      <div class="campo" id="campo-angolo1">
+        <label for="input-angolo1">Filtro 1 &mdash; angolo (gradi)</label>
+        <input id="input-angolo1" name="angolo1" type="range" min="0" max="180" step="1" value="0">
+      </div>
+    </form>
+    <form id="form-filtro2" class="form-parametri">
+      <div class="campo">
+        <label for="input-tipo2">Filtro 2 &mdash; tipo</label>
+        <select id="input-tipo2" name="tipo2">
+          <option value="lineare">Lineare</option>
+          <option value="circolare">Circolare</option>
+        </select>
+      </div>
+      <div class="campo" id="campo-angolo2">
+        <label for="input-angolo2">Filtro 2 &mdash; angolo (gradi, dal filtro 1)</label>
+        <input id="input-angolo2" name="angolo2" type="range" min="0" max="180" step="1" value="45">
       </div>
     </form>
     <div id="risultati" class="risultati"></div>
   </section>
 
   <section class="riquadro">
-    <p class="grafico-titolo">1. Onda non polarizzata (sorgente)</p>
-    <canvas id="canvas-sorgente" class="grafico-area grafico-onda"></canvas>
-  </section>
-
-  <section class="riquadro">
-    <p class="grafico-titolo">2. Dopo il primo polarizzatore (riferimento, verticale)</p>
-    <canvas id="canvas-riferimento" class="grafico-area grafico-onda"></canvas>
-  </section>
-
-  <section class="riquadro">
-    <p class="grafico-titolo">3. Dopo il secondo filtro (quello che scegli sopra)</p>
-    <canvas id="canvas-secondo" class="grafico-area grafico-onda"></canvas>
+    <p class="grafico-titolo">Onda in propagazione: non polarizzata prima del filtro, polarizzata dopo</p>
+    <canvas id="canvas-onda" class="grafico-area grafico-onda grafico-onda-larga"></canvas>
   </section>
 
 </main>

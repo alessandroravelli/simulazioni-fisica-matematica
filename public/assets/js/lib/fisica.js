@@ -77,3 +77,35 @@ export function angoloNonPolarizzato(x, t) {
 export function ondaNonPolarizzata(x, t, fase) {
   return ondaLineare(fase, angoloNonPolarizzato(x, t));
 }
+
+// Applica un filtro polarizzatore a uno stato di polarizzazione in
+// ingresso, restituendo lo stato in uscita (tipo, angolo se lineare,
+// irradianza). Un polarizzatore circolare è modellato come lineare +
+// lamina a quarto d'onda: trasmette sempre metà dell'irradianza in
+// ingresso, qualunque sia lo stato in ingresso (non polarizzata, lineare
+// o circolare) — semplificazione pedagogica ma fisicamente coerente.
+// Un filtro lineare su luce non polarizzata o circolare trasmette metà
+// dell'irradianza (nessuna direzione è privilegiata); su luce già
+// polarizzata linearmente segue la legge di Malus.
+export function applicaFiltro(statoIngresso, filtro) {
+  const irradianzaIngresso = statoIngresso.irradianza;
+
+  if (filtro.tipo === "circolare") {
+    return { tipo: "circolare", angolo: 0, irradianza: irradianzaIngresso / 2 };
+  }
+
+  if (statoIngresso.tipo === "lineare") {
+    const deltaAngolo = filtro.angolo - statoIngresso.angolo;
+    const fattore = Math.cos(deltaAngolo) * Math.cos(deltaAngolo);
+    return { tipo: "lineare", angolo: filtro.angolo, irradianza: irradianzaIngresso * fattore };
+  }
+
+  // ingresso non polarizzato o circolare: nessuna direzione privilegiata
+  return { tipo: "lineare", angolo: filtro.angolo, irradianza: irradianzaIngresso / 2 };
+}
+
+export function campoDaStato(stato, x, t, fase) {
+  if (stato.tipo === "nonpolarizzata") return ondaLineare(fase, angoloNonPolarizzato(x, t));
+  if (stato.tipo === "circolare") return ondaCircolare(fase);
+  return ondaLineare(fase, stato.angolo);
+}
