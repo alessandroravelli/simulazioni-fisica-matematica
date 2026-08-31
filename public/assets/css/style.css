@@ -392,6 +392,10 @@ a { color: var(--accent); }
 .grafico-alto.trascinamento { cursor: grabbing; }
 .grafico-alto:not(.trascinamento) { cursor: grab; }
 
+.grafico-onda { height: 200px; }
+
+input[type="range"] { width: 16rem; max-width: 100%; accent-color: var(--accent); }
+
 .legenda {
   display: flex;
   gap: 1.25rem;

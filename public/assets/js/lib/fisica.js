@@ -42,3 +42,38 @@ export function tracciaLineaCampo(C, nPunti = 60) {
   }
   return punti;
 }
+
+// --- Onda elettromagnetica trasversale: due componenti perpendicolari
+// alla propagazione, "ey" (asse verticale di riferimento) e "exPrime"
+// (l'altro asse trasversale, perpendicolare a ey e alla propagazione).
+// Usate per rappresentare in prospettiva un'onda che si propaga lungo x.
+
+export function faseOnda(x, t, k, w) {
+  return k * x - w * t;
+}
+
+// Onda polarizzata linearmente a un angolo fisso (in radianti) rispetto
+// all'asse "ey". L'ampiezza oscilla in fase su entrambe le componenti.
+export function ondaLineare(fase, thetaRad) {
+  const mag = Math.cos(fase);
+  return { ey: mag * Math.cos(thetaRad), exPrime: mag * Math.sin(thetaRad) };
+}
+
+// Onda polarizzata circolarmente: le due componenti hanno la stessa
+// ampiezza ma sono sfasate di 90°, quindi il vettore campo ruota
+// mantenendo modulo costante mentre l'onda si propaga.
+export function ondaCircolare(fase, verso = 1) {
+  return { ey: Math.cos(fase), exPrime: verso * Math.sin(fase) };
+}
+
+// Angolo di polarizzazione che varia in modo continuo ma "disordinato"
+// nello spazio e nel tempo — usato per rappresentare luce non polarizzata
+// (la direzione di oscillazione cambia da un tratto d'onda all'altro,
+// senza un piano preferenziale).
+export function angoloNonPolarizzato(x, t) {
+  return 2.3 * Math.sin(x * 0.013 + t * 0.7) + 1.7 * Math.sin(x * 0.021 - t * 1.3 + 1.1);
+}
+
+export function ondaNonPolarizzata(x, t, fase) {
+  return ondaLineare(fase, angoloNonPolarizzato(x, t));
+}

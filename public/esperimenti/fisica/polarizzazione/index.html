@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polarizzazione della luce</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Polarizzazione della luce</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Un'onda elettromagnetica è <strong>trasversale</strong>: il campo
+      elettrico E e il campo magnetico B oscillano perpendicolari fra loro e
+      perpendicolari alla direzione di propagazione. La <strong>direzione di
+      oscillazione di E</strong> definisce la polarizzazione dell'onda.
+    </p>
+    <p>
+      Se E oscilla sempre lungo la stessa direzione, l'onda è
+      <strong>polarizzata linearmente</strong>. La luce naturale (dal sole,
+      da una lampadina) è invece <strong>non polarizzata</strong>: è la
+      sovrapposizione di innumerevoli onde emesse in modo indipendente,
+      ciascuna con la propria direzione casuale — la direzione di
+      oscillazione cambia in modo disordinato invece di restare fissa su un
+      piano.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Onda polarizzata linearmente — campo elettrico (rosso) e magnetico (blu)</p>
+    <canvas id="canvas-concetto" class="grafico-area grafico-onda"></canvas>
+    <p class="testo-derivato">
+      B è disegnato con la stessa ampiezza di E solo per chiarezza grafica
+      (in realtà i due campi hanno unità e intensità diverse): quello che
+      conta è che oscillano in fase, su piani fra loro perpendicolari.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <p>
+      Un <strong>polarizzatore lineare</strong> lascia passare solo la
+      componente di E parallela al proprio asse di trasmissione, bloccando
+      il resto. Su luce non polarizzata, l'effetto è duplice: l'onda in
+      uscita è polarizzata lungo l'asse del filtro, e l'intensità si dimezza
+      (in media metà dell'oscillazione casuale è allineata con il filtro,
+      metà è perpendicolare e viene bloccata):
+    </p>
+    <div id="formula-dimezza" class="formula"></div>
+    <p>
+      Se la luce che arriva sul filtro è <strong>già polarizzata</strong>
+      lungo una direzione, e il filtro ha il proprio asse ruotato di un
+      angolo &theta; rispetto a quella direzione, l'intensità trasmessa
+      segue la <strong>legge di Malus</strong>:
+    </p>
+    <div id="formula-malus" class="formula"></div>
+    <p>
+      A &theta;=0&deg; passa tutto, a &theta;=90&deg; (filtri
+      "incrociati") non passa nulla. Un <strong>polarizzatore
+      circolare</strong> trasforma invece la luce in un'onda in cui il
+      vettore E ruota mantenendo modulo costante mentre l'onda avanza,
+      anziché oscillare avanti e indietro su un piano fisso.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-filtro" class="form-parametri">
+      <div class="campo">
+        <label for="input-tipo">Secondo filtro</label>
+        <select id="input-tipo" name="tipo">
+          <option value="lineare">Lineare</option>
+          <option value="circolare">Circolare</option>
+        </select>
+      </div>
+      <div class="campo" id="campo-angolo">
+        <label for="input-angolo">Angolo &theta; (gradi, dal primo filtro)</label>
+        <input id="input-angolo" name="angolo" type="range" min="0" max="180" step="1" value="45">
+      </div>
+    </form>
+    <div id="risultati" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">1. Onda non polarizzata (sorgente)</p>
+    <canvas id="canvas-sorgente" class="grafico-area grafico-onda"></canvas>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">2. Dopo il primo polarizzatore (riferimento, verticale)</p>
+    <canvas id="canvas-riferimento" class="grafico-area grafico-onda"></canvas>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">3. Dopo il secondo filtro (quello che scegli sopra)</p>
+    <canvas id="canvas-secondo" class="grafico-area grafico-onda"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

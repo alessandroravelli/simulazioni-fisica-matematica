@@ -41,4 +41,10 @@ export const ESPERIMENTI = [
     categoria: "fisica",
     path: "../esperimenti/fisica/induzione-magnetica/",
   },
+  {
+    id: "polarizzazione",
+    titolo: "Polarizzazione della luce",
+    categoria: "fisica",
+    path: "../esperimenti/fisica/polarizzazione/",
+  },
 ];
