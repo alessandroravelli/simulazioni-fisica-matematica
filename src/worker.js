@@ -18,6 +18,17 @@ export default {
   },
 };
 
+// Elenco dei ruoli con accesso al sito. Ogni ruolo ha una coppia
+// username/password salvata come secret Cloudflare (mai nel codice).
+// Per aggiungere un nuovo ruolo: aggiungere una riga qui con un nome a
+// scelta, fare il deploy, poi impostare i due secret corrispondenti
+// (vedi GESTIONE-UTENTI.txt nella root del repository).
+const RUOLI = [
+  { nome: "docente", chiaveUsername: "USERNAME_MASTER", chiavePassword: "PASSWORD_MASTER" },
+  { nome: "studente", chiaveUsername: "USERNAME_STUDENTI", chiavePassword: "PASSWORD_STUDENTI" },
+  { nome: "camilla", chiaveUsername: "USERNAME_CAMILLA", chiavePassword: "PASSWORD_CAMILLA" },
+];
+
 function verificaAuth(header, env) {
   if (!header || !header.startsWith("Basic ")) return null;
 
@@ -26,15 +37,12 @@ function verificaAuth(header, env) {
   const username = separatore === -1 ? "" : decoded.slice(0, separatore);
   const password = separatore === -1 ? decoded : decoded.slice(separatore + 1);
 
-  if (
-    env.USERNAME_MASTER && env.PASSWORD_MASTER &&
-    username === env.USERNAME_MASTER && password === env.PASSWORD_MASTER
-  ) return "docente";
-
-  if (
-    env.USERNAME_STUDENTI && env.PASSWORD_STUDENTI &&
-    username === env.USERNAME_STUDENTI && password === env.PASSWORD_STUDENTI
-  ) return "studente";
-
+  for (const ruolo of RUOLI) {
+    const usernameAtteso = env[ruolo.chiaveUsername];
+    const passwordAttesa = env[ruolo.chiavePassword];
+    if (usernameAtteso && passwordAttesa && username === usernameAtteso && password === passwordAttesa) {
+      return ruolo.nome;
+    }
+  }
   return null;
 }

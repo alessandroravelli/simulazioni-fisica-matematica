@@ -1,0 +1,74 @@
+GESTIONE UTENTI (ACCESSI AL SITO)
+===================================
+
+Il sito non ha un vero database di account: ogni "utente" è in realtà
+un RUOLO con una coppia username/password fissa, definita nel file
+src/worker.js (elenco RUOLI) e salvata come secret Cloudflare (mai nel
+codice, mai nel repository).
+
+Ruoli attuali: docente, studente, camilla.
+
+Tutti i comandi vanno lanciati da Terminale, dentro la cartella del
+progetto:
+
+  cd "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web"
+
+
+1) IMPOSTARE (o cambiare) USERNAME E PASSWORD DI UN RUOLO ESISTENTE
+---------------------------------------------------------------------
+Sostituisce il valore precedente (non serve cancellarlo prima).
+NOME_RUOLO va scritto in maiuscolo, es. STUDENTI, MASTER, CAMILLA.
+
+  npx wrangler secret put USERNAME_NOME_RUOLO
+  npx wrangler secret put PASSWORD_NOME_RUOLO
+
+Dopo "invio" ti chiede di digitare il valore (non lo vedrai comparire
+mentre scrivi, è normale) e poi premi invio di nuovo.
+
+Esempio, per il ruolo "camilla":
+
+  npx wrangler secret put USERNAME_CAMILLA
+  npx wrangler secret put PASSWORD_CAMILLA
+
+
+2) ELIMINARE LE CREDENZIALI DI UN RUOLO (disattivarlo)
+---------------------------------------------------------------------
+Il ruolo smette di funzionare (login rifiutato), ma resta elencato nel
+codice senza dare errori.
+
+  npx wrangler secret delete USERNAME_NOME_RUOLO
+  npx wrangler secret delete PASSWORD_NOME_RUOLO
+
+
+3) VEDERE QUALI SECRET SONO IMPOSTATI (solo i nomi, mai i valori)
+---------------------------------------------------------------------
+I valori delle password non sono MAI recuperabili, per design di
+Cloudflare — né da qui né dalla dashboard. Se non ricordi una password,
+l'unica via è impostarne una nuova col comando del punto 1.
+
+  npx wrangler secret list
+
+
+4) AGGIUNGERE UN RUOLO COMPLETAMENTE NUOVO (es. un quarto utente)
+---------------------------------------------------------------------
+Qui serve anche una piccola modifica al codice, non solo i secret:
+
+  a) Apri src/worker.js, trova l'elenco "const RUOLI = [...]" e
+     aggiungi una riga sul modello delle altre, scegliendo un nome
+     (minuscolo, senza spazi) per il nuovo ruolo, es. "marco":
+
+       { nome: "marco", chiaveUsername: "USERNAME_MARCO", chiavePassword: "PASSWORD_MARCO" },
+
+  b) Salva, poi da Terminale:
+
+       git add src/worker.js
+       git commit -m "Aggiunge ruolo marco"
+       git push
+
+  c) Imposta le sue credenziali come al punto 1:
+
+       npx wrangler secret put USERNAME_MARCO
+       npx wrangler secret put PASSWORD_MARCO
+
+Se in un secondo momento hai bisogno di questo passaggio e non sai come
+fare la modifica al codice, chiedimelo pure — lo faccio io.
