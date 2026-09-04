@@ -27,6 +27,7 @@ const RUOLI = [
   { nome: "docente", chiaveUsername: "USERNAME_MASTER", chiavePassword: "PASSWORD_MASTER" },
   { nome: "studente", chiaveUsername: "USERNAME_STUDENTI", chiavePassword: "PASSWORD_STUDENTI" },
   { nome: "camilla", chiaveUsername: "USERNAME_CAMILLA", chiavePassword: "PASSWORD_CAMILLA" },
+  { nome: "federico", chiaveUsername: "USERNAME_FEDERICO", chiavePassword: "PASSWORD_FEDERICO" },
 ];
 
 function verificaAuth(header, env) {
