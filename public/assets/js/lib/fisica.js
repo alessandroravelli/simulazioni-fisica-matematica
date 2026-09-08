@@ -110,30 +110,36 @@ export function campoDaStato(stato, x, t, fase) {
   return ondaLineare(fase, stato.angolo);
 }
 
-// --- Radiazione di corpo nero: legge di Planck e le due approssimazioni
-// storiche che ne derivano nei due limiti opposti (grandi/piccole
-// lunghezze d'onda rispetto al picco). Costanti fisiche in unità SI;
-// lambda va sempre passata in metri.
+// --- Radiazione di corpo nero: legge di Planck e l'approssimazione
+// storica di Rayleigh-Jeans. Le formule sono quelle dell'ESITANZA
+// spettrale R_lambda (potenza emessa per unità di area e di lunghezza
+// d'onda, W/m^3) e non della radianza per steradiante: l'esitanza si
+// ottiene integrando la radianza sull'emisfero pesata con un coseno
+// (legge di Lambert), il che introduce un fattore pi greco — qui incluso
+// direttamente nella costante (2*pi anziché 2). Infatti l'integrale su
+// tutto lo spettro di R_lambda dà esattamente sigma*T^4 (Stefan-Boltzmann),
+// non sigma*T^4/pi come darebbe la sola radianza. Costanti fisiche in
+// unità SI; lambda va sempre passata in metri.
 
 const H_PLANCK = 6.62607015e-34; // J*s
 const C_LUCE = 299792458; // m/s
 const K_BOLTZMANN = 1.380649e-23; // J/K
 const B_SPOSTAMENTO_WIEN = 2.897771955e-3; // m*K
 
-// Densità spettrale di radianza (per lunghezza d'onda) di un corpo nero
-// a temperatura T, alla lunghezza d'onda lambda (metri, kelvin).
+// Esitanza spettrale (per lunghezza d'onda) di un corpo nero a
+// temperatura T, alla lunghezza d'onda lambda (metri, kelvin).
 export function planckRadianza(lambda, T) {
   if (lambda <= 0 || T <= 0) return 0;
   const esponente = (H_PLANCK * C_LUCE) / (lambda * K_BOLTZMANN * T);
   if (esponente > 700) return 0; // evita overflow di exp per lambda -> 0
-  return (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.pow(lambda, 5) * (Math.exp(esponente) - 1));
+  return (2 * Math.PI * H_PLANCK * C_LUCE * C_LUCE) / (Math.pow(lambda, 5) * (Math.exp(esponente) - 1));
 }
 
 // Approssimazione di Rayleigh-Jeans: valida per lambda grande (hc <<
 // lambda*kB*T). Diverge per lambda -> 0 ("catastrofe ultravioletta").
 export function rayleighJeansRadianza(lambda, T) {
   if (lambda <= 0 || T <= 0) return 0;
-  return (2 * C_LUCE * K_BOLTZMANN * T) / Math.pow(lambda, 4);
+  return (2 * Math.PI * C_LUCE * K_BOLTZMANN * T) / Math.pow(lambda, 4);
 }
 
 // Legge dello spostamento di Wien: lunghezza d'onda (metri) del picco di
@@ -155,7 +161,7 @@ const X_WIEN = 4.965114231744276;
 // dimostra che è proporzionale a 1/lambda^5.
 export function inviluppoMassimiWien(lambda) {
   if (lambda <= 0) return 0;
-  const costante = (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.exp(X_WIEN) - 1);
+  const costante = (2 * Math.PI * H_PLANCK * C_LUCE * C_LUCE) / (Math.exp(X_WIEN) - 1);
   return costante / Math.pow(lambda, 5);
 }
 
