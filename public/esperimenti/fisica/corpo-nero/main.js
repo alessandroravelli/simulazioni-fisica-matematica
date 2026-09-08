@@ -55,9 +55,17 @@ function fmtIntero(v) {
   return Math.round(v).toLocaleString("it-IT");
 }
 
+// i valori di B sono sempre grandi (miliardi o più): sull'asse y si usa
+// sempre la notazione scientifica, altrimenti le etichette non ci
+// starebbero.
+function fmtScientifica(v) {
+  if (v === 0) return "0";
+  return v.toExponential(1).replace(".", ",").replace("e+", "e");
+}
+
 // lo slider della scala verticale è logaritmico (i valori in gioco vanno
-// da poche unità a milioni a seconda di T): la posizione è l'esponente
-// (in centesimi di decade) e non il valore stesso.
+// da miliardi a migliaia di miliardi a seconda di T): la posizione è
+// l'esponente (in centesimi di decade) e non il valore stesso.
 function scalaYDaSlider() {
   const esponente = Number(inputScalaY.value) / 100;
   return Math.pow(10, esponente);
@@ -70,21 +78,21 @@ function disegna() {
   const xMax = Number(inputScalaX.value);
   valoreScalaX.textContent = fmtIntero(xMax);
   const yMax = scalaYDaSlider();
-  valoreScalaY.textContent = yMax >= 100000 ? yMax.toExponential(2).replace(".", ",") : fmtIntero(yMax);
+  valoreScalaY.textContent = yMax.toExponential(2).replace(".", ",");
 
   const lambdaPiccoNm = lambdaPiccoWien(T) * 1e9;
 
-  // conversione da densità "per metro" (unità naturale delle formule) a
-  // densità "per nanometro" (valori più leggibili sull'asse, dato che
-  // l'asse x è in nm): moltiplicare per 1e-9.
-  const planckNm = (nm) => planckRadianza(nm * 1e-9, T) * 1e-9;
-  const rjNm = (nm) => rayleighJeansRadianza(nm * 1e-9, T) * 1e-9;
-  const wienNm = (nm) => inviluppoMassimiWien(nm * 1e-9) * 1e-9;
+  // l'asse x resta in nm (comodo per leggere le lunghezze d'onda), ma le
+  // curve restano espresse nell'unità naturale delle formule, W/m^3: si
+  // converte solo il punto in cui valutarle (nm -> m), non il risultato.
+  const planckSI = (nm) => planckRadianza(nm * 1e-9, T);
+  const rjSI = (nm) => rayleighJeansRadianza(nm * 1e-9, T);
+  const wienSI = (nm) => inviluppoMassimiWien(nm * 1e-9);
 
   const colori = coloriTema();
-  const curve = [{ valuta: planckNm, colore: colori.serie1 }];
-  if (inputRJ.checked) curve.push({ valuta: rjNm, colore: colori.serie2, tratteggiata: true });
-  if (inputWien.checked) curve.push({ valuta: wienNm, colore: colori.serie3, tratteggiata: true });
+  const curve = [{ valuta: planckSI, colore: colori.serie1 }];
+  if (inputRJ.checked) curve.push({ valuta: rjSI, colore: colori.serie2, tratteggiata: true });
+  if (inputWien.checked) curve.push({ valuta: wienSI, colore: colori.serie3, tratteggiata: true });
 
   const { ctx, larghezza, altezza } = preparaCanvas(canvas);
   disegnaLinee(ctx, larghezza, altezza, {
@@ -95,6 +103,8 @@ function disegna() {
     curve,
     fasceSfondo: [FASCIA_VISIBILE],
     etichettaAsseX: "λ (nm)",
+    formattaY: fmtScientifica,
+    margineSinistra: 62,
   });
 
   risultati.innerHTML =

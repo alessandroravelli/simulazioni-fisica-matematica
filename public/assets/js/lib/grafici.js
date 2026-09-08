@@ -133,11 +133,11 @@ export async function animaBernoulliRipetuto(canvas, elementoTitolo, p, n, { int
 // Grafico a curve continue (es. soluzioni di equazioni differenziali).
 // `curve`: array di { valuta(x) => y, colore, tratteggiata }.
 export function disegnaLinee(ctx, larghezza, altezza, dati) {
-  const { xMin, xMax, yMin, yMax, curve, aree, fasceSfondo, etichettaAsseX } = dati;
+  const { xMin, xMax, yMin, yMax, curve, aree, fasceSfondo, etichettaAsseX, formattaY = formattaDecimale, margineSinistra = 56 } = dati;
   const colori = coloriTema();
   ctx.clearRect(0, 0, larghezza, altezza);
 
-  const margine = { sopra: 16, sotto: 48, sinistra: 56, destra: 12 };
+  const margine = { sopra: 16, sotto: 48, sinistra: margineSinistra, destra: 12 };
   const areaAltezza = altezza - margine.sopra - margine.sotto;
   const areaLarghezza = larghezza - margine.sinistra - margine.destra;
   const xScala = (x) => margine.sinistra + areaLarghezza * ((x - xMin) / (xMax - xMin));
@@ -156,7 +156,7 @@ export function disegnaLinee(ctx, larghezza, altezza, dati) {
     ctx.moveTo(margine.sinistra, y);
     ctx.lineTo(larghezza - margine.destra, y);
     ctx.stroke();
-    ctx.fillText(formattaDecimale(v), margine.sinistra - 8, y);
+    ctx.fillText(formattaY(v), margine.sinistra - 8, y);
   }
   ctx.textBaseline = "alphabetic";
 
