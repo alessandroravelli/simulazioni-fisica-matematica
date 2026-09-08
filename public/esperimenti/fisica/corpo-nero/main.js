@@ -22,17 +22,17 @@ const risultati = document.getElementById("risultati");
 const canvas = document.getElementById("canvas-grafico");
 
 window.katex.render(
-  "B_\\lambda(\\lambda,T) = \\dfrac{2hc^2}{\\lambda^5}\\dfrac{1}{e^{hc/(\\lambda k_B T)}-1}",
+  "R_\\lambda(\\lambda,T) = \\dfrac{2hc^2}{\\lambda^5}\\dfrac{1}{e^{hc/(\\lambda k_B T)}-1}",
   document.getElementById("formula-planck"),
   { throwOnError: false },
 );
 window.katex.render(
-  "B_\\lambda^{RJ}(\\lambda,T) = \\dfrac{2 c k_B T}{\\lambda^4}",
+  "R_\\lambda^{RJ}(\\lambda,T) = \\dfrac{2 c k_B T}{\\lambda^4}",
   document.getElementById("formula-rj"),
   { throwOnError: false },
 );
 window.katex.render(
-  "\\lambda_{picco}\\cdot T = b \\qquad\\Longrightarrow\\qquad B_{max}(\\lambda) \\propto \\dfrac{1}{\\lambda^5}",
+  "\\lambda_{picco}\\cdot T = b \\qquad\\Longrightarrow\\qquad R_{max}(\\lambda) \\propto \\dfrac{1}{\\lambda^5}",
   document.getElementById("formula-wien"),
   { throwOnError: false },
 );
@@ -55,7 +55,7 @@ function fmtIntero(v) {
   return Math.round(v).toLocaleString("it-IT");
 }
 
-// i valori di B sono sempre grandi (miliardi o più): sull'asse y si usa
+// i valori di R sono sempre grandi (miliardi o più): sull'asse y si usa
 // sempre la notazione scientifica, altrimenti le etichette non ci
 // starebbero.
 function fmtScientifica(v) {
