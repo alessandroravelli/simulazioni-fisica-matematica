@@ -1,9 +1,9 @@
 import {
   coloreLunghezzaOnda,
+  inviluppoMassimiWien,
   lambdaPiccoWien,
   planckRadianza,
   rayleighJeansRadianza,
-  wienRadianza,
 } from "../../../assets/js/lib/fisica.js";
 import { coloriTema, disegnaLinee, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 
@@ -11,8 +11,13 @@ const inputTemperatura = document.getElementById("input-temperatura");
 const valoreTemperatura = document.getElementById("valore-temperatura");
 const inputRJ = document.getElementById("input-rj");
 const inputWien = document.getElementById("input-wien");
+const inputScalaX = document.getElementById("input-scala-x");
+const valoreScalaX = document.getElementById("valore-scala-x");
+const inputScalaY = document.getElementById("input-scala-y");
+const valoreScalaY = document.getElementById("valore-scala-y");
 const formParametri = document.getElementById("form-parametri");
 const formOpzioni = document.getElementById("form-opzioni");
+const formScale = document.getElementById("form-scale");
 const risultati = document.getElementById("risultati");
 const canvas = document.getElementById("canvas-grafico");
 
@@ -27,7 +32,7 @@ window.katex.render(
   { throwOnError: false },
 );
 window.katex.render(
-  "B_\\lambda^{W}(\\lambda,T) = \\dfrac{2hc^2}{\\lambda^5}\\, e^{-hc/(\\lambda k_B T)}",
+  "\\lambda_{picco}\\cdot T = b \\qquad\\Longrightarrow\\qquad B_{max}(\\lambda) \\propto \\dfrac{1}{\\lambda^5}",
   document.getElementById("formula-wien"),
   { throwOnError: false },
 );
@@ -50,32 +55,43 @@ function fmtIntero(v) {
   return Math.round(v).toLocaleString("it-IT");
 }
 
+// lo slider della scala verticale è logaritmico (i valori in gioco vanno
+// da poche unità a milioni a seconda di T): la posizione è l'esponente
+// (in centesimi di decade) e non il valore stesso.
+function scalaYDaSlider() {
+  const esponente = Number(inputScalaY.value) / 100;
+  return Math.pow(10, esponente);
+}
+
 function disegna() {
   const T = Number(inputTemperatura.value);
   valoreTemperatura.textContent = fmtIntero(T);
 
-  const lambdaPiccoM = lambdaPiccoWien(T);
-  const lambdaPiccoNm = lambdaPiccoM * 1e9;
-  const bPicco = planckRadianza(lambdaPiccoM, T);
+  const xMax = Number(inputScalaX.value);
+  valoreScalaX.textContent = fmtIntero(xMax);
+  const yMax = scalaYDaSlider();
+  valoreScalaY.textContent = yMax >= 100000 ? yMax.toExponential(2).replace(".", ",") : fmtIntero(yMax);
 
-  // gli assi si riscalano sulla temperatura corrente: il picco resta
-  // sempre ben visibile, indipendentemente da quanto è caldo il corpo.
-  const xMax = lambdaPiccoNm * 4;
-  const planckNorm = (nm) => planckRadianza(nm * 1e-9, T) / bPicco;
-  const rjNorm = (nm) => rayleighJeansRadianza(nm * 1e-9, T) / bPicco;
-  const wienNorm = (nm) => wienRadianza(nm * 1e-9, T) / bPicco;
+  const lambdaPiccoNm = lambdaPiccoWien(T) * 1e9;
+
+  // conversione da densità "per metro" (unità naturale delle formule) a
+  // densità "per nanometro" (valori più leggibili sull'asse, dato che
+  // l'asse x è in nm): moltiplicare per 1e-9.
+  const planckNm = (nm) => planckRadianza(nm * 1e-9, T) * 1e-9;
+  const rjNm = (nm) => rayleighJeansRadianza(nm * 1e-9, T) * 1e-9;
+  const wienNm = (nm) => inviluppoMassimiWien(nm * 1e-9) * 1e-9;
 
   const colori = coloriTema();
-  const curve = [{ valuta: planckNorm, colore: colori.serie1 }];
-  if (inputRJ.checked) curve.push({ valuta: rjNorm, colore: colori.serie2, tratteggiata: true });
-  if (inputWien.checked) curve.push({ valuta: wienNorm, colore: colori.serie3, tratteggiata: true });
+  const curve = [{ valuta: planckNm, colore: colori.serie1 }];
+  if (inputRJ.checked) curve.push({ valuta: rjNm, colore: colori.serie2, tratteggiata: true });
+  if (inputWien.checked) curve.push({ valuta: wienNm, colore: colori.serie3, tratteggiata: true });
 
   const { ctx, larghezza, altezza } = preparaCanvas(canvas);
   disegnaLinee(ctx, larghezza, altezza, {
     xMin: 0,
     xMax,
     yMin: 0,
-    yMax: 1.15,
+    yMax,
     curve,
     fasceSfondo: [FASCIA_VISIBILE],
     etichettaAsseX: "λ (nm)",
@@ -84,13 +100,15 @@ function disegna() {
   risultati.innerHTML =
     `<strong>T</strong> = ${fmtIntero(T)} K &nbsp; ` +
     `<strong>&lambda;<sub>picco</sub></strong> = ${fmt(lambdaPiccoNm)} nm ` +
-    `(legge dello spostamento di Wien, &lambda;<sub>picco</sub>&middot;T = 2,898&times;10&#8315;&sup3; m&middot;K)`;
+    `(&lambda;<sub>picco</sub>&middot;T = 2,898&times;10&#8315;&sup3; m&middot;K)`;
 }
 
 formParametri.addEventListener("input", disegna);
 formOpzioni.addEventListener("change", disegna);
+formScale.addEventListener("input", disegna);
 formParametri.addEventListener("submit", (e) => e.preventDefault());
 formOpzioni.addEventListener("submit", (e) => e.preventDefault());
+formScale.addEventListener("submit", (e) => e.preventDefault());
 window.addEventListener("resize", disegna);
 
 disegna();

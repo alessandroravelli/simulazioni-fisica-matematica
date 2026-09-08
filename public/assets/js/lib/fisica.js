@@ -136,19 +136,27 @@ export function rayleighJeansRadianza(lambda, T) {
   return (2 * C_LUCE * K_BOLTZMANN * T) / Math.pow(lambda, 4);
 }
 
-// Approssimazione di Wien: valida per lambda piccolo (hc >> lambda*kB*T).
-// Sottostima la coda a grandi lunghezze d'onda.
-export function wienRadianza(lambda, T) {
-  if (lambda <= 0 || T <= 0) return 0;
-  const esponente = (H_PLANCK * C_LUCE) / (lambda * K_BOLTZMANN * T);
-  if (esponente > 700) return 0;
-  return (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.pow(lambda, 5) * Math.exp(esponente));
-}
-
 // Legge dello spostamento di Wien: lunghezza d'onda (metri) del picco di
 // emissione a temperatura T.
 export function lambdaPiccoWien(T) {
   return B_SPOSTAMENTO_WIEN / T;
+}
+
+// Soluzione dell'equazione trascendente x = 5(1 - e^-x) da cui discende
+// la legge di Wien (b = hc/(kB*x)); costante nota, qui riportata già
+// risolta per evitare di risolverla numericamente a ogni chiamata.
+const X_WIEN = 4.965114231744276;
+
+// Legge di Wien nella forma del "luogo dei massimi": il valore che la
+// densità spettrale di Planck assume nel proprio picco, in funzione della
+// lunghezza d'onda del picco stesso (lambda in metri). È la stessa curva
+// per qualunque T — ogni curva di Planck B(lambda,T) la tocca esattamente
+// nel punto lambda = b/T, e in quel punto i due valori coincidono. Si
+// dimostra che è proporzionale a 1/lambda^5.
+export function inviluppoMassimiWien(lambda) {
+  if (lambda <= 0) return 0;
+  const costante = (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.exp(X_WIEN) - 1);
+  return costante / Math.pow(lambda, 5);
 }
 
 // Colore RGB approssimato percepito per una lunghezza d'onda visibile
