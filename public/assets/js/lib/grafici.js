@@ -133,7 +133,7 @@ export async function animaBernoulliRipetuto(canvas, elementoTitolo, p, n, { int
 // Grafico a curve continue (es. soluzioni di equazioni differenziali).
 // `curve`: array di { valuta(x) => y, colore, tratteggiata }.
 export function disegnaLinee(ctx, larghezza, altezza, dati) {
-  const { xMin, xMax, yMin, yMax, curve, aree, etichettaAsseX } = dati;
+  const { xMin, xMax, yMin, yMax, curve, aree, fasceSfondo, etichettaAsseX } = dati;
   const colori = coloriTema();
   ctx.clearRect(0, 0, larghezza, altezza);
 
@@ -181,6 +181,24 @@ export function disegnaLinee(ctx, larghezza, altezza, dati) {
   }
 
   const N = 400;
+
+  // fasce di sfondo con gradiente multicolore (es. la banda del visibile
+  // sullo spettro di corpo nero), disegnate in trasparenza sotto le curve.
+  if (fasceSfondo) {
+    for (const fascia of fasceSfondo) {
+      const daClamp = Math.max(fascia.da, xMin);
+      const aClamp = Math.min(fascia.a, xMax);
+      if (aClamp <= daClamp) continue;
+      const xA = xScala(daClamp);
+      const xB = xScala(aClamp);
+      const gradiente = ctx.createLinearGradient(xA, 0, xB, 0);
+      for (const tappa of fascia.tappe) gradiente.addColorStop(tappa.offset, tappa.colore);
+      ctx.globalAlpha = fascia.alpha ?? 1;
+      ctx.fillStyle = gradiente;
+      ctx.fillRect(xA, margine.sopra, xB - xA, areaAltezza);
+      ctx.globalAlpha = 1;
+    }
+  }
 
   // aree ombreggiate sotto una curva (es. probabilità in un intervallo),
   // disegnate prima delle linee così restano "sotto" al tratto della curva

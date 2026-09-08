@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiazione di corpo nero</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Radiazione di corpo nero</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Un <strong>corpo nero</strong> è un oggetto ideale che assorbe tutta
+      la radiazione incidente e la riemette in uno spettro continuo che
+      dipende solo dalla sua temperatura <strong>T</strong>. La densità
+      spettrale di potenza emessa in funzione della lunghezza d'onda
+      &lambda; è descritta esattamente dalla <strong>legge di
+      Planck</strong>:
+    </p>
+    <div id="formula-planck" class="formula"></div>
+    <p>
+      Prima di Planck si conoscevano due leggi approssimate, ciascuna
+      valida in un limite opposto. L'<strong>approssimazione di
+      Rayleigh-Jeans</strong> (buona per &lambda; grandi) diverge per
+      &lambda; &rarr; 0 — la cosiddetta "catastrofe ultravioletta":
+    </p>
+    <div id="formula-rj" class="formula"></div>
+    <p>
+      L'<strong>approssimazione di Wien</strong> (buona per &lambda;
+      piccole) sottostima invece la coda a grandi lunghezze d'onda:
+    </p>
+    <div id="formula-wien" class="formula"></div>
+    <p>
+      Muovi lo slider per cambiare la temperatura e osserva come si sposta
+      il picco (legge dello spostamento di Wien, &lambda;<sub>picco</sub> =
+      b/T) e come le due approssimazioni si discostano dalla curva esatta.
+      La fascia colorata segna l'intervallo di lunghezze d'onda visibili
+      all'occhio umano (380-700 nm).
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <form id="form-parametri" class="form-parametri">
+      <div class="campo campo-larga">
+        <label for="input-temperatura">Temperatura T = <span id="valore-temperatura"></span> K</label>
+        <input id="input-temperatura" name="temperatura" type="range" min="1000" max="15000" step="50" value="5800">
+      </div>
+    </form>
+
+    <form id="form-opzioni" class="form-parametri">
+      <div class="campo-checkbox">
+        <input id="input-rj" type="checkbox">
+        <label for="input-rj">Mostra approssimazione di Rayleigh-Jeans</label>
+      </div>
+      <div class="campo-checkbox">
+        <input id="input-wien" type="checkbox">
+        <label for="input-wien">Mostra approssimazione di Wien</label>
+      </div>
+    </form>
+
+    <div id="risultati" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Distribuzione spettrale</p>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Planck (esatta)</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Rayleigh-Jeans</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Wien</span>
+    </div>
+    <canvas id="canvas-grafico" class="grafico-area"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

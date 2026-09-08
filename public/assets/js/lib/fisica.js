@@ -109,3 +109,66 @@ export function campoDaStato(stato, x, t, fase) {
   if (stato.tipo === "circolare") return ondaCircolare(fase);
   return ondaLineare(fase, stato.angolo);
 }
+
+// --- Radiazione di corpo nero: legge di Planck e le due approssimazioni
+// storiche che ne derivano nei due limiti opposti (grandi/piccole
+// lunghezze d'onda rispetto al picco). Costanti fisiche in unità SI;
+// lambda va sempre passata in metri.
+
+const H_PLANCK = 6.62607015e-34; // J*s
+const C_LUCE = 299792458; // m/s
+const K_BOLTZMANN = 1.380649e-23; // J/K
+const B_SPOSTAMENTO_WIEN = 2.897771955e-3; // m*K
+
+// Densità spettrale di radianza (per lunghezza d'onda) di un corpo nero
+// a temperatura T, alla lunghezza d'onda lambda (metri, kelvin).
+export function planckRadianza(lambda, T) {
+  if (lambda <= 0 || T <= 0) return 0;
+  const esponente = (H_PLANCK * C_LUCE) / (lambda * K_BOLTZMANN * T);
+  if (esponente > 700) return 0; // evita overflow di exp per lambda -> 0
+  return (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.pow(lambda, 5) * (Math.exp(esponente) - 1));
+}
+
+// Approssimazione di Rayleigh-Jeans: valida per lambda grande (hc <<
+// lambda*kB*T). Diverge per lambda -> 0 ("catastrofe ultravioletta").
+export function rayleighJeansRadianza(lambda, T) {
+  if (lambda <= 0 || T <= 0) return 0;
+  return (2 * C_LUCE * K_BOLTZMANN * T) / Math.pow(lambda, 4);
+}
+
+// Approssimazione di Wien: valida per lambda piccolo (hc >> lambda*kB*T).
+// Sottostima la coda a grandi lunghezze d'onda.
+export function wienRadianza(lambda, T) {
+  if (lambda <= 0 || T <= 0) return 0;
+  const esponente = (H_PLANCK * C_LUCE) / (lambda * K_BOLTZMANN * T);
+  if (esponente > 700) return 0;
+  return (2 * H_PLANCK * C_LUCE * C_LUCE) / (Math.pow(lambda, 5) * Math.exp(esponente));
+}
+
+// Legge dello spostamento di Wien: lunghezza d'onda (metri) del picco di
+// emissione a temperatura T.
+export function lambdaPiccoWien(T) {
+  return B_SPOSTAMENTO_WIEN / T;
+}
+
+// Colore RGB approssimato percepito per una lunghezza d'onda visibile
+// (nanometri, circa 380-700). Approssimazione classica (Dan Bruton),
+// usata solo per disegnare la fascia arcobaleno di sfondo nei grafici.
+export function coloreLunghezzaOnda(nm) {
+  let r, g, b;
+  if (nm < 440) { r = -(nm - 440) / (440 - 380); g = 0; b = 1; }
+  else if (nm < 490) { r = 0; g = (nm - 440) / (490 - 440); b = 1; }
+  else if (nm < 510) { r = 0; g = 1; b = -(nm - 510) / (510 - 490); }
+  else if (nm < 580) { r = (nm - 510) / (580 - 510); g = 1; b = 0; }
+  else if (nm < 645) { r = 1; g = -(nm - 645) / (645 - 580); b = 0; }
+  else { r = 1; g = 0; b = 0; }
+
+  let fattore;
+  if (nm < 420) fattore = 0.3 + (0.7 * (nm - 380)) / (420 - 380);
+  else if (nm < 701) fattore = 1;
+  else fattore = 0.3 + (0.7 * (780 - nm)) / (780 - 700);
+
+  const gamma = 0.8;
+  const adatta = (c) => (c <= 0 ? 0 : Math.round(255 * Math.pow(c * fattore, gamma)));
+  return `rgb(${adatta(r)}, ${adatta(g)}, ${adatta(b)})`;
+}

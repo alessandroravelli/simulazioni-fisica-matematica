@@ -47,4 +47,10 @@ export const ESPERIMENTI = [
     categoria: "fisica",
     path: "../esperimenti/fisica/polarizzazione/",
   },
+  {
+    id: "corpo-nero",
+    titolo: "Radiazione di corpo nero",
+    categoria: "fisica",
+    path: "../esperimenti/fisica/corpo-nero/",
+  },
 ];
