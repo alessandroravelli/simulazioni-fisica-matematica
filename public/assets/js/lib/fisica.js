@@ -186,3 +186,30 @@ export function coloreLunghezzaOnda(nm) {
   const adatta = (c) => (c <= 0 ? 0 : Math.round(255 * Math.pow(c * fattore, gamma)));
   return `rgb(${adatta(r)}, ${adatta(g)}, ${adatta(b)})`;
 }
+
+// --- Moto armonico semplice, come proiezione su un asse di un moto
+// circolare uniforme: x(t) = A cos(omega t + phi0). Velocità e
+// accelerazione sono semplicemente le derivate prima e seconda rispetto
+// al tempo di questa posizione.
+export function posizioneArmonica(A, omega, t, phi0) {
+  return A * Math.cos(omega * t + phi0);
+}
+
+export function velocitaArmonica(A, omega, t, phi0) {
+  return -A * omega * Math.sin(omega * t + phi0);
+}
+
+export function accelerazioneArmonica(A, omega, t, phi0) {
+  return -A * omega * omega * Math.cos(omega * t + phi0);
+}
+
+// --- Onda meccanica armonica che si propaga lungo x, con verso +1 (verso
+// le x crescenti) o -1 (verso le x decrescenti): s(x,t) = A sin(kx -
+// verso*omega*t + phi0). La stessa funzione descrive sia un'onda
+// trasversale (lo spostamento è perpendicolare a x, es. una corda) sia
+// una longitudinale (lo spostamento è lungo x stesso, e produce le
+// compressioni e rarefazioni di un'onda di pressione o di una molla) —
+// cambia solo come il chiamante usa il risultato, non la formula.
+export function spostamentoOnda(x, t, A, k, omega, phi0 = 0, verso = 1) {
+  return A * Math.sin(k * x - verso * omega * t + phi0);
+}

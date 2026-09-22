@@ -53,4 +53,10 @@ export const ESPERIMENTI = [
     categoria: "fisica",
     path: "../esperimenti/fisica/corpo-nero/",
   },
+  {
+    id: "moto-armonico",
+    titolo: "Moto armonico e onde meccaniche",
+    categoria: "fisica",
+    path: "../esperimenti/fisica/moto-armonico/",
+  },
 ];

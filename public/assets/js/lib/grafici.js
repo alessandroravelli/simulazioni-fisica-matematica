@@ -224,7 +224,17 @@ export function disegnaLinee(ctx, larghezza, altezza, dati) {
   }
 
   for (const c of curve) {
-    ctx.strokeStyle = c.colore;
+    // "dissolvenza": la curva sfuma dal trasparente (bordo sinistro, il
+    // passato) al colore pieno (bordo destro, l'istante attuale) — usata
+    // per i grafici che scorrono nel tempo tipo oscilloscopio.
+    if (c.dissolvenza) {
+      const gradiente = ctx.createLinearGradient(xScala(xMin), 0, xScala(xMax), 0);
+      gradiente.addColorStop(0, `${c.colore}00`);
+      gradiente.addColorStop(1, c.colore);
+      ctx.strokeStyle = gradiente;
+    } else {
+      ctx.strokeStyle = c.colore;
+    }
     ctx.lineWidth = 2;
     ctx.setLineDash(c.tratteggiata ? [7, 5] : []);
     ctx.beginPath();

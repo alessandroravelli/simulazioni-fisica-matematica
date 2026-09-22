@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moto armonico e onde meccaniche</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Moto armonico e onde meccaniche</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Il <strong>moto armonico semplice</strong> è la proiezione, su un
+      asse, di un moto circolare uniforme: un punto ruota a velocità
+      angolare costante &omega; su una circonferenza di raggio A, e la sua
+      posizione lungo l'asse orizzontale segue la legge
+    </p>
+    <div id="formula-x" class="formula"></div>
+    <p>
+      Velocità e accelerazione sono le derivate rispetto al tempo di
+      questa posizione:
+    </p>
+    <div id="formula-va" class="formula"></div>
+    <p>
+      L'ultima uguaglianza (a = &minus;&omega;<sup>2</sup>x) è la relazione
+      che <em>definisce</em> il moto armonico. Nei due pannelli sotto
+      &mdash; con parametri indipendenti, per confrontare due moti diversi
+      &mdash; il grafico mostra la posizione nel tempo, che scorre e sfuma
+      verso il passato; velocità e accelerazione, se attivate, sono
+      mostrate con l'ampiezza riscalata a quella di x (per confrontarne le
+      fasi, non i valori assoluti — nota infatti che l'accelerazione
+      normalizzata è semplicemente l'opposto della posizione).
+    </p>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Posizione x</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Velocità (fase)</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Accelerazione (fase)</span>
+    </div>
+  </section>
+
+  <div class="due-colonne">
+
+    <section class="riquadro" id="pannello-1">
+      <form class="form-parametri">
+        <div class="campo campo-larga">
+          <label for="input-A-1">Ampiezza A = <span id="valore-A-1"></span> cm</label>
+          <input id="input-A-1" type="range" min="20" max="100" step="5" value="80">
+        </div>
+        <div class="campo campo-larga">
+          <label for="input-omega-1">&omega; = <span id="valore-omega-1"></span> rad/s</label>
+          <input id="input-omega-1" type="range" min="0.5" max="8" step="0.1" value="2">
+        </div>
+        <div class="campo campo-larga">
+          <label for="input-fase-1">Fase iniziale &phi;<sub>0</sub> = <span id="valore-fase-1"></span>&deg;</label>
+          <input id="input-fase-1" type="range" min="0" max="360" step="5" value="0">
+        </div>
+      </form>
+      <form class="form-parametri">
+        <div class="campo-checkbox">
+          <input id="input-vel-1" type="checkbox">
+          <label for="input-vel-1">Mostra velocità</label>
+        </div>
+        <div class="campo-checkbox">
+          <input id="input-acc-1" type="checkbox">
+          <label for="input-acc-1">Mostra accelerazione</label>
+        </div>
+      </form>
+      <canvas id="canvas-cerchio-1" class="grafico-area grafico-onda"></canvas>
+      <canvas id="canvas-grafico-1" class="grafico-area grafico-onda-larga"></canvas>
+      <div id="risultati-1" class="risultati"></div>
+    </section>
+
+    <section class="riquadro" id="pannello-2">
+      <form class="form-parametri">
+        <div class="campo campo-larga">
+          <label for="input-A-2">Ampiezza A = <span id="valore-A-2"></span> cm</label>
+          <input id="input-A-2" type="range" min="20" max="100" step="5" value="50">
+        </div>
+        <div class="campo campo-larga">
+          <label for="input-omega-2">&omega; = <span id="valore-omega-2"></span> rad/s</label>
+          <input id="input-omega-2" type="range" min="0.5" max="8" step="0.1" value="4">
+        </div>
+        <div class="campo campo-larga">
+          <label for="input-fase-2">Fase iniziale &phi;<sub>0</sub> = <span id="valore-fase-2"></span>&deg;</label>
+          <input id="input-fase-2" type="range" min="0" max="360" step="5" value="90">
+        </div>
+      </form>
+      <form class="form-parametri">
+        <div class="campo-checkbox">
+          <input id="input-vel-2" type="checkbox">
+          <label for="input-vel-2">Mostra velocità</label>
+        </div>
+        <div class="campo-checkbox">
+          <input id="input-acc-2" type="checkbox">
+          <label for="input-acc-2">Mostra accelerazione</label>
+        </div>
+      </form>
+      <canvas id="canvas-cerchio-2" class="grafico-area grafico-onda"></canvas>
+      <canvas id="canvas-grafico-2" class="grafico-area grafico-onda-larga"></canvas>
+      <div id="risultati-2" class="risultati"></div>
+    </section>
+
+  </div>
+
+  <section class="riquadro">
+    <p>
+      Un'<strong>onda meccanica</strong> trasporta energia facendo oscillare
+      i punti di un mezzo, senza che il mezzo si sposti nel suo insieme.
+      Nell'onda <strong>trasversale</strong> (es. una corda) ogni punto
+      oscilla perpendicolarmente alla direzione di propagazione; in quella
+      <strong>longitudinale</strong> (es. un'onda di pressione o una molla)
+      oscilla lungo la stessa direzione in cui l'onda avanza, creando
+      compressioni e rarefazioni.
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Onda trasversale</p>
+    <form class="form-parametri">
+      <div class="campo">
+        <label for="input-A-trasv">Ampiezza A = <span id="valore-A-trasv"></span> cm</label>
+        <input id="input-A-trasv" type="range" min="10" max="60" step="2" value="35">
+      </div>
+      <div class="campo">
+        <label for="input-lambda-trasv">&lambda; = <span id="valore-lambda-trasv"></span> cm</label>
+        <input id="input-lambda-trasv" type="range" min="60" max="400" step="10" value="180">
+      </div>
+      <div class="campo">
+        <label for="input-v-trasv">v = <span id="valore-v-trasv"></span> cm/s</label>
+        <input id="input-v-trasv" type="range" min="20" max="300" step="10" value="100">
+      </div>
+      <div class="campo">
+        <label for="input-dir-trasv">Direzione</label>
+        <select id="input-dir-trasv">
+          <option value="1">&rarr; verso destra</option>
+          <option value="-1">&larr; verso sinistra</option>
+        </select>
+      </div>
+    </form>
+    <canvas id="canvas-trasv" class="grafico-area"></canvas>
+    <div id="risultati-trasv" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Onda longitudinale</p>
+    <form class="form-parametri">
+      <div class="campo">
+        <label for="input-A-long">Ampiezza A = <span id="valore-A-long"></span> cm</label>
+        <input id="input-A-long" type="range" min="2" max="20" step="1" value="10">
+      </div>
+      <div class="campo">
+        <label for="input-lambda-long">&lambda; = <span id="valore-lambda-long"></span> cm</label>
+        <input id="input-lambda-long" type="range" min="60" max="400" step="10" value="180">
+      </div>
+      <div class="campo">
+        <label for="input-v-long">v = <span id="valore-v-long"></span> cm/s</label>
+        <input id="input-v-long" type="range" min="20" max="300" step="10" value="100">
+      </div>
+      <div class="campo">
+        <label for="input-dir-long">Direzione</label>
+        <select id="input-dir-long">
+          <option value="1">&rarr; verso destra</option>
+          <option value="-1">&larr; verso sinistra</option>
+        </select>
+      </div>
+    </form>
+    <canvas id="canvas-long" class="grafico-area"></canvas>
+    <div id="risultati-long" class="risultati"></div>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
