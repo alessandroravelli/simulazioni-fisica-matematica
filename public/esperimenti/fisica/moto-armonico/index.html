@@ -31,17 +31,22 @@
       L'ultima uguaglianza (a = &minus;&omega;<sup>2</sup>x) è la relazione
       che <em>definisce</em> il moto armonico. Nei due pannelli sotto
       &mdash; con parametri indipendenti, per confrontare due moti diversi
-      &mdash; il grafico mostra la posizione nel tempo, che scorre e sfuma
-      verso il passato; velocità e accelerazione, se attivate, sono
-      mostrate con l'ampiezza riscalata a quella di x (per confrontarne le
-      fasi, non i valori assoluti — nota infatti che l'accelerazione
-      normalizzata è semplicemente l'opposto della posizione).
+      &mdash; sotto ogni cerchio scorre verso il basso, sfumando, un
+      nastro con lo stesso asse orizzontale del cerchio: è la proiezione
+      del punto che, srotolandosi nel tempo, diventa il grafico del moto
+      armonico. Velocità e accelerazione, se attivate, sono mostrate con
+      l'ampiezza riscalata a quella di x (per confrontarne le fasi, non i
+      valori assoluti — nota infatti che l'accelerazione normalizzata è
+      semplicemente l'opposto della posizione). Ampiezza e finestra
+      temporale sono le stesse per i due pannelli, così si vedono davvero
+      le differenze di ampiezza e velocità.
     </p>
     <div class="legenda">
       <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Posizione x</span>
       <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Velocità (fase)</span>
       <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Accelerazione (fase)</span>
     </div>
+    <button id="bottone-reset" class="bottone" type="button">Riavvia da t = 0</button>
   </section>
 
   <div class="due-colonne">
@@ -72,7 +77,7 @@
         </div>
       </form>
       <canvas id="canvas-cerchio-1" class="grafico-area grafico-onda"></canvas>
-      <canvas id="canvas-grafico-1" class="grafico-area grafico-onda-larga"></canvas>
+      <canvas id="canvas-grafico-1" class="grafico-area grafico-verticale"></canvas>
       <div id="risultati-1" class="risultati"></div>
     </section>
 
@@ -102,7 +107,7 @@
         </div>
       </form>
       <canvas id="canvas-cerchio-2" class="grafico-area grafico-onda"></canvas>
-      <canvas id="canvas-grafico-2" class="grafico-area grafico-onda-larga"></canvas>
+      <canvas id="canvas-grafico-2" class="grafico-area grafico-verticale"></canvas>
       <div id="risultati-2" class="risultati"></div>
     </section>
 

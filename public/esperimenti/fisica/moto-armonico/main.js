@@ -4,7 +4,7 @@ import {
   spostamentoOnda,
   velocitaArmonica,
 } from "../../../assets/js/lib/fisica.js";
-import { coloriTema, disegnaLinee, preparaCanvas } from "../../../assets/js/lib/grafici.js";
+import { calcolaTick, coloriTema, formattaDecimale, preparaCanvas } from "../../../assets/js/lib/grafici.js";
 
 window.katex.render("x(t) = A\\cos(\\omega t + \\varphi_0)", document.getElementById("formula-x"), { throwOnError: false });
 window.katex.render(
@@ -37,9 +37,92 @@ function disegnaFreccia(ctx, x0, y0, x1, y1, colore) {
   ctx.fill();
 }
 
-// --- pannello di moto armonico: cerchio di riferimento + grafico
-// scorrevole di x(t) (e, se attivati, v(t) e a(t) con ampiezza
-// normalizzata ad A per confrontarne le fasi).
+// Grafico "a nastro" che scorre verticalmente: l'asse orizzontale è il
+// valore (stessa scala, in pixel per cm, del cerchio sopra — così le due
+// cose restano visivamente allineate), l'asse verticale è il tempo, con
+// l'istante attuale in alto e il passato che scorre verso il basso
+// sfumando. È pensato per stare esattamente sotto il cerchio di
+// riferimento, in modo che la proiezione del punto rotante si veda
+// "diventare" questa curva.
+function disegnaGraficoVerticale(ctx, larghezza, altezza, dati) {
+  const { t, finestra, valueLimit, scala, curve } = dati;
+  const colori = coloriTema();
+  ctx.clearRect(0, 0, larghezza, altezza);
+
+  const margine = { sopra: 18, sotto: 10 };
+  const areaAltezza = altezza - margine.sopra - margine.sotto;
+  const cx = larghezza / 2;
+
+  const xScala = (valore) => cx + valore * scala;
+  const yScala = (tt) => margine.sopra + areaAltezza * ((t - tt) / finestra);
+
+  // griglia orizzontale (tempo), solo come riferimento visivo
+  ctx.strokeStyle = colori.griglia;
+  ctx.lineWidth = 1;
+  for (const tt of calcolaTick(t - finestra, t, 5)) {
+    const y = yScala(tt);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(larghezza, y);
+    ctx.stroke();
+  }
+
+  // griglia verticale (valore), con etichette in alto
+  ctx.fillStyle = colori.testoMuto;
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.textAlign = "center";
+  for (const v of calcolaTick(-valueLimit, valueLimit, 4)) {
+    const x = xScala(v);
+    ctx.beginPath();
+    ctx.moveTo(x, margine.sopra);
+    ctx.lineTo(x, altezza - margine.sotto);
+    ctx.stroke();
+    ctx.fillText(formattaDecimale(v), x, 12);
+  }
+
+  // asse centrale (valore 0), più marcato
+  ctx.strokeStyle = colori.testoMuto;
+  ctx.beginPath();
+  ctx.moveTo(cx, margine.sopra);
+  ctx.lineTo(cx, altezza - margine.sotto);
+  ctx.stroke();
+
+  const N = 300;
+  for (const c of curve) {
+    // sfuma dal colore pieno in alto (istante attuale) al trasparente in
+    // basso (il passato che si dissolve).
+    const gradiente = ctx.createLinearGradient(0, yScala(t), 0, yScala(t - finestra));
+    gradiente.addColorStop(0, c.colore);
+    gradiente.addColorStop(1, `${c.colore}00`);
+    ctx.strokeStyle = gradiente;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const tt = t - (finestra * i) / N;
+      const x = xScala(c.valuta(tt));
+      const y = yScala(tt);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  // marcatore del valore attuale in cima al nastro: è lo stesso punto
+  // della proiezione sul cerchio sopra il canvas.
+  if (curve[0]) {
+    ctx.fillStyle = curve[0].colore;
+    ctx.beginPath();
+    ctx.arc(xScala(curve[0].valuta(t)), yScala(t), 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// --- pannello di moto armonico: cerchio di riferimento + nastro
+// verticale di x(t) (e, se attivati, v(t) e a(t) con ampiezza
+// normalizzata ad A per confrontarne le fasi). Scala del cerchio,
+// intervallo di valori e finestra temporale sono CONDIVISI fra i due
+// pannelli (passati in `condiviso`), per poter confrontare a colpo
+// d'occhio ampiezza e velocità di due moti diversi.
 function creaPannelloArmonico(suffisso) {
   const inputA = document.getElementById(`input-A-${suffisso}`);
   const valoreA = document.getElementById(`valore-A-${suffisso}`);
@@ -61,12 +144,19 @@ function creaPannelloArmonico(suffisso) {
   [inputA, inputOmega, inputFase].forEach((el) => el.addEventListener("input", aggiornaEtichette));
   aggiornaEtichette();
 
-  return function disegna(t) {
-    const A = Number(inputA.value);
-    const omega = Number(inputOmega.value);
-    const phi0 = (Number(inputFase.value) * Math.PI) / 180;
-    const mostraVel = inputVel.checked;
-    const mostraAcc = inputAcc.checked;
+  function leggiParametri() {
+    return {
+      A: Number(inputA.value),
+      omega: Number(inputOmega.value),
+      phi0: (Number(inputFase.value) * Math.PI) / 180,
+      mostraVel: inputVel.checked,
+      mostraAcc: inputAcc.checked,
+    };
+  }
+
+  function disegna(t, p, condiviso) {
+    const { A, omega, phi0, mostraVel, mostraAcc } = p;
+    const { scala, valueLimit, finestra } = condiviso;
     const colori = coloriTema();
 
     // --- cerchio di riferimento ---
@@ -74,7 +164,7 @@ function creaPannelloArmonico(suffisso) {
     cerchio.ctx.clearRect(0, 0, cerchio.larghezza, cerchio.altezza);
     const cx = cerchio.larghezza / 2;
     const cy = cerchio.altezza / 2;
-    const R = Math.min(A, cerchio.altezza / 2 - 20, cerchio.larghezza / 2 - 20);
+    const R = A * scala;
     const theta = omega * t + phi0;
     const px = cx + R * Math.cos(theta);
     const py = cy - R * Math.sin(theta);
@@ -95,7 +185,8 @@ function creaPannelloArmonico(suffisso) {
     cerchio.ctx.lineTo(px, py);
     cerchio.ctx.stroke();
 
-    // proiezione sul diametro orizzontale: è il valore x(t)
+    // proiezione sul diametro orizzontale: è il valore x(t), nello
+    // stesso punto (stessa scala) in cui il nastro sotto parte
     cerchio.ctx.strokeStyle = `${colori.serie1}99`;
     cerchio.ctx.setLineDash([4, 4]);
     cerchio.ctx.beginPath();
@@ -126,26 +217,13 @@ function creaPannelloArmonico(suffisso) {
       disegnaFreccia(cerchio.ctx, px, py, px + (dir.x / norma) * R * 0.3, py + (dir.y / norma) * R * 0.3, colori.serie3);
     }
 
-    // --- grafico scorrevole: finestra di 4 periodi, curva che sfuma
-    // verso il passato (bordo sinistro) ---
-    const finestra = ((2 * Math.PI) / omega) * 4;
-    const curve = [{ valuta: (tt) => posizioneArmonica(A, omega, tt, phi0), colore: colori.serie1, dissolvenza: true }];
-    if (mostraVel) {
-      curve.push({ valuta: (tt) => -A * Math.sin(omega * tt + phi0), colore: colori.serie2, dissolvenza: true });
-    }
-    if (mostraAcc) {
-      curve.push({ valuta: (tt) => -A * Math.cos(omega * tt + phi0), colore: colori.serie3, dissolvenza: true });
-    }
+    // --- nastro verticale ---
+    const curve = [{ valuta: (tt) => posizioneArmonica(A, omega, tt, phi0), colore: colori.serie1 }];
+    if (mostraVel) curve.push({ valuta: (tt) => -A * Math.sin(omega * tt + phi0), colore: colori.serie2 });
+    if (mostraAcc) curve.push({ valuta: (tt) => -A * Math.cos(omega * tt + phi0), colore: colori.serie3 });
 
     const grafico = preparaCanvas(canvasGrafico);
-    disegnaLinee(grafico.ctx, grafico.larghezza, grafico.altezza, {
-      xMin: t - finestra,
-      xMax: t,
-      yMin: -A * 1.2,
-      yMax: A * 1.2,
-      curve,
-      etichettaAsseX: "t (s)",
-    });
+    disegnaGraficoVerticale(grafico.ctx, grafico.larghezza, grafico.altezza, { t, finestra, valueLimit, scala, curve });
 
     const T = (2 * Math.PI) / omega;
     risultati.innerHTML =
@@ -153,7 +231,9 @@ function creaPannelloArmonico(suffisso) {
       `x = ${fmt(posizioneArmonica(A, omega, t, phi0))} cm &nbsp; ` +
       `v = ${fmt(velocitaArmonica(A, omega, t, phi0))} cm/s &nbsp; ` +
       `a = ${fmt(accelerazioneArmonica(A, omega, t, phi0))} cm/s&sup2;`;
-  };
+  }
+
+  return { leggiParametri, disegna };
 }
 
 // --- onda trasversale: una corda i cui punti oscillano perpendicolarmente
@@ -304,10 +384,32 @@ const pannello2 = creaPannelloArmonico("2");
 const ondaTrasversale = creaOndaTrasversale();
 const ondaLongitudinale = creaOndaLongitudinale();
 
+// offset che permette al pulsante "riavvia" di riportare l'orologio
+// condiviso dell'animazione a t = 0, senza dover fermare/riavviare il
+// requestAnimationFrame.
+let tOffset = performance.now() / 1000;
+document.getElementById("bottone-reset").addEventListener("click", () => {
+  tOffset = performance.now() / 1000;
+});
+
 function tick(tempoMs) {
-  const t = tempoMs / 1000;
-  pannello1(t);
-  pannello2(t);
+  const t = tempoMs / 1000 - tOffset;
+
+  const p1 = pannello1.leggiParametri();
+  const p2 = pannello2.leggiParametri();
+
+  // scala e limiti CONDIVISI fra i due pannelli: la stessa quantità
+  // fisica (in cm) occupa sempre lo stesso spazio a schermo in entrambi,
+  // così un'ampiezza o una velocità maggiore si vedono davvero maggiori.
+  const rect = document.getElementById("canvas-cerchio-1").getBoundingClientRect();
+  const raggioDisponibile = Math.min(rect.height / 2 - 20, rect.width / 2 - 20);
+  const valueLimit = Math.max(p1.A, p2.A) * 1.2;
+  const scala = raggioDisponibile / valueLimit;
+  const finestra = ((2 * Math.PI) / Math.min(p1.omega, p2.omega)) * 4;
+  const condiviso = { scala, valueLimit, finestra };
+
+  pannello1.disegna(t, p1, condiviso);
+  pannello2.disegna(t, p2, condiviso);
   ondaTrasversale(t);
   ondaLongitudinale(t);
   requestAnimationFrame(tick);
