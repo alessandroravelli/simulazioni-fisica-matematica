@@ -405,6 +405,7 @@ a { color: var(--accent); }
 .grafico-onda { height: 200px; }
 .grafico-onda-larga { height: 260px; }
 .grafico-verticale { height: 420px; }
+.grafico-3d { height: 460px; }
 
 input[type="range"] { width: 16rem; max-width: 100%; accent-color: var(--accent); }
 

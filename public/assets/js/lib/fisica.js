@@ -213,3 +213,12 @@ export function accelerazioneArmonica(A, omega, t, phi0) {
 export function spostamentoOnda(x, t, A, k, omega, phi0 = 0, verso = 1) {
   return A * Math.sin(k * x - verso * omega * t + phi0);
 }
+
+// Onda progressiva unidimensionale nella forma y(x,t) = sin(omega(t -
+// x/v) + phi0): x/v è il tempo che l'oscillazione impiega a raggiungere
+// la posizione x da x=0, quindi ogni punto ripete, in ritardo, la stessa
+// storia temporale della sorgente. Equivalente a sin(omega*t - k*x +
+// phi0) con k = omega/v.
+export function ondaProgressiva(x, t, omega, v, phi0 = 0) {
+  return Math.sin(omega * (t - x / v) + phi0);
+}

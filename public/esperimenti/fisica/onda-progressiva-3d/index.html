@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onda progressiva in 3D</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Onda progressiva in 3D</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Un'onda che si propaga lungo x con velocità v è descritta da
+    </p>
+    <div id="formula-onda" class="formula"></div>
+    <p>
+      x/v è il ritardo con cui l'oscillazione della sorgente (in x = 0)
+      arriva alla posizione x: ogni punto ripete, sfasato nel tempo, la
+      stessa storia. Qui sotto y(x,t) è disegnata come una superficie
+      nello spazio (x, t, y); il pallino è <strong>noi</strong>, un
+      osservatore in un punto preciso dello spazio e del tempo. Sposta gli
+      slider per vedere separatamente cosa succede se ci muoviamo solo nel
+      tempo (restando fermi in x) o solo nello spazio (fotografando l'onda
+      in un istante): sono esattamente le due curve evidenziate sulla
+      superficie, riportate nei grafici 2D sotto.
+    </p>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Noi (osservatore)</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-2"></span>Solo nel tempo (x fisso)</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Solo nello spazio (t fisso)</span>
+    </div>
+  </section>
+
+  <section class="riquadro">
+    <form class="form-parametri">
+      <div class="campo campo-larga">
+        <label for="input-x-oss">Posizione x = <span id="valore-x-oss"></span></label>
+        <input id="input-x-oss" type="range" min="0" max="40" step="0.5" value="10">
+      </div>
+      <div class="campo campo-larga">
+        <label for="input-t-oss">Istante t = <span id="valore-t-oss"></span> s</label>
+        <input id="input-t-oss" type="range" min="0" max="10" step="0.05" value="0">
+      </div>
+    </form>
+    <canvas id="canvas-3d" class="grafico-area grafico-3d"></canvas>
+    <div id="risultati-3d" class="risultati"></div>
+  </section>
+
+  <div class="due-colonne">
+    <section class="riquadro">
+      <p class="grafico-titolo">Solo nel tempo (x = <span id="titolo-x-fisso"></span> fisso)</p>
+      <canvas id="canvas-tempo" class="grafico-area"></canvas>
+    </section>
+    <section class="riquadro">
+      <p class="grafico-titolo">Solo nello spazio (t = <span id="titolo-t-fisso"></span> s fisso)</p>
+      <canvas id="canvas-spazio" class="grafico-area"></canvas>
+    </section>
+  </div>
+
+  <section class="riquadro">
+    <p>
+      Un'onda che si propaga in tutte le direzioni a partire da una
+      sorgente puntiforme (es. un sasso in uno stagno, il suono) è un caso
+      più complesso: dipende da <strong>tre</strong> coordinate spaziali
+      (qui ne mostriamo due, x e y, il piano) più il tempo, e la sua
+      ampiezza si attenua allontanandosi dalla sorgente. Nessuno slider
+      qui: è solo per vedere l'onda sferica propagarsi.
+    </p>
+    <canvas id="canvas-sferica" class="grafico-area grafico-3d"></canvas>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

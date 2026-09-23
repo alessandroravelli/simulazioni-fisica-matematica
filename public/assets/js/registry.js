@@ -59,4 +59,10 @@ export const ESPERIMENTI = [
     categoria: "fisica",
     path: "../esperimenti/fisica/moto-armonico/",
   },
+  {
+    id: "onda-progressiva-3d",
+    titolo: "Onda progressiva in 3D",
+    categoria: "fisica",
+    path: "../esperimenti/fisica/onda-progressiva-3d/",
+  },
 ];

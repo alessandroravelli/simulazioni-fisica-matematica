@@ -27,6 +27,15 @@ export function attesa(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Proiezione isometrica per grafici pseudo-3D: due assi "di base" (a, b,
+// sul piano orizzontale) più un'altezza (h, verticale a schermo). Usata
+// per disegnare superfici ondulatorie senza bisogno di una libreria 3D.
+const ISO_COS30 = Math.cos(Math.PI / 6);
+const ISO_SIN30 = Math.sin(Math.PI / 6);
+export function proiettaIsometrica(a, b, h) {
+  return { dx: (a - b) * ISO_COS30, dy: (a + b) * ISO_SIN30 - h };
+}
+
 // Valori "tondi" per i tick di un asse (passo 1/2/5 * potenza di 10).
 export function calcolaTick(min, max, countCirca) {
   if (max <= min) return [min];
@@ -255,6 +264,26 @@ export function disegnaLinee(ctx, larghezza, altezza, dati) {
     ctx.stroke();
   }
   ctx.setLineDash([]);
+
+  // marcatori puntuali (es. la posizione attuale su un grafico pilotato
+  // da uno slider), con una guida tratteggiata fino all'asse orizzontale
+  if (dati.marcatori) {
+    for (const m of dati.marcatori) {
+      const mx = xScala(m.x);
+      const my = yScala(Math.max(yMin, Math.min(yMax, m.y)));
+      ctx.strokeStyle = `${m.colore}66`;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(mx, yScala(yAsse));
+      ctx.lineTo(mx, my);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = m.colore;
+      ctx.beginPath();
+      ctx.arc(mx, my, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 
   ctx.fillStyle = colori.testoMuto;
   ctx.font = "12px -apple-system, sans-serif";
