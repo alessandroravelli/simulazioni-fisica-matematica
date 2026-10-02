@@ -190,6 +190,18 @@ article p:has(> img + img) {
   }
 }
 
+// figure dentro le tabelle: colonne e figure tutte della stessa larghezza
+article table:has(img) {
+  table-layout: fixed;
+  width: 100%;
+}
+
+article td img {
+  width: 100%;
+  max-width: 260px;
+  margin: 0.25rem auto;
+}
+
 // formule lunghe: scorrono invece di uscire dalla colonna
 .katex-display {
   overflow-x: auto;

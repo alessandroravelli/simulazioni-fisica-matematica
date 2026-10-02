@@ -5,6 +5,7 @@ Gli appunti delle lezioni, divisi per materia. Ogni argomento rimanda agli altri
 
 ## Matematica
 
+- [[Calcolo combinatorio, probabilità e distribuzioni]]: disposizioni, permutazioni e combinazioni, probabilità condizionata, Bayes, distribuzioni binomiale, di Poisson e normale.
 - [[Goniometria]]: funzioni goniometriche, archi associati, formule di addizione, duplicazione e bisezione, funzioni lineari in seno e coseno.
 
 ## Fisica

@@ -1,7 +1,9 @@
 ---
 title: 5SCI
 ---
-Il materiale per questa classe è in preparazione.
+## Matematica
+
+- [[Calcolo combinatorio, probabilità e distribuzioni]]
 
 ## Simulazioni utili
 

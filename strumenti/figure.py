@@ -473,6 +473,130 @@ def genera_onde():
     }
 
 
+# ================================================== PROBABILITÀ
+
+def prob_disintegrazione():
+    x0, y0, w, h = 30, 40, 400, 240
+    mx, my = x0 + w / 2, y0 + h / 2
+    s = ""
+    for (x, y, col, nome, lx, ly) in [
+        (x0, y0, ROSSO, "H₁", x0 + 22, y0 + 26), (mx, y0, BLU, "H₂", x0 + w - 24, y0 + 26),
+        (x0, my, VIOLA, "H₃", x0 + 22, y0 + h - 20), (mx, my, ARANCIO, "H₄", x0 + w - 24, y0 + h - 20)]:
+        s += (f'<rect x="{x}" y="{y}" width="{w / 2}" height="{h / 2}" fill="{col}" fill-opacity="0.28" '
+              f'stroke="{GRIGIO}" stroke-width="2"/>')
+        s += testo(lx, ly, nome, col, 18, math_=True, grassetto=True)
+    s += (f'<ellipse cx="{mx}" cy="{my}" rx="150" ry="62" transform="rotate(-18 {mx} {my})" '
+          f'fill="{VERDE}" fill-opacity="0.35" stroke="{GRIGIO}" stroke-width="2.5"/>')
+    s += testo(mx + 60, my - 78, "A", GRIGIO, 18, math_=True, grassetto=True)
+    for dx, dy, t in [(-62, -14, "A ∩ H₁"), (58, -40, "A ∩ H₂"), (-72, 30, "A ∩ H₃"), (52, 16, "A ∩ H₄")]:
+        s += testo(mx + dx, my + dy, t, VERDE, 15, math_=True)
+    s += testo(x0 + w + 14, y0 - 14, "Ω", GRIGIO, 20, math_=True)
+    return svg(470, 300, s)
+
+
+def prob_bersagli():
+    def bersaglio(cx, cy, colpi):
+        anelli = [(150, "#e5e7eb"), (120, "#111827"), (92, "#0ea5e9"), (62, "#ef4444"), (34, "#f59e0b")]
+        b = ""
+        for r, col in anelli:
+            b += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{col}" stroke="{GRIGIO}" stroke-width="1"/>'
+        for x, y in colpi:
+            X, Y, d = cx + x, cy + y, 7
+            b += linea(X - d, Y - d, X + d, Y + d, "#6b7280", 3) + linea(X - d, Y + d, X + d, Y - d, "#6b7280", 3)
+        return b
+    s = bersaglio(170, 170, [(-48, -28), (-42, 0), (8, 30), (36, -50), (52, 20)])
+    s += bersaglio(520, 170, [(-90, -132), (0, -78), (-104, 0), (104, 0), (128, 48), (0, 136)])
+    return svg(690, 340, s)
+
+
+def prob_albero():
+    xs = [70, 150, 290, 450, 590]
+    s = ""
+    for i, t in enumerate(["1° lancio", "2° lancio", "3° lancio", "4° lancio"]):
+        s += linea(xs[i], 40, xs[i], 760, ROSSO, 1, "4 4")
+        s += testo(xs[i], 22, t, ROSSO, 14)
+    # nodi: livello -> lista di (y, percorso)
+    livelli = [[(400, "")]]
+    passo = [180, 100, 52, 28]
+    for l in range(4):
+        nuovi = []
+        for y, p in livelli[-1]:
+            nuovi.append((y - passo[l], p + "T"))
+            nuovi.append((y + passo[l], p + "C"))
+        livelli.append(nuovi)
+    evidenziati = {"TTTC": VIOLA, "TTCT": ROSA, "TCTT": "#a3a30b", "CTTT": BLU}
+    # tratti evidenziati sotto, rami sopra
+    for percorso, col in evidenziati.items():
+        punti = [(xs[0], 400)]
+        y = 400
+        for l, c in enumerate(percorso):
+            y = y - passo[l] if c == "T" else y + passo[l]
+            punti.append((xs[l + 1], y))
+        d = "M" + " L".join(f"{x},{y}" for x, y in punti)
+        s += f'<path d="{d}" fill="none" stroke="{col}" stroke-width="11" stroke-opacity="0.55" stroke-linejoin="round"/>'
+        s += testo(xs[4] + 14, punti[-1][1], "p · p · p · q", GRIGIO, 17, ancora="start", math_=True)
+    for l in range(4):
+        for y, p in livelli[l]:
+            for yy, pp in livelli[l + 1]:
+                if pp[:-1] == p:
+                    s += linea(xs[l], y, xs[l + 1], yy, GRIGIO, 1.6)
+                    col = VERDE if pp[-1] == "T" else ARANCIO
+                    s += testo((xs[l] + xs[l + 1]) / 2 + 6, (y + yy) / 2 + (-10 if pp[-1] == "T" else 12),
+                               pp[-1], col, 13)
+    return svg(740, 780, s)
+
+
+def gauss(z):
+    return math.exp(-z * z / 2) / math.sqrt(2 * PI)
+
+
+def prob_normale(da, a, tick, larghezza=300, altezza=170, nome=None):
+    """Curva normale standard con area ombreggiata tra da e a (±4 = infinito)."""
+    mx, my = 16, 26
+    xmin, xmax, ymax = -3.6, 3.6, 0.45
+    sx = (larghezza - 2 * mx) / (xmax - xmin)
+    sy = (altezza - my - 14) / ymax
+
+    def P(x, y):
+        return mx + (x - xmin) * sx, altezza - my - y * sy
+
+    x0, y0 = P(0, 0)
+    s = linea(mx - 6, y0, larghezza - mx + 6, y0, freccia=True)
+    s += linea(x0, y0 + 4, x0, 10, freccia=True)
+    a1, a2 = max(da, xmin), min(a, xmax)
+    punti = [P(a1, 0)] + [P(a1 + (a2 - a1) * i / 120, gauss(a1 + (a2 - a1) * i / 120)) for i in range(121)] + [P(a2, 0)]
+    s += '<path d="M' + " L".join(f"{x:.1f},{y:.1f}" for x, y in punti) + f' Z" fill="{BLU}" fill-opacity="0.35"/>'
+    curva = [P(xmin + (xmax - xmin) * i / 200, gauss(xmin + (xmax - xmin) * i / 200)) for i in range(201)]
+    s += '<path d="M' + " L".join(f"{x:.1f},{y:.1f}" for x, y in curva) + f'" fill="none" stroke="{ARANCIO}" stroke-width="2.4"/>'
+    for v, t in tick:
+        px, _ = P(v, 0)
+        s += linea(px, y0 - 4, px, y0 + 4)
+        s += linea(px, y0, px, P(v, gauss(v))[1], GRIGIO, 1.2, "3 3")
+        s += testo(px, y0 + 15, t, dim=13)
+    if nome:
+        nome = nome.replace("<", "&lt;")
+        s += testo(6, 12, nome, BLU, 14, ancora="start", math_=True)
+    return svg(larghezza, altezza, s)
+
+
+def genera_probabilita():
+    inf = 4.5
+    return {
+        "probabilita-disintegrazione.svg": prob_disintegrazione(),
+        "probabilita-bersagli.svg": prob_bersagli(),
+        "probabilita-albero.svg": prob_albero(),
+        "probabilita-phi.svg": prob_normale(-inf, 0.8, [(0.8, "x = z")], larghezza=460, altezza=230,
+                                            nome="Area = Probabilità = Φ(z)"),
+        "probabilita-normale-a.svg": prob_normale(-inf, 1, [(1, "1")], nome="p(Z < 1)"),
+        "probabilita-normale-b.svg": prob_normale(0, 1.5, [(0, "0"), (1.5, "1,5")], nome="p(0 < Z < 1,5)"),
+        "probabilita-normale-c.svg": prob_normale(0.75, inf, [(0.75, "0,75")], nome="p(Z > 0,75)"),
+        "probabilita-normale-d.svg": prob_normale(-inf, -0.75, [(-0.75, "−0,75")], nome="p(Z < −0,75)"),
+        "probabilita-normale-e.svg": prob_normale(-1, inf, [(-1, "−1")], nome="p(Z > −1)"),
+        "probabilita-normale-f.svg": prob_normale(-1.75, -0.5, [(-1.75, "−1,75"), (-0.5, "−0,5")],
+                                                  nome="p(−1,75 < Z < −0,5)"),
+    }
+
+
 def scrivi(cartella, figure):
     os.makedirs(cartella, exist_ok=True)
     for nome, contenuto in figure.items():
@@ -483,4 +607,5 @@ def scrivi(cartella, figure):
 
 if __name__ == "__main__":
     scrivi(DIR_MATE, genera_goniometria())
+    scrivi(DIR_MATE, genera_probabilita())
     scrivi(DIR_FIS, genera_onde())

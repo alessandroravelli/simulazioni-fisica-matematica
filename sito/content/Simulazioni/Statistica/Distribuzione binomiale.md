@@ -7,7 +7,7 @@ tags:
 Una prova di Bernoulli ripetuta $n$ volte: prima un singolo esperimento animato, poi l'istogramma delle frequenze su molte ripetizioni confrontato con la distribuzione teorica $B(n,p)$.
 
 > [!info] Collegamenti
-> [[Distribuzione di Poisson]] è il suo limite per $n$ grande e $p$ piccolo.
+> Teoria: [[Calcolo combinatorio, probabilità e distribuzioni#Distribuzione binomiale|distribuzione binomiale]]. [[Distribuzione di Poisson]] è il suo limite per $n$ grande e $p$ piccolo.
 
 [Apri la simulazione a schermo intero ↗](/esperimenti/statistica/binomiale/)
 
