@@ -1,0 +1,228 @@
+@use "./variables.scss" as *;
+
+// Stili del sito di Alessandro Ravelli, sopra il tema di Quartz.
+
+// ---------------------------------------------------------------- home
+
+body[data-slug="index"] {
+  .article-title,
+  .content-meta,
+  .tags {
+    display: none;
+  }
+}
+
+.home-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem;
+  min-height: 18rem;
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.75rem 1.5rem;
+  border-radius: 14px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(8, 10, 20, 0.15), rgba(8, 10, 20, 0.78)),
+    url("/assets/img/pillars-of-creation.jpg") center 25% / cover no-repeat;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  p,
+  blockquote {
+    margin: 0;
+  }
+}
+
+.home-autore {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+.home-titolo {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  font-family: var(--headerFont);
+  font-size: clamp(2.2rem, 5vw, 3.3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+}
+
+.home-hero .home-citazione {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: end;
+  justify-self: end;
+  max-width: 22rem;
+  padding: 0;
+  border: none;
+  text-align: right;
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+
+  cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-style: normal;
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 40rem) {
+  .home-hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .home-autore {
+    grid-column: 1;
+  }
+  .home-titolo {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .home-hero .home-citazione {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: start;
+    text-align: left;
+  }
+}
+
+.home-schede {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+a.home-scheda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 12px;
+  background: var(--light);
+  color: var(--dark);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: var(--secondary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.home-scheda-icona {
+  font-size: 1.4rem;
+  color: var(--secondary);
+}
+
+.home-scheda-titolo {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.home-scheda-testo {
+  font-size: 0.88rem;
+  color: var(--darkgray);
+  line-height: 1.45;
+}
+
+// ------------------------------------------- pagine indice scritte a mano
+// (l'elenco automatico della cartella sarebbe un doppione)
+
+body[data-slug="simulazioni/index"],
+body[data-slug="appunti/index"],
+body[data-slug="classi/index"] {
+  .page-listing {
+    display: none;
+  }
+}
+
+// ------------------------------------------------------- simulazioni
+
+iframe.simulazione {
+  display: block;
+  width: 100%;
+  height: max(640px, 78vh);
+  margin: 1rem 0;
+  border: 1px solid var(--lightgray);
+  border-radius: 12px;
+  background: var(--light);
+}
+
+// ------------------------------------------------------------ figure
+
+article img {
+  display: block;
+  max-width: min(100%, 680px);
+  height: auto;
+  margin: 1.25rem auto;
+}
+
+// due figure piccole nello stesso paragrafo: affiancate
+article p:has(> img + img) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+
+  img {
+    margin: 0;
+    max-width: min(100%, 300px);
+  }
+}
+
+// formule lunghe: scorrono invece di uscire dalla colonna
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0;
+}
+
+// barra con "Modifica" / "Nuova nota", visibile solo al docente
+.barra-docente {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  display: flex;
+  gap: 0.5rem;
+
+  a {
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    background: var(--secondary);
+    color: var(--light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+// date delle lezioni (righe in corsivo da sole)
+article p > em:only-child {
+  color: var(--gray);
+}

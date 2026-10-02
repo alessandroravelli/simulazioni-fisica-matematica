@@ -432,3 +432,7 @@ input[type="range"] { width: 16rem; max-width: 100%; accent-color: var(--accent)
 .legenda-pallino.serie-1 { background: var(--accent); }
 .legenda-pallino.serie-2 { background: var(--serie-2); }
 .legenda-pallino.serie-3 { background: var(--serie-3); }
+
+/* Simulazione incorporata in una nota (iframe): niente intestazione */
+.incorporato body > header { display: none; }
+.incorporato main { padding-top: 1.5rem; }

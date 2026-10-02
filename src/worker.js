@@ -11,9 +11,38 @@ export default {
       });
     }
 
-    const risposta = await env.ASSETS.fetch(request);
+    // Il docente riceve pagine diverse (col pulsante "Modifica", vedi
+    // sotto): niente risposte "304 non modificato" basate sulla copia in
+    // cache del browser, che potrebbe essere quella senza pulsante.
+    let richiesta = request;
+    if (ruolo === "docente") {
+      const intestazioni = new Headers(request.headers);
+      intestazioni.delete("If-None-Match");
+      intestazioni.delete("If-Modified-Since");
+      richiesta = new Request(request, { headers: intestazioni });
+    }
+
+    const risposta = await env.ASSETS.fetch(richiesta);
     const finale = new Response(risposta.body, risposta);
     finale.headers.append("Set-Cookie", `ruolo=${ruolo}; Path=/; SameSite=Lax`);
+
+    // Solo per il docente: nelle pagine generate da Quartz (non nelle
+    // simulazioni) aggiunge il pulsante "Modifica", che apre la nota
+    // nell'editor web di GitHub. È solo una scorciatoia: salvare le
+    // modifiche richiede comunque l'accesso in scrittura al repository.
+    const tipo = finale.headers.get("Content-Type") || "";
+    const percorso = new URL(request.url).pathname;
+    if (ruolo === "docente" && tipo.includes("text/html") && !percorso.startsWith("/esperimenti/")) {
+      finale.headers.delete("ETag");
+      finale.headers.set("Cache-Control", "private, no-cache");
+      return new HTMLRewriter()
+        .on("body", {
+          element(el) {
+            el.append('<script src="/assets/js/modifica.js" defer></script>', { html: true });
+          },
+        })
+        .transform(finale);
+    }
     return finale;
   },
 };

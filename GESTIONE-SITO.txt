@@ -1,0 +1,153 @@
+GESTIONE DEL SITO (NOTE MARKDOWN + QUARTZ)
+==========================================
+
+Tutto il sito (home, appunti, classi, pagine delle simulazioni) è fatto
+di note markdown, le stesse che si scrivono con Obsidian. Uno strumento
+chiamato Quartz le trasforma in pagine web, con grafo dei collegamenti,
+ricerca, indice e link entranti. Le simulazioni invece restano
+programmi a sé (cartella public/esperimenti) e le note le incorporano.
+
+Dove sta cosa:
+
+  sito/content/                 ← LE NOTE (il "vault" di Obsidian)
+    index.md                    home (banda con immagine e schede)
+    Appunti/Matematica/...      appunti di matematica
+    Appunti/Fisica/...          appunti di fisica
+    Classi/4SCI.md ecc.         pagina di ogni classe
+    Simulazioni/...             una nota per ogni simulazione
+    templates/                  modelli (non pubblicati)
+  public/esperimenti/           le simulazioni (HTML/JavaScript)
+  sito/quartz/styles/custom.scss  lo stile grafico del sito
+
+Il sito è protetto dalla password come prima (vedi GESTIONE-UTENTI.txt).
+
+
+1) MODIFICARE DIRETTAMENTE DAL SITO (tipo Wikipedia)
+---------------------------------------------------------------------
+Quando entri con l'utente docente, in basso a destra in ogni pagina
+compaiono due pulsanti (gli altri utenti non li vedono):
+
+  ✎ Modifica    apre la nota di quella pagina nell'editor di GitHub
+  ＋ Nuova nota  crea una nuova nota nella stessa cartella
+
+Scrivi, poi in alto a destra "Commit changes..." → "Commit changes".
+Dopo 1-2 minuti la pagina è aggiornata sul sito (ricarica la pagina).
+
+Serve essere collegati a GitHub nel browser con il tuo account: solo
+tu puoi salvare, quindi anche se qualcuno vedesse il pulsante non
+potrebbe modificare niente. L'anteprima di GitHub ("Preview") mostra
+formule e formattazione, ma non i collegamenti [[...]]: quelli si
+vedono sul sito.
+
+Comodo per correzioni veloci. Per scrivere molto, meglio Obsidian.
+
+
+2) LAVORARE CON OBSIDIAN (consigliato per scrivere)
+---------------------------------------------------------------------
+Una volta sola: in Obsidian "Apri cartella come vault" e scegli
+
+  /Users/alessandroravelli/Documents/SAFA_documenti/sito_web/sito/content
+
+Poi in Impostazioni:
+  - File e link → "Formato dei nuovi link": "Percorso più breve
+    possibile"; "Usa [[Wikilink]]": attivo.
+  - File e link → "Posizione predefinita per i nuovi allegati":
+    "In una sottocartella della cartella corrente", nome: allegati
+  - Plugin principali → Template: attivo, con cartella "templates".
+
+Per pubblicare, da Terminale:
+
+  cd "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web"
+  git pull
+  git add sito/content
+  git commit -m "Appunti: descrizione della modifica"
+  git push
+
+(Il "git pull" all'inizio serve a scaricare eventuali modifiche fatte
+dal sito con il pulsante Modifica, prima di mandare le tue.)
+
+Dopo 1-2 minuti Cloudflare ha ricostruito il sito. Se una build va
+male, online resta la versione precedente: il sito non si rompe.
+
+
+3) SCRIVERE UNA NOTA
+---------------------------------------------------------------------
+In cima (facoltativa ma utile):
+
+  ---
+  title: Titolo della nota
+  description: Una riga di riassunto.
+  tags:
+    - matematica
+    - 4SCI
+  ---
+
+- Collegamento a un'altra nota:      [[Goniometria]]
+  con testo diverso:                [[Goniometria|goniometria]]
+  a un paragrafo preciso:           [[Goniometria#Formule di bisezione]]
+- Formule come in LaTeX:  $x = r\cos\varphi$  oppure su riga propria
+  tra $$ e $$. Colori: \textcolor{#ef4444}{...}
+- Riquadri:  > [!info] Collegamenti   (anche tip, warning, example,
+  todo, note...)
+- Immagini (PNG/JPG): trascinale nella nota, Obsidian scrive
+  ![[nome.png]]. Per le figure SVG usa invece la forma
+  ![descrizione](nome.svg) (con ![[...]] gli SVG non si vedono sul
+  sito).
+
+Grafo, link entranti e indice si aggiornano da soli.
+
+
+4) COLLEGARE UNA SIMULAZIONE
+---------------------------------------------------------------------
+Ogni simulazione ha la sua nota in Simulazioni/: basta un collegamento
+normale, es. [[Moto armonico e onde meccaniche]].
+
+Per incorporarla dentro un'altra nota usa il modello "Simulazione":
+gli indirizzi iniziano con /esperimenti/... (es.
+/esperimenti/fisica/moto-armonico/).
+
+Per aggiungere una simulazione nuova: la pagina va in
+public/esperimenti/<materia>/<nome>/ (questo lo faccio io) e poi si
+crea la sua nota in Simulazioni/ copiando una delle altre.
+
+
+5) DISPENSE IN PDF E APPUNTI DA NOTABILITY
+---------------------------------------------------------------------
+Tre strade, dalla più veloce alla più completa:
+
+  a) PDF incorporato: esporta il PDF da Notability, mettilo nella
+     cartella giusta (es. Appunti/Fisica/allegati/) e in una nota
+     scrivi  ![[nome.pdf]]  (modello "Dispensa PDF"). Max 25 MB.
+  b) Trascrizione: chiedi a Claude di trascrivere il PDF in una nota,
+     come per Goniometria e Onde (testo, formule e figure ridisegnate).
+  c) Scrivere direttamente in Obsidian.
+
+Puoi passare da (a) a (b) o (c) quando vuoi: sostituisci la riga del
+PDF con il testo e i collegamenti restano.
+
+
+6) BOZZE NON PUBBLICATE
+---------------------------------------------------------------------
+- Per una nota non ancora pronta, aggiungi nell'intestazione
+    draft: true
+  Non compare sul sito, ma resta salvata su GitHub.
+- La cartella private/ (dentro sito/content) non viene né pubblicata
+  né salvata su GitHub: resta solo sul tuo computer, quindi niente
+  backup.
+
+
+7) ANTEPRIMA SUL COMPUTER (facoltativo)
+---------------------------------------------------------------------
+La prima volta:
+
+  cd "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web/sito"
+  npm ci
+
+Poi, ogni volta:
+
+  cd "/Users/alessandroravelli/Documents/SAFA_documenti/sito_web/sito"
+  npx quartz build --serve
+
+e apri http://localhost:8080 (si aggiorna da solo mentre scrivi; le
+simulazioni incorporate qui non compaiono, sul sito sì). Per fermarlo:
+Ctrl+C nel Terminale.

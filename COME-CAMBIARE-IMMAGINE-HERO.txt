@@ -28,11 +28,14 @@ COME CAMBIARE L'IMMAGINE DI SFONDO DELLA BANDA HERO
    git commit -m "Cambia immagine hero"
    git push
 
-   Cloudflare fa il deploy automatico, online in 20-40 secondi.
+   Cloudflare fa il deploy automatico, online in 1-2 minuti.
 
 5. Dettaglio da regolare a occhio: nel file
-   public/assets/css/style.css cerca la regola ".hero" e il valore
-   "background-position: center 25%". Indica quale porzione
-   dell'immagine si vede nella banda (in alto/basso/centro). Se col
-   nuovo sfondo il punto interessante viene tagliato, cambia quella
-   percentuale e ripeti il passo 4.
+   sito/quartz/styles/custom.scss cerca la regola ".home-hero" e il
+   valore "center 25%". Indica quale porzione dell'immagine si vede
+   nella banda (in alto/basso/centro). Se col nuovo sfondo il punto
+   interessante viene tagliato, cambia quella percentuale e ripeti il
+   passo 4 (aggiungendo anche questo file a git add).
+
+   Il testo della banda (titolo e citazione) invece si cambia nella
+   home, cioè nella nota sito/content/index.md.

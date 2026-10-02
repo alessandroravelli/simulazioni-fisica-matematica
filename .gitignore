@@ -4,10 +4,10 @@ node_modules/
 .wrangler/
 .dev.vars
 
-# Appunti (Quartz): la cartella generata si ricostruisce a ogni deploy
-public/appunti/
-appunti/node_modules/
-appunti/.quartz/
+# Sito generato da Quartz (si ricostruisce a ogni deploy)
+dist/
+sito/.quartz/
+sito/public/
 .quartz-cache/
-appunti/content/.obsidian/
-appunti/content/private/
+sito/content/.obsidian/
+sito/content/private/

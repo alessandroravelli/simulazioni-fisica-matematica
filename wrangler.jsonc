@@ -3,16 +3,20 @@
   "compatibility_date": "2026-08-19",
   "main": "src/worker.js",
   "assets": {
-    "directory": "./public",
+    "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": true
+    "run_worker_first": true,
+    "not_found_handling": "404-page"
   },
-  // Prima di ogni deploy (e di ogni `wrangler dev`) costruisce gli appunti
-  // con Quartz: legge le note in appunti/content e genera public/appunti,
-  // che poi viene pubblicata insieme al resto di public/. Le dipendenze si
-  // installano solo se mancano (su Cloudflare mancano sempre).
+  // Prima di ogni deploy (e di ogni `wrangler dev`) costruisce il sito:
+  // 1. Quartz trasforma le note markdown di sito/content in pagine web
+  //    dentro dist/ (le dipendenze si installano solo se mancano: su
+  //    Cloudflare mancano sempre);
+  // 2. ci copia sopra i file statici di public/ (simulazioni, CSS, JS,
+  //    immagini), che restano normali pagine HTML.
+  // dist/ è generata: non va nel repository.
   "build": {
-    "command": "cd appunti && (test -d node_modules || npm ci --engine-strict=false) && npx quartz build -o ../public/appunti",
-    "watch_dir": "appunti/content"
+    "command": "cd sito && (test -d node_modules || npm ci --engine-strict=false) && npx quartz build -o ../dist && cp -R ../public/. ../dist/",
+    "watch_dir": ["sito/content", "public"]
   }
 }
