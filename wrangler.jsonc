@@ -6,5 +6,13 @@
     "directory": "./public",
     "binding": "ASSETS",
     "run_worker_first": true
+  },
+  // Prima di ogni deploy (e di ogni `wrangler dev`) costruisce gli appunti
+  // con Quartz: legge le note in appunti/content e genera public/appunti,
+  // che poi viene pubblicata insieme al resto di public/. Le dipendenze si
+  // installano solo se mancano (su Cloudflare mancano sempre).
+  "build": {
+    "command": "cd appunti && (test -d node_modules || npm ci --engine-strict=false) && npx quartz build -o ../public/appunti",
+    "watch_dir": "appunti/content"
   }
 }
