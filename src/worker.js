@@ -1,14 +1,21 @@
 export default {
   async fetch(request, env) {
-    const ruolo = verificaAuth(request.headers.get("Authorization"), env);
+    let ruolo = verificaAuth(request.headers.get("Authorization"), env);
+    const percorso = new URL(request.url).pathname;
+
+    // /accedi chiede sempre username e password, anche quando l'accesso
+    // libero è attivo: serve al docente per farsi riconoscere (e vedere i
+    // pulsanti "Modifica"). Dopo il login torna alla home.
+    if (percorso === "/accedi") {
+      if (!ruolo) return richiestaPassword();
+      return Response.redirect(new URL("/", request.url).toString(), 302);
+    }
 
     if (!ruolo) {
-      return new Response("Accesso riservato.", {
-        status: 401,
-        headers: {
-          "WWW-Authenticate": 'Basic realm="Simulazioni interattive", charset="UTF-8"',
-        },
-      });
+      // Interruttore temporaneo: con il secret ACCESSO_LIBERO = "si" il
+      // sito si apre senza password (vedi GESTIONE-UTENTI.txt).
+      if (env.ACCESSO_LIBERO === "si") ruolo = "ospite";
+      else return richiestaPassword();
     }
 
     // Il docente riceve pagine diverse (col pulsante "Modifica", vedi
@@ -31,7 +38,6 @@ export default {
     // nell'editor web di GitHub. È solo una scorciatoia: salvare le
     // modifiche richiede comunque l'accesso in scrittura al repository.
     const tipo = finale.headers.get("Content-Type") || "";
-    const percorso = new URL(request.url).pathname;
     if (ruolo === "docente" && tipo.includes("text/html") && !percorso.startsWith("/esperimenti/")) {
       finale.headers.delete("ETag");
       finale.headers.set("Cache-Control", "private, no-cache");
@@ -46,6 +52,15 @@ export default {
     return finale;
   },
 };
+
+function richiestaPassword() {
+  return new Response("Accesso riservato.", {
+    status: 401,
+    headers: {
+      "WWW-Authenticate": 'Basic realm="Simulazioni interattive", charset="UTF-8"',
+    },
+  });
+}
 
 // Elenco dei ruoli con accesso al sito. Ogni ruolo ha una coppia
 // username/password salvata come secret Cloudflare (mai nel codice).

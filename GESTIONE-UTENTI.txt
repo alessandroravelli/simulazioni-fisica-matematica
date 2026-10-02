@@ -72,3 +72,27 @@ Qui serve anche una piccola modifica al codice, non solo i secret:
 
 Se in un secondo momento hai bisogno di questo passaggio e non sai come
 fare la modifica al codice, chiedimelo pure — lo faccio io.
+
+
+5) APRIRE IL SITO A TUTTI, SENZA PASSWORD (temporaneamente)
+---------------------------------------------------------------------
+Per accendere l'accesso libero (chiunque apre il sito senza password):
+
+  npx wrangler secret put ACCESSO_LIBERO
+
+e quando chiede il valore scrivi:  si
+
+Per tornare a chiedere la password a tutti:
+
+  npx wrangler secret delete ACCESSO_LIBERO
+
+Entrambi i comandi hanno effetto in pochi secondi, senza push.
+
+Con l'accesso libero acceso nessuno è riconosciuto, quindi non vedi i
+pulsanti "Modifica". Per farti riconoscere come docente apri
+l'indirizzo  /accedi  del sito (es.
+https://simulazioni-fisica-matematica.alessandro-ravelli00.workers.dev/accedi):
+chiede username e password e poi ti riporta alla home con i pulsanti.
+
+Attenzione: con l'accesso libero il sito è pubblico, lo può leggere
+chiunque su internet (non modificare: per quello serve sempre GitHub).
