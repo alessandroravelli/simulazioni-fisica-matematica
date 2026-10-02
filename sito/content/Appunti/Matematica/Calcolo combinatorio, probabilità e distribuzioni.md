@@ -53,7 +53,7 @@ $$
 
 ### Disposizioni
 
-Ho $n$ oggetti e voglio prenderne $k$ ($n \ge k$), ne mi interessa l'ordine con cui li prendo: quante possibilità ho?
+Ho $n$ oggetti e voglio prenderne $k$ ($n \ge k$) e mi interessa l'ordine con cui li prendo: quante possibilità ho?
 
 > [!example] Esempio
 > Ho 3 oggetti e ne voglio prendere 2.
