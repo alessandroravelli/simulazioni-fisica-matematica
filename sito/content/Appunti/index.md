@@ -10,4 +10,5 @@ Gli appunti delle lezioni, divisi per materia. Ogni argomento rimanda agli altri
 
 ## Fisica
 
+- [[Ripasso campo magnetico e moto nei campi magnetici]]: magneti, Biot-Savart, spira e solenoide, Gauss e circuitazione per B, forza di Lorentz *(5SCI)*.
 - [[Onde suono e luce]]: moto armonico e moto ondulatorio *(in corso)*.

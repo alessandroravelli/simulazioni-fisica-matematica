@@ -5,6 +5,10 @@ title: 5SCI
 
 - [[Calcolo combinatorio, probabilità e distribuzioni]]
 
+## Fisica
+
+- [[Ripasso campo magnetico e moto nei campi magnetici]]
+
 ## Simulazioni utili
 
 - [[Distribuzione binomiale]]
