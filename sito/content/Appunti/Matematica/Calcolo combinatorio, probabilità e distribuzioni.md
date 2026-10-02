@@ -232,7 +232,7 @@ $$
 
 > [!example] Esempio
 > - Probabilità di pescare l'asso di cuori: $p(\text{asso}) = \frac{1}{52} \approx 1{,}9\%$
-> - Probabilità di A♥ se ho pescato una carta rossa:
+> - Probabilità di A se ho pescato una carta rossa:
 >   $$p(\text{asso} \mid \text{rosso}) = \frac{p(\text{asso} \cap \text{rosso})}{p(\text{rosso})} = \frac{2/52}{26/52} = \frac{2}{26} = \frac{1}{13} \approx 7{,}7\%$$
 > - Probabilità di pescare rosso se ho pescato un asso:
 >   $$p(\text{rosso} \mid \text{asso}) = \frac{p(\text{rosso} \cap \text{asso})}{p(\text{asso})} = \frac{2/52}{4/52} = \frac{2}{4} = 50\%$$
