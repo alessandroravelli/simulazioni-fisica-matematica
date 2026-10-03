@@ -56,6 +56,8 @@ Se per il suono $v = 340\ \text{m/s}$ rispetto all'aria "ferma", $c = 2{,}9 \cdo
 
 Esattamente come succede per le onde meccaniche, si è ipotizzata l'esistenza di un mezzo chiamato **etere**, rispetto a cui la luce ha la sua velocità. Quest'ipotesi però porta un'importantissima conseguenza: se effettivamente la luce si muove attraverso l'etere, questo significa che diversi osservatori in moto o in quiete dovrebbero osservare velocità della luce diverse, esattamente come succede per il suono con la relatività galileiana, di cui vediamo un esempio adesso.
 
+![Una pistola spara un proiettile con velocità v](proiettile.svg)
+
 Un proiettile viene sparato con velocità $\vec v$:
 
 - per chi è fermo il proiettile ha velocità $+\vec v$;
@@ -68,7 +70,11 @@ Un proiettile viene sparato con velocità $\vec v$:
 
 In laboratorio, sulla Terra che si muove con velocità $\vec v$ rispetto all'etere, un fascio di luce viene diviso in due da uno specchio semitrasparente $H$ e mandato su due bracci lunghi entrambi $\ell$.
 
-**Braccio parallelo al moto** ($\overline{AH} = \ell$). Velocità osservata dalla Terra:
+**Braccio parallelo al moto** ($\overline{AH} = \ell$).
+
+![Il Sole fermo nell'etere, la Terra che si muove con velocità v e il braccio dell'interferometro tra lo specchio H e lo specchio A, parallelo a v](interferometro-parallelo.svg)
+
+Velocità osservata dalla Terra:
 
 $$
 H \to A: \ \vec c - \vec v \qquad A \to H: \ \vec c + \vec v
@@ -80,7 +86,10 @@ $$
 \Delta t_1 = \frac{\ell}{c - v} + \frac{\ell}{c + v} = \frac{c\ell + \ell v + \ell c - \ell v}{c^2 - v^2} = \frac{2\ell c}{c^2 - v^2} = \frac{2\ell}{c} \cdot \frac{1}{1 - \frac{v^2}{c^2}}
 $$
 
-**Braccio perpendicolare al moto** ($\overline{HB} = \ell$). Quando osservo la luce nel laboratorio $\vec u$ è orizzontale ed è la velocità della luce rispetto alla Terra, $\vec v$ è la velocità della Terra rispetto all'etere e $\vec c$ è la velocità della luce rispetto all'etere.
+**Braccio perpendicolare al moto** ($\overline{HB} = \ell$).
+
+![Il braccio tra lo specchio H e lo specchio B, perpendicolare a v: nel laboratorio la luce va in orizzontale con velocità u, rispetto all'etere in diagonale con velocità c](interferometro-perpendicolare.svg)
+ Quando osservo la luce nel laboratorio $\vec u$ è orizzontale ed è la velocità della luce rispetto alla Terra, $\vec v$ è la velocità della Terra rispetto all'etere e $\vec c$ è la velocità della luce rispetto all'etere.
 
 $$
 \vec u = \vec c - \vec v \quad\Longrightarrow\quad u = \sqrt{c^2 - v^2}
@@ -111,10 +120,17 @@ Se la luce non è legata a un mezzo, $c$ è uguale ovunque?
 
 Due eventi si dicono simultanei se i segnali luminosi da essi prodotti giungono nello stesso istante in un punto specifico equidistante dall'origine dei segnali. Per esempio, due laser a 8 m di distanza da un osservatore, da parti opposte, accesi nello stesso istante.
 
+![Due laser a 8 m da un osservatore, da parti opposte](simultaneita-laser.svg)
+
 **Cosa succede se mi muovo?** Due lampade sono a 10 m da un osservatore fermo a terra; sopra di lui passa un treno con un secondo osservatore.
 
-- Tutto fermo $\rightarrow$ tutto simultaneo.
-- Il treno si muove verso destra con velocità $\vec v$.
+**Tutto fermo $\rightarrow$ tutto simultaneo.**
+
+![Treno fermo: i segnali delle due lampade arrivano insieme sia all'osservatore a terra sia a quello sul treno](simultaneita-fermo.svg)
+
+**Il treno si muove verso destra con velocità $\vec v$.**
+
+![Treno in moto: l'osservatore sul treno incontra prima la luce che arriva da destra](simultaneita-moto.svg)
 
 L'osservatore che sta sul treno si muove in direzione della luce che arriva da destra. Questo significa che, al momento dell'accensione delle luci, lui incontrerà prima la luce che arriva da destra, verso cui si sta muovendo, e dopo quella che arriva da sinistra, da cui si allontana. Ciò significa che per uno dei due osservatori (quello fermo) i due eventi sono simultanei, mentre per l'osservatore in moto i due eventi non sono simultanei. Nella vita di tutti i giorni questa differenza non la vediamo perché la velocità della luce è altissima rispetto alle velocità a cui siamo abituati, e infatti se la velocità della luce fosse infinita tutti gli osservatori vedrebbero gli eventi simultanei. Quando però si ha a che fare con velocità molto elevate, la differenza di simultaneità è osservabile.
 
@@ -164,7 +180,11 @@ $\Delta t$, misurato sul carrello e quindi solidale con la luce, è il **tempo p
 
 Il secondo effetto collaterale della relatività ristretta è la contrazione delle lunghezze. Nella relatività galileiana due osservatori diversi erano d'accordo che una porzione di spazio avesse una lunghezza determinata. Nella relatività ristretta invece due osservatori diversi osservano porzioni di spazio di lunghezze diverse.
 
-**Osservatore fuori dal carrello.** Un carrello con velocità $\vec v$ percorre il tratto di strada tra $x_1$ e $x_2$, lungo $\Delta x$. Se sono fuori dal carrello misuro $\Delta t'$ e $\Delta x$:
+**Osservatore fuori dal carrello.** Un carrello con velocità $\vec v$ percorre il tratto di strada tra $x_1$ e $x_2$, lungo $\Delta x$.
+
+![Un carrello in moto percorre il tratto di strada tra x1 e x2](contrazione-strada.svg)
+
+ Se sono fuori dal carrello misuro $\Delta t'$ e $\Delta x$:
 
 $$
 \Longrightarrow\quad \Delta x = v \cdot \Delta t' = v\,\gamma\,\Delta t
@@ -260,6 +280,8 @@ se $\vec v$ è diretta nel verso positivo delle $x$ (se $\vec v$ cambia, cambio 
 
 Le trasformazioni opposte (conosco $x'$ e non conosco $x$) si ottengono scambiando gli apici e il segno di $\vec v$: vedere $S'$ che si allontana da $S$ con velocità $\vec v$ è come vedere $S$ che si allontana da $S'$ con velocità $-\vec v$.
 
+![S′ che si muove con velocità v rispetto a S equivale a S che si muove con velocità −v rispetto a S′](sistemi-v.svg)
+
 La relatività non predilige un sistema di riferimento inerziale rispetto all'altro.
 
 > [!warning] Il limite di Galileo
@@ -270,6 +292,8 @@ Se uso Lorentz posso ricavare $\Delta t' = \gamma\,\Delta t$ e $\Delta x = \gamm
 ## Composizione delle velocità
 
 Come le posizioni si compongono, lo fanno anche le velocità. Sia $\vec w'$ la velocità di un punto $P$ in $S'$ e $\vec w$ la velocità di $P$ in $S$.
+
+![Il sistema S′ si muove con velocità v rispetto a S; il punto P ha velocità w′ in S′](composizione-velocita.svg)
 
 $\vec w = \vec v + \vec w'$ secondo Galileo, che non tiene conto di $c$.
 
@@ -297,6 +321,8 @@ $$
 > [!example] Esempio
 > $S'$ si muove con velocità $-\vec v$ (verso sinistra) e il punto con velocità $\vec w$ verso destra: $w = \frac{2}{3}c$, $v = \frac{2}{3}c$. Quanto vale $w'$?
 >
+> ![S′ si muove verso sinistra con velocità −v, il punto verso destra con velocità w](composizione-esempio.svg)
+>
 > $w' = \dfrac{w - v}{1 - w\frac{v}{c^2}}$ vale se $v$ e $w$ hanno lo stesso verso; altrimenti
 >
 > $$w' = \frac{w + v}{1 + w\frac{v}{c^2}} = \frac{\frac{2}{3}c + \frac{2}{3}c}{1 + \frac{4}{9}\,c^2/c^2} = \frac{4/3}{13/9}\,c = \frac{12}{13}\,c$$
@@ -310,6 +336,8 @@ s = \sqrt{3^2 + 4^2} = \sqrt{25} = 5
 $$
 
 Ora teniamo fermo $\vec s$ e ruotiamo il nostro sistema di riferimento: le nuove componenti sono $a$ e $b$.
+
+![A sinistra il vettore s di componenti 3 e 4; a destra lo stesso vettore in un sistema di riferimento ruotato, con componenti a e b](invariante-2d.svg)
 
 $$
 a = \sqrt{1 + 4} = \sqrt5 \qquad b = \sqrt{16 + 4} = \sqrt{20} \qquad s = \sqrt{5 + 20} = 5
@@ -376,6 +404,8 @@ $$
 
 Per poter disegnare, consideriamo per semplicità uno spostamento solo sull'asse delle $x$. A questo punto possiamo disegnare un piano cartesiano particolare, con $x$ in orizzontale e $ct$ in verticale. Ogni sistema di riferimento rappresenta un osservatore; vediamo come si relazionano tra loro due eventi.
 
+![Tre eventi nel diagramma di Minkowski: A e B alla stessa altezza, B e C sulla stessa verticale](minkowski-eventi.svg)
+
 Per esempio, se gli eventi $A$ e $B$ hanno la stessa $ct$ e gli eventi $B$ e $C$ la stessa $x$: $A$ e $B$ sono simultanei nel sistema di riferimento di $O$, mentre $B$ e $C$ avvengono nello stesso posto a tempi diversi.
 
 ### La luce nel diagramma
@@ -412,9 +442,23 @@ $ct' = 0$ è l'asse $x'$: analogamente $ct = \beta x$.
 
 ### Gli effetti relativistici nel diagramma
 
-- **Dilatazione dei tempi.** Proiettando un evento $P$ sui due assi dei tempi: $\Delta t_2$ (misurato lungo $ct'$) è il tempo proprio; dal grafico vediamo $\Delta t_2 < \Delta t_1$, con $\Delta t_1 = \gamma\,\Delta t_2$.
-- **Contrazione delle distanze.** $\Delta x_1$ è lo spazio proprio; dal grafico $\Delta x_2 < \Delta x_1$, con $\Delta x_2 = \dfrac{1}{\gamma}\,\Delta x_1$.
-- **Simultaneità.** Due eventi $P$ e $Q$ alla stessa altezza: $t_P = t_Q$ $\rightarrow$ i 2 eventi sono simultanei per $O$. Proiettandoli parallelamente all'asse $x'$ si ottiene $t'_P \neq t'_Q$ $\rightarrow$ per $O'$ i 2 eventi non sono simultanei.
+**Dilatazione dei tempi**
+
+![Proiezione dell'evento P sull'asse ct e sull'asse ct′](minkowski-dilatazione.svg)
+
+$\Delta t_2$ è il tempo proprio; dal grafico vediamo $\Delta t_2 < \Delta t_1$, con $\Delta t_1 = \gamma\,\Delta t_2$.
+
+**Contrazione delle distanze**
+
+![Proiezione dell'evento P sull'asse x e sull'asse x′](minkowski-contrazione.svg)
+
+$\Delta x_1$ è lo spazio proprio; dal grafico $\Delta x_2 < \Delta x_1$, con $\Delta x_2 = \dfrac{1}{\gamma}\,\Delta x_1$.
+
+**Simultaneità**
+
+![Due eventi P e Q alla stessa altezza in S, proiettati sull'asse ct′](minkowski-simultaneita.svg)
+
+$t_P = t_Q$ $\rightarrow$ i 2 eventi sono simultanei per $O$; $t'_P \neq t'_Q$ $\rightarrow$ per $O'$ i 2 eventi non sono simultanei.
 
 ## Equivalenza massa-energia
 
@@ -426,6 +470,8 @@ $$
 
 **Considero un sistema di riferimento a riposo con un corpo di massa $m$** ($v'_i = 0$). Due laser, uno sopra e uno sotto, colpiscono il corpo con un lampo ciascuno:
 
+![Un corpo di massa m fermo, colpito da due lampi laser opposti](massa-energia-riposo.svg)
+
 $$
 \text{energia di un lampo: } \frac{\mathcal E'}{2} \qquad \text{quantità di moto: } \frac{\mathcal E'}{2c}
 $$
@@ -435,6 +481,8 @@ $$
 $$
 
 **Considero un sistema di riferimento esterno in cui $S'$ si muove con velocità $\vec v$.** Emetto i lampi quando il corpo passa: visti da qui arrivano obliqui.
+
+![Il corpo in moto con velocità v: i lampi arrivano obliqui; a destra il triangolo tra quantità di moto e velocità](massa-energia-moto.svg)
 
 $$
 p_1 = \frac{\mathcal E}{2c} \qquad p_x = \ ? \qquad p_y = \ ?

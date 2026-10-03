@@ -32,7 +32,7 @@ PI = math.pi
 # ---------------------------------------------------------------- base svg
 
 def svg(larghezza, altezza, corpo):
-    colori = [GRIGIO, BLU, ROSSO, VERDE, ARANCIO, VIOLA, ROSA, TEAL]
+    colori = [GRIGIO, BLU, ROSSO, VERDE, ARANCIO, VIOLA, ROSA, TEAL, "#c4c9d4"]
     marker = "".join(
         f'<marker id="f{c[1:]}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
         f'markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
@@ -974,6 +974,617 @@ def f5_compton():
     return svg(440, 300, s)
 
 
+# ------------------------------------- disegni aggiuntivi (circuiti, ecc.)
+
+def solenoide_spire(x, y, w, h, n=9, colore=BIANCO):
+    """Solenoide orizzontale: n spire (ellissi strette) tra x e x+w, centrato in y."""
+    s = ""
+    for k in range(n):
+        cx = x + (k + 0.5) * w / n
+        s += ellisse(cx, y, w / n * 0.75, h / 2, colore, 2)
+    return s
+
+
+def batteria(x, y, verticale=False, colore=BIANCO):
+    """Simbolo del generatore: lineetta lunga (+) e corta (−) centrate in (x,y)."""
+    if verticale:
+        return (linea(x - 16, y - 4, x + 16, y - 4, colore, 2.5) + linea(x - 8, y + 4, x + 8, y + 4, colore, 4)
+                + testo(x + 24, y - 8, "+", colore, 14) + testo(x + 24, y + 10, "−", colore, 14))
+    return (linea(x - 4, y - 16, x - 4, y + 16, colore, 2.5) + linea(x + 4, y - 8, x + 4, y + 8, colore, 4)
+            + testo(x - 12, y - 22, "+", colore, 14) + testo(x + 12, y - 22, "−", colore, 14))
+
+
+def resistenza(x1, x2, y, colore=BIANCO, picchi=6):
+    """Resistenza a zig-zag orizzontale tra x1 e x2."""
+    passo = (x2 - x1) / (2 * picchi)
+    d = f"M{x1},{y}"
+    for k in range(2 * picchi):
+        d += f" L{x1 + (k + 0.5) * passo:.1f},{y + (-7 if k % 2 == 0 else 7)}"
+    d += f" L{x2},{y}"
+    return percorso(d, colore, 2)
+
+
+def resistenza_v(x, y1, y2, colore=BIANCO, picchi=6):
+    passo = (y2 - y1) / (2 * picchi)
+    d = f"M{x},{y1}"
+    for k in range(2 * picchi):
+        d += f" L{x + (-7 if k % 2 == 0 else 7)},{y1 + (k + 0.5) * passo:.1f}"
+    d += f" L{x},{y2}"
+    return percorso(d, colore, 2)
+
+
+def amperometro(x, y, etichetta, colore=BIANCO, w=96, h=34):
+    return rett(x - w / 2, y - h / 2, w, h, colore, "#1b1e26", 1, 2) + testo(x, y, etichetta, colore, 15, math_=True)
+
+
+def circuito_rivelatore(x, y, etichetta="i = 0 A", colore=BIANCO, col_lab=BIANCO, frecce=False):
+    """Primo circuito degli esperimenti di Faraday: amperometro in alto, solenoide in basso."""
+    s = amperometro(x + 115, y, etichetta, colore)
+    s += linea(x + 20, y, x + 67, y, colore, 2) + linea(x + 163, y, x + 210, y, colore, 2)
+    s += linea(x + 20, y, x + 20, y + 110, colore, 2) + linea(x + 210, y, x + 210, y + 110, colore, 2)
+    s += linea(x + 20, y + 110, x + 50, y + 110, colore, 2) + linea(x + 180, y + 110, x + 210, y + 110, colore, 2)
+    s += solenoide_spire(x + 50, y + 110, 130, 54)
+    if frecce:
+        s += punta(x + 20, y + 60, 90, ARANCIO, 10) + punta(x + 210, y + 60, -90, ARANCIO, 10)
+    return s
+
+
+def magnete_orizzontale(x, y, w=110, h=30):
+    return (rett(x, y - h / 2, w / 2, h, BLU, BLU, 0.85) + testo(x + w / 4, y, "N", "#fff", 14, grassetto=True)
+            + rett(x + w / 2, y - h / 2, w / 2, h, ROSSO, ROSSO, 0.85) + testo(x + 3 * w / 4, y, "S", "#fff", 14, grassetto=True))
+
+
+def linee_magnete(x, y, w=110):
+    s = ""
+    for h in (28, 52):
+        s += percorso(f"M{x + w},{y} C{x + w + 10},{y - h} {x - 10},{y - h} {x},{y}", VERDE, 1.6)
+        s += percorso(f"M{x + w},{y} C{x + w + 10},{y + h} {x - 10},{y + h} {x},{y}", VERDE, 1.6)
+    return s
+
+
+def omino(x, y, colore=BIANCO, opacita=1):
+    """Omino stilizzato con i piedi in (x, y)."""
+    return (f'<g opacity="{opacita}">'
+            f'<circle cx="{x}" cy="{y - 58}" r="11" fill="none" stroke="{colore}" stroke-width="2"/>'
+            + linea(x, y - 47, x, y - 22, colore, 2) + linea(x - 14, y - 38, x + 14, y - 38, colore, 2)
+            + linea(x, y - 22, x - 10, y, colore, 2) + linea(x, y - 22, x + 10, y, colore, 2) + '</g>')
+
+
+def specchio(cx, cy, lung, angolo, colore=BIANCO, spessore=12):
+    return (f'<rect x="{cx - lung / 2}" y="{cy - spessore / 2}" width="{lung}" height="{spessore}" fill="none" '
+            f'stroke="{colore}" stroke-width="2" transform="rotate({angolo} {cx} {cy})"/>')
+
+
+def assi_piccoli(x, y, lx, ly, colore=BIANCO, ex="", ey="", spessore=2):
+    s = linea(x, y, x + lx, y, colore, spessore, freccia=True) + linea(x, y, x, y - ly, colore, spessore, freccia=True)
+    if ex:
+        s += testo(x + lx + 12, y + 12, ex, colore, 15, math_=True)
+    if ey:
+        s += testo(x - 14, y - ly + 4, ey, colore, 15, math_=True)
+    return s
+
+
+def carrello(x, y, w=110, colore=ARANCIO):
+    return (linea(x, y, x + w, y, colore, 3) + linea(x, y, x, y - 14, colore, 3) + linea(x + w, y, x + w, y - 14, colore, 3)
+            + f'<circle cx="{x + 22}" cy="{y + 12}" r="11" fill="none" stroke="{colore}" stroke-width="2"/>'
+            + f'<circle cx="{x + w - 22}" cy="{y + 12}" r="11" fill="none" stroke="{colore}" stroke-width="2"/>')
+
+
+def vagone(x, y, w=210, h=100, colore=BIANCO, opacita=1):
+    s = f'<g opacity="{opacita}">' + rett(x, y, w, h, colore)
+    for cx in (x + 22, x + 46, x + w - 46, x + w - 22):
+        s += f'<circle cx="{cx}" cy="{y + h + 12}" r="11" fill="none" stroke="{colore}" stroke-width="2"/>'
+    return s + "</g>"
+
+
+# ripasso
+
+def f5_forza_filo():
+    s = (f'<path d="M180,50 A110,110 0 0,0 180,270" fill="none" stroke="{BIANCO}" stroke-width="2.5"/>'
+         f'<path d="M180,80 A80,80 0 0,0 180,240" fill="none" stroke="{BIANCO}" stroke-width="2.5"/>')
+    s += rett(180, 50, 200, 30, ROSSO) + testo(280, 65, "N", BIANCO, 15) + rett(180, 240, 200, 30, BLU) + testo(280, 255, "S", BIANCO, 15)
+    for x in range(200, 380, 28):
+        s += linea(x, 84, x, 234, VERDE, 2, freccia=True)
+    s += testo(398, 100, "B⃗", VERDE, 18, math_=True)
+    s += percorso("M130,200 C130,160 140,160 160,160 L420,160 C440,160 450,160 450,200", ARANCIO, 2.5, "6 5")
+    s += linea(160, 160, 420, 160, ARANCIO, 3) + linea(380, 140, 420, 140, ARANCIO, 2.5, freccia=True) + testo(432, 132, "i", ARANCIO, 17, math_=True)
+    return svg(480, 300, s)
+
+
+# elettromagnetismo: esperimenti di Faraday
+
+def f5_faraday(n):
+    if n == 1:
+        s = circuito_rivelatore(10, 40) + magnete_orizzontale(280, 120) + linee_magnete(280, 120)
+        s += testo(335, 190, "fermo", BIANCO, 14)
+        s += circuito_rivelatore(440, 40, "i ≠ 0 A", ARANCIO, frecce=True) + magnete_orizzontale(710, 120) + linee_magnete(710, 120)
+        s += linea(700, 100, 680, 100, ARANCIO, 2.5, freccia=True) + linea(822, 100, 842, 100, ARANCIO, 2.5, freccia=True)
+        s += testo(765, 190, "in movimento", ARANCIO, 14)
+        return svg(870, 210, s)
+
+    def secondo(x, y, extra):
+        t = batteria(x + 115, y) + linea(x + 20, y, x + 105, y, BIANCO, 2) + linea(x + 125, y, x + 210, y, BIANCO, 2)
+        t += linea(x + 20, y, x + 20, y + 110, BIANCO, 2) + linea(x + 20, y + 110, x + 50, y + 110, BIANCO, 2)
+        t += solenoide_spire(x + 50, y + 110, 130, 54) + linea(x + 180, y + 110, x + 210, y + 110, BIANCO, 2)
+        if extra == "interruttore":
+            t += linea(x + 210, y, x + 210, y + 40, BIANCO, 2) + linea(x + 210, y + 78, x + 210, y + 110, BIANCO, 2)
+            t += linea(x + 210, y + 78, x + 230, y + 44, ROSSO, 2.5)
+        elif extra == "resistenza":
+            t += linea(x + 210, y, x + 210, y + 25, BIANCO, 2) + resistenza_v(x + 210, y + 25, y + 85) + linea(x + 210, y + 85, x + 210, y + 110, BIANCO, 2)
+            t += linea(x + 190, y + 80, x + 232, y + 32, ROSSO, 1.8, freccia=True) + testo(x + 236, y + 56, pedice("R", "v"), BIANCO, 15, ancora="start", math_=True)
+        else:
+            t += linea(x + 210, y, x + 210, y + 110, BIANCO, 2)
+        t += linea(x + 30, y + 110, x + 200, y + 110, VERDE, 1.8, freccia=True) + testo(x + 196, y + 132, "B⃗", VERDE, 15, math_=True)
+        return t
+
+    if n == 2:
+        s = circuito_rivelatore(10, 40) + secondo(270, 40, "") + testo(385, 200, "fermo: i = 0 A nel primo", BIANCO, 13)
+        s += circuito_rivelatore(560, 40, "i ≠ 0 A", ARANCIO, frecce=True) + secondo(820, 40, "")
+        s += linea(808, 110, 788, 110, ARANCIO, 2.5, freccia=True) + linea(1042, 110, 1062, 110, ARANCIO, 2.5, freccia=True)
+        s += testo(935, 200, "lo muovo: i ≠ 0 A nel primo", ARANCIO, 13)
+        return svg(1080, 215, s)
+    if n == 3:
+        return svg(540, 200, circuito_rivelatore(10, 40) + secondo(280, 40, "interruttore"))
+    return svg(560, 200, circuito_rivelatore(10, 40) + secondo(280, 40, "resistenza"))
+
+
+def f5_conduttore():
+    s = uscente(30, 70) + testo(30, 44, "B⃗", VERDE, 16, math_=True)
+    s += rett(70, 40, 50, 180, BIANCO)
+    for i, (dx, dy) in enumerate([(84, 60), (104, 82), (84, 104), (104, 126), (84, 150), (104, 172), (90, 200)]):
+        s += carica(dx, dy, "+" if i % 2 == 0 else "−", ROSSO if i % 2 == 0 else BLU)
+    s += testo(95, 244, "conduttore neutro", BIANCO, 13)
+    s += uscente(250, 70) + testo(250, 44, "B⃗", VERDE, 16, math_=True)
+    s += rett(290, 40, 50, 180, BIANCO)
+    for x, y in [(305, 56), (325, 56), (305, 74), (325, 74)]:
+        s += carica(x, y, "−", BLU)
+    for x, y in [(305, 186), (325, 186), (305, 204), (325, 204)]:
+        s += carica(x, y, "+", ROSSO)
+    s += linea(340, 130, 410, 130, BIANCO, 2.5, freccia=True) + testo(398, 114, "v⃗", BIANCO, 16, math_=True)
+    s += percorso("M440,50 C470,100 470,160 440,210", ARANCIO, 2.5, freccia=True) + testo(478, 130, "fem", ARANCIO, 15, ancora="start")
+    s += testo(315, 244, "conduttore in moto", BIANCO, 13)
+    return svg(530, 260, s)
+
+
+def f5_barretta_stato(xr, etichetta):
+    s = rett(xr + 50, 60, 520 - xr - 50, 140, ARANCIO, ARANCIO, 0.22, 0)
+    s += linea(100, 60, 520, 60, ARANCIO, 3) + linea(100, 200, 520, 200, ARANCIO, 3) + linea(520, 60, 520, 200, ARANCIO, 3)
+    s += rett(xr, 40, 50, 180, BIANCO, "#1b1e26", 1, 2)
+    for x, y in [(xr + 15, 56), (xr + 35, 56), (xr + 15, 74), (xr + 35, 74)]:
+        s += carica(x, y, "−", BLU)
+    for x, y in [(xr + 15, 186), (xr + 35, 186), (xr + 15, 204), (xr + 35, 204)]:
+        s += carica(x, y, "+", ROSSO)
+    s += linea(xr + 50, 130, xr + 120, 130, BIANCO, 2.5, freccia=True) + testo(xr + 110, 114, "v⃗", BIANCO, 16, math_=True)
+    s += uscente(40, 70) + testo(40, 42, "B⃗", VERDE, 16, math_=True)
+    s += linea(555, 60, 555, 200, BIANCO, 1.5) + testo(572, 130, "ℓ", BIANCO, 17, math_=True)
+    s += testo((xr + 50 + 520) / 2, 170, etichetta, ARANCIO, 15, math_=True)
+    return svg(600, 240, s)
+
+
+def f5_cariche_ritorno():
+    s = uscente(40, 60) + testo(40, 34, "B⃗", VERDE, 16, math_=True)
+    s += rett(90, 30, 50, 190, BIANCO)
+    for x, y in [(105, 46), (125, 46), (105, 64), (125, 64)]:
+        s += carica(x, y, "−", BLU)
+    for x, y in [(105, 188), (125, 188), (105, 206), (125, 206)]:
+        s += carica(x, y, "+", ROSSO)
+    s += linea(140, 55, 360, 55, ARANCIO, 2.5) + linea(140, 196, 360, 196, ARANCIO, 2.5)
+    s += carica(260, 55, "+", ROSSO) + linea(240, 40, 200, 40, ARANCIO, 2, freccia=True)
+    s += carica(160, 120, "+", ROSSO) + linea(115, 90, 115, 150, ARANCIO, 2.5, freccia=True)
+    s += carica(260, 196, "+", ROSSO) + linea(276, 212, 316, 212, ARANCIO, 2, freccia=True)
+    return svg(380, 240, s)
+
+
+def f5_piano_induzione():
+    s = ""
+    for k in range(9, 0, -1):
+        s += ellisse(220, 250, 22 * k, 7 * k, "#c2410c", 2)
+    s += ellisse(220, 250, 200, 62, BIANCO, 1.5)
+    s += f'<path d="M120,70 L120,220 Q220,262 320,220 L320,70 Z" fill="#6b7280" fill-opacity="0.6" stroke="{BIANCO}" stroke-width="2"/>'
+    s += ellisse(220, 70, 100, 26, BIANCO, 2, riemp="#2563eb", opacita=0.7)
+    for x in (150, 185, 220, 255, 290):
+        s += linea(x, 300, x, 150, VERDE, 2, freccia=True)
+    s += testo(330, 170, "B⃗", VERDE, 17, math_=True, ancora="start")
+    for x in (160, 220, 280):
+        s += ellisse(x, 200, 18, 7, ROSSO, 2)
+    s += testo(112, 192, "correnti indotte", ROSSO, 13, ancora="end")
+    s += linea(400, 236, 470, 210, ARANCIO, 2.5, freccia=True) + linea(470, 250, 400, 270, ARANCIO, 2.5, freccia=True)
+    s += testo(478, 210, "i", ARANCIO, 16, math_=True, ancora="start")
+    return svg(520, 330, s)
+
+
+def f5_alternatore_spira():
+    def pannello(dx, alfa, etichetta):
+        s = rett(dx + 10, 40, 22, 100, ROSSO, ROSSO, 0.85) + testo(dx + 21, 90, "N", "#fff", 13, grassetto=True)
+        s += rett(dx + 168, 40, 22, 100, BLU, BLU, 0.85) + testo(dx + 179, 90, "S", "#fff", 13, grassetto=True)
+        for y in (52, 72, 92, 112, 132):
+            s += linea(dx + 36, y, dx + 164, y, VERDE, 1.6) + punta(dx + 120, y, 0, VERDE, 8)
+        if alfa in (90, 270):
+            s += rett(dx + 70, 48, 60, 84, BIANCO, "none", 1, 2.2)
+        else:
+            s += f'<path d="M{dx + 80},{132} L{dx + 80},{88} L{dx + 120},{48} L{dx + 120},{92} Z" fill="none" stroke="{BIANCO}" stroke-width="2.2"/>'
+        s += linea(dx + 100, 132, dx + 100, 160, BIANCO, 2) + rett(dx + 40, 160, 120, 34, BIANCO)
+        s += resistenza(dx + 75, dx + 125, 194)
+        s += testo(dx + 100, 22, etichetta, ARANCIO, 15, math_=True)
+        return s
+    s = "".join(pannello(i * 210, a, f"α = {a}°") for i, a in enumerate([0, 90, 180, 270]))
+    return svg(840, 215, s)
+
+
+def f5_autoinduzione_circuiti():
+    s = ""
+    for dx, chiuso in [(20, False), (300, True)]:
+        s += batteria(dx + 120, 40) + linea(dx + 20, 40, dx + 110, 40, BIANCO, 2) + linea(dx + 130, 40, dx + 220, 40, BIANCO, 2)
+        s += linea(dx + 20, 40, dx + 20, 180, BIANCO, 2) + linea(dx + 220, 40, dx + 220, 180, BIANCO, 2)
+        s += linea(dx + 20, 180, dx + 80, 180, BIANCO, 2) + linea(dx + 160, 180, dx + 220, 180, BIANCO, 2)
+        if chiuso:
+            s += linea(dx + 80, 180, dx + 160, 180, ROSSO, 2.5)
+            s += punta(dx + 220, 110, 90, ROSSO, 11) + punta(dx + 20, 110, -90, ROSSO, 11) + testo(dx + 236, 100, "i", ROSSO, 16, math_=True)
+            s += testo(dx + 120, 210, "chiuso: i circola", BIANCO, 13)
+        else:
+            s += linea(dx + 80, 180, dx + 150, 156, ROSSO, 2.5) + testo(dx + 120, 210, "aperto", BIANCO, 13)
+    return svg(560, 225, s)
+
+
+def f5_solenoide_generatore():
+    s = ""
+    for k in range(18):
+        s += ellisse(90, 60 + k * 13, 40, 7, BIANCO, 1.8)
+    s += linea(70, 300, 70, 30, VERDE, 2, freccia=True) + linea(110, 300, 110, 30, VERDE, 2, freccia=True)
+    s += testo(56, 316, "B⃗", VERDE, 17, math_=True)
+    s += linea(130, 50, 260, 50, BIANCO, 2) + linea(260, 50, 260, 150, BIANCO, 2) + batteria(260, 160, verticale=True)
+    s += linea(260, 168, 260, 290, BIANCO, 2) + linea(130, 290, 260, 290, BIANCO, 2)
+    s += punta(200, 50, 180, ARANCIO, 11) + punta(200, 290, 0, ARANCIO, 11)
+    s += testo(200, 32, "i", ARANCIO, 16, math_=True) + testo(200, 312, "i", ARANCIO, 16, math_=True)
+    return svg(320, 330, s)
+
+
+def f5_circuito_rl():
+    s = linea(60, 40, 120, 40, BIANCO, 2) + resistenza(120, 200, 40) + linea(200, 40, 260, 40, BIANCO, 2) + testo(160, 18, "R", BIANCO, 17, math_=True)
+    s += linea(260, 40, 260, 70, BIANCO, 2)
+    for k in range(8):
+        s += ellisse(260, 78 + k * 12, 16, 6, BIANCO, 1.8)
+    s += linea(260, 170, 260, 200, BIANCO, 2) + testo(290, 130, "L", BIANCO, 17, math_=True)
+    s += linea(60, 200, 260, 200, BIANCO, 2) + linea(60, 40, 60, 110, BIANCO, 2) + batteria(60, 120, verticale=True)
+    s += linea(60, 128, 60, 200, BIANCO, 2) + testo(30, 150, "fem°", BIANCO, 14)
+    return svg(330, 225, s)
+
+
+def f5_mutua():
+    s = linea(40, 40, 90, 40, BIANCO, 2) + resistenza(90, 170, 40) + linea(170, 40, 220, 40, BIANCO, 2)
+    s += linea(40, 40, 40, 110, BIANCO, 2) + batteria(40, 120, verticale=True) + linea(40, 128, 40, 180, BIANCO, 2)
+    s += linea(40, 180, 220, 180, BIANCO, 2) + linea(220, 40, 220, 180, BIANCO, 2)
+    s += punta(40, 160, 90, ARANCIO, 10) + testo(60, 205, pedice("i", "1"), ARANCIO, 15, math_=True)
+    s += linea(280, 40, 330, 40, BIANCO, 2) + resistenza(330, 410, 40) + linea(410, 40, 460, 40, BIANCO, 2)
+    s += linea(280, 40, 280, 180, BIANCO, 2) + linea(460, 40, 460, 180, BIANCO, 2)
+    s += linea(280, 180, 322, 180, BIANCO, 2) + amperometro(370, 180, "AMP.") + linea(418, 180, 460, 180, BIANCO, 2)
+    s += punta(460, 100, 90, ARANCIO, 10) + testo(478, 96, pedice("i", "2"), ARANCIO, 15, math_=True, ancora="start")
+    return svg(520, 215, s)
+
+
+def f5_e_indotto():
+    def pannello(dx, aumenta):
+        s = linea(dx + 160, 230, dx + 160, 20, VERDE, 2.5, freccia=True) + testo(dx + 176, 24, "B⃗", VERDE, 17, math_=True)
+        s += ellisse(dx + 160, 110, 140, 46, ARANCIO, 2.5) + ellisse(dx + 160, 110, 80, 24, ARANCIO, 2.5)
+        s += punta(dx + 160, 64, 0 if aumenta else 180, ARANCIO, 12) + testo(dx + 196, 52, "E⃗", ARANCIO, 16, math_=True)
+        s += testo(dx + 110, 110, "ΔB⃗ ↑" if aumenta else "ΔB⃗ ↓", VERDE, 15, math_=True)
+        if aumenta:
+            s += linea(dx + 210, 70, dx + 210, 160, VIOLA, 2.5, freccia=True)
+        else:
+            s += linea(dx + 210, 160, dx + 210, 70, VIOLA, 2.5, freccia=True)
+        s += testo(dx + 222, 180, "B generato da E,", VIOLA, 13, ancora="start")
+        s += testo(dx + 222, 198, "si oppone a ΔB", VIOLA, 13, ancora="start")
+        s += testo(dx + 110, 250, "B aumenta" if aumenta else "B diminuisce", VERDE, 15)
+        return s
+    return svg(720, 270, pannello(0, True) + pannello(370, False))
+
+
+def f5_carica_oscillante():
+    s = (f'<circle cx="80" cy="60" r="14" fill="none" stroke="{BIANCO}" stroke-width="2"/>'
+         f'<circle cx="300" cy="60" r="14" fill="none" stroke="{BIANCO}" stroke-width="2" stroke-dasharray="4 3"/>')
+    s += linea(100, 54, 280, 54, ARANCIO, 2.2, freccia=True) + linea(280, 66, 100, 66, ARANCIO, 2.2, freccia=True)
+    s += testo(80, 96, "q", BIANCO, 16, math_=True)
+    s += linea(80, 60, 420, 190, VERDE, 1.6, "5 4") + linea(300, 60, 420, 190, VERDE, 1.6, "5 4")
+    s += linea(412, 182, 428, 198, VERDE, 2.5) + linea(412, 198, 428, 182, VERDE, 2.5)
+    return svg(460, 220, s)
+
+
+def f5_irradiamento():
+    s = percorso("M40,90 L120,40 L250,40 L170,90 Z", BIANCO, 1.4, "4 4") + percorso("M40,210 L40,90 M170,90 L170,210 L40,210 M250,40 L250,160 L170,210", BIANCO, 1.4, "4 4")
+    s += f'<path d="M100,90 L180,40 L180,160 L100,210 Z" fill="none" stroke="{BIANCO}" stroke-width="2.2"/>'
+    s += testo(196, 40, "A", BIANCO, 16, math_=True)
+    s += linea(140, 125, 140, 85, ROSSO, 2.5, freccia=True) + testo(152, 82, "E⃗", ROSSO, 15, math_=True, ancora="start")
+    s += linea(140, 125, 108, 140, VERDE, 2.5, freccia=True) + testo(104, 158, "B⃗", VERDE, 15, math_=True)
+    s += linea(440, 210, 150, 128, ARANCIO, 2.2, freccia=True) + punto(440, 210, ARANCIO, 5)
+    return svg(470, 240, s)
+
+
+# relatività
+
+def f5_proiettile():
+    s = rett(20, 60, 160, 20, BIANCO) + rett(20, 80, 160, 20, BIANCO) + rett(160, 50, 18, 12, BIANCO)
+    s += percorso("M182,70 L236,52 L214,70 L256,78 L214,88 L236,104 L190,92", ROSSO, 2.2)
+    s += percorso("M188,72 L222,60 L208,74 L236,78 L208,84 L222,96 L192,88", ARANCIO, 2)
+    s += rett(380, 70, 16, 24, ARANCIO, "none", 1, 2.2) + percorso("M396,70 L440,70 Q470,82 440,94 L396,94", ARANCIO, 2.2)
+    s += linea(390, 40, 470, 40, VERDE, 2.5, freccia=True) + testo(458, 24, "v⃗", VERDE, 16, math_=True)
+    return svg(500, 120, s)
+
+
+def f5_interferometro(perpendicolare):
+    s = f'<circle cx="80" cy="260" r="46" fill="{ARANCIO}"/>' + testo(80, 262, "Sole", ROSSO, 14)
+    s += linea(80, 214, 80, 30, BIANCO, 1.8, freccia=True) + linea(126, 260, 460, 260, BIANCO, 1.8, freccia=True)
+    s += f'<circle cx="230" cy="150" r="18" fill="#2563eb"/><circle cx="226" cy="146" r="7" fill="#22c55e"/>' + testo(230, 184, "Terra", BIANCO, 12)
+    s += linea(230, 132, 230, 50, BIANCO, 1.6, freccia=True) + linea(248, 150, 500, 150, BIANCO, 1.6, freccia=True)
+    s += linea(330, 158, 330, 190, BIANCO, 2.2, freccia=True) + testo(346, 186, "v⃗", BIANCO, 15, math_=True, ancora="start")
+    if not perpendicolare:
+        s += specchio(380, 60, 110, 40) + testo(420, 46, "H", VERDE, 15)
+        s += rett(330, 128, 90, 12, BIANCO) + testo(430, 134, "A", VERDE, 15, ancora="start")
+        s += linea(368, 70, 368, 126, VERDE, 2.2, freccia=True)
+        s += testo(470, 60, "AH = ℓ", BIANCO, 15, ancora="start", math_=True)
+    else:
+        s += specchio(310, 82, 110, 40) + testo(286, 100, "H", BIANCO, 15)
+        s += rett(440, 30, 12, 110, BIANCO) + testo(466, 50, "B", BIANCO, 15, ancora="start")
+        s += linea(320, 72, 436, 72, VERDE, 2.2, freccia=True) + testo(378, 58, "u⃗", VERDE, 15, math_=True)
+        s += linea(320, 76, 436, 116, BLU, 2.2, freccia=True) + testo(374, 112, "c⃗", BLU, 15, math_=True)
+        s += linea(446, 72, 446, 114, ROSSO, 2.2, freccia=True) + testo(462, 132, "v⃗", ROSSO, 15, math_=True, ancora="start")
+        s += testo(500, 40, "HB = ℓ", BIANCO, 15, ancora="start", math_=True)
+    return svg(580, 310, s)
+
+
+def f5_simultaneita_laser():
+    s = linea(60, 120, 520, 120, BIANCO, 2) + linea(60, 120, 60, 90, BIANCO, 2) + linea(520, 120, 520, 90, BIANCO, 2)
+    s += rett(80, 82, 30, 12, BIANCO) + rett(470, 82, 30, 12, BIANCO)
+    s += testo(95, 66, "laser", BIANCO, 12) + testo(485, 66, "laser", BIANCO, 12)
+    s += linea(110, 88, 280, 88, ROSSO, 1.6, "4 3") + linea(470, 88, 300, 88, ROSSO, 1.6, "4 3")
+    s += omino(290, 120)
+    s += linea(95, 150, 290, 150, BIANCO, 1.4) + linea(290, 150, 485, 150, BIANCO, 1.4)
+    for x in (95, 290, 485):
+        s += linea(x, 144, x, 156, BIANCO, 1.4)
+    s += testo(192, 168, "8 m", BIANCO, 14) + testo(388, 168, "8 m", BIANCO, 14)
+    return svg(580, 180, s)
+
+
+def f5_simultaneita_treno(moto):
+    s = f'<circle cx="60" cy="200" r="26" fill="{ARANCIO}"/><circle cx="520" cy="200" r="26" fill="{ARANCIO}"/>'
+    s += linea(40, 260, 540, 260, BIANCO, 1.4) + testo(170, 278, "10 m", BIANCO, 13) + testo(410, 278, "10 m", BIANCO, 13)
+    s += omino(290, 250)
+    s += ondina(86, 200, 270, 200, ARANCIO, 4, 9, False) + ondina(494, 200, 310, 200, ARANCIO, 4, 9, False)
+    if not moto:
+        s += vagone(185, 40) + omino(290, 140)
+        s += ondina(80, 182, 270, 96, ARANCIO, 4, 9, False) + ondina(500, 182, 310, 96, ARANCIO, 4, 9, False)
+    else:
+        s += vagone(185, 40, opacita=0.35) + omino(290, 140, opacita=0.35)
+        s += vagone(255, 40) + omino(360, 140)
+        s += ondina(80, 182, 340, 96, ROSSO, 4, 10, False) + ondina(500, 182, 382, 96, ROSSO, 4, 6, False)
+        s += linea(300, 20, 400, 20, VERDE, 2.5, freccia=True) + testo(352, 12, "v⃗", VERDE, 15, math_=True)
+    return svg(580, 290, s)
+
+
+def f5_contrazione_strada():
+    s = linea(30, 100, 560, 100, BIANCO, 2) + carrello(60, 76, 90)
+    s += linea(150, 70, 220, 70, VERDE, 2.5, freccia=True) + testo(206, 54, "v⃗", VERDE, 15, math_=True)
+    s += linea(110, 94, 110, 106, BIANCO, 2) + linea(480, 94, 480, 106, BIANCO, 2)
+    s += testo(110, 124, pedice("x", "1"), BIANCO, 15, math_=True) + testo(480, 124, pedice("x", "2"), BIANCO, 15, math_=True)
+    s += percorso("M110,138 Q110,152 160,152 L280,152 Q295,152 295,166 Q295,152 310,152 L430,152 Q480,152 480,138", BIANCO, 1.8)
+    s += testo(295, 186, "Δx", BIANCO, 16, math_=True)
+    return svg(590, 200, s)
+
+
+def f5_sistemi_v():
+    s = assi_piccoli(30, 200, 170, 170, BIANCO) + testo(30, 18, "S", BIANCO, 15, math_=True)
+    s += assi_piccoli(120, 130, 130, 110, BIANCO) + testo(120, 12, "S′", BIANCO, 15, math_=True)
+    s += linea(120, 80, 200, 80, VERDE, 2.5, freccia=True) + testo(190, 64, "v⃗", VERDE, 15, math_=True)
+    s += testo(290, 120, "=", BIANCO, 30)
+    s += assi_piccoli(400, 160, 150, 150, BIANCO) + testo(384, 22, "S", BIANCO, 15, math_=True)
+    s += assi_piccoli(510, 220, 150, 110, BIANCO) + testo(510, 104, "S′", BIANCO, 15, math_=True)
+    s += linea(400, 150, 340, 150, VERDE, 2.5, freccia=True) + testo(348, 134, "−v⃗", VERDE, 15, math_=True)
+    return svg(690, 240, s)
+
+
+def f5_composizione(esempio):
+    if not esempio:
+        s = assi_piccoli(30, 200, 240, 180, BIANCO) + testo(30, 16, "S", BIANCO, 15, math_=True)
+        s += assi_piccoli(70, 170, 170, 150, ARANCIO) + testo(78, 16, "S′", ARANCIO, 15, math_=True)
+        s += linea(70, 60, 180, 60, VERDE, 2.5, freccia=True) + testo(170, 44, "v⃗", VERDE, 15, math_=True)
+        s += punto(150, 110, BLU) + testo(142, 96, "P", BIANCO, 14, math_=True)
+        s += linea(150, 110, 210, 110, BLU, 2.5, freccia=True) + testo(214, 96, "w⃗′", BLU, 15, math_=True)
+        return svg(300, 230, s)
+    s = assi_piccoli(30, 200, 200, 170, BIANCO) + assi_piccoli(110, 150, 150, 120, BIANCO)
+    s += linea(110, 90, 50, 90, VERDE, 2.5, freccia=True) + testo(60, 74, "−v⃗", VERDE, 15, math_=True)
+    s += punto(190, 60, BLU) + linea(190, 60, 260, 60, BLU, 2.5, freccia=True) + testo(250, 44, "w⃗", BLU, 15, math_=True)
+    return svg(300, 230, s)
+
+
+def f5_invariante():
+    s = assi_piccoli(30, 230, 220, 200, BIANCO)
+    k = 40
+    s += linea(30, 230, 30 + 3 * k, 230 - 4 * k, ROSSO, 3, freccia=True) + testo(30 + 1.2 * k, 230 - 2.6 * k, "s⃗", ROSSO, 17, math_=True)
+    s += linea(30 + 3 * k, 226, 30 + 3 * k, 234, BIANCO, 1.5) + linea(26, 230 - 4 * k, 34, 230 - 4 * k, BIANCO, 1.5)
+    # sistema ruotato: asse x lungo la direzione (2,1)/√5
+    ox, oy = 380, 230
+    ux, uy = 2 / math.sqrt(5), 1 / math.sqrt(5)
+    s += linea(ox, oy, ox + 230 * ux, oy - 230 * uy, BIANCO, 2, freccia=True)
+    s += linea(ox, oy, ox - 200 * uy, oy - 200 * ux, BIANCO, 2, freccia=True)
+    px, py = ox + 3 * k, oy - 4 * k
+    s += linea(ox, oy, px, py, ROSSO, 3, freccia=True) + testo(ox + 0.9 * k - 16, oy - 2.2 * k, "s⃗", ROSSO, 17, math_=True)
+    a = 3 * ux + 4 * uy
+    fx, fy = ox + a * k * ux, oy - a * k * uy
+    s += linea(px, py, fx, fy, BIANCO, 1.4, "4 3") + testo((px + fx) / 2 + 10, (py + fy) / 2, "a", BIANCO, 15, math_=True)
+    b = -3 * uy + 4 * ux
+    gx, gy = ox - b * k * uy, oy - b * k * ux
+    s += linea(px, py, gx, gy, BIANCO, 1.4, "4 3") + testo((px + gx) / 2, (py + gy) / 2 - 12, "b", BIANCO, 15, math_=True)
+    return svg(640, 250, s)
+
+
+def f5_minkowski_base(ox=50, oy=290, L=260, b=0.35):
+    s = assi_piccoli(ox, oy, L, L, BIANCO, "x", "ct")
+    s += linea(ox, oy, ox + L * b * 0.95, oy - L * 0.95, VERDE, 2.4, freccia=True) + testo(ox + L * b + 6, oy - L * 0.95, "ct′", VERDE, 15, math_=True, ancora="start")
+    s += linea(ox, oy, ox + L * 0.95, oy - L * b * 0.95, VERDE, 2.4, freccia=True) + testo(ox + L * 0.95, oy - L * b - 16, "x′", VERDE, 15, math_=True, ancora="end")
+    s += testo(ox - 12, oy + 14, "O", BIANCO, 14, math_=True)
+    return s
+
+
+def f5_minkowski_eventi():
+    ox, oy = 50, 230
+    s = assi_piccoli(ox, oy, 280, 200, BIANCO, "x", "ct") + testo(ox - 12, oy + 14, "O", BIANCO, 14, math_=True)
+    A, B, C = (110, 90), (240, 90), (240, 150)
+    s += linea(ox, 90, 240, 90, ARANCIO, 1.4, "4 3") + linea(110, 90, 110, oy, ROSSO, 1.4, "4 3")
+    s += linea(240, 90, 240, oy, ROSSO, 1.4, "4 3") + linea(ox, 150, 240, 150, VERDE, 1.4, "4 3")
+    for (x, y), n in zip((A, B, C), "ABC"):
+        s += punto(x, y, BIANCO, 4) + testo(x + 12, y - 12, n, BIANCO, 15, math_=True)
+    return svg(360, 250, s)
+
+
+def f5_minkowski_effetto(tipo):
+    ox, oy, L, b = 50, 290, 260, 0.35
+    s = f5_minkowski_base(ox, oy, L, b)
+    P = (ox + 110, oy - 160)
+    if tipo == "simultaneita":
+        Q = (ox + 230, oy - 160)
+        s += linea(ox, P[1], Q[0], Q[1], ROSSO, 1.4, "4 3")
+        for (x, y), n, col in [(P, "P", ROSSO), (Q, "Q", VIOLA)]:
+            s += linea(x, y, x, oy, col, 1.4, "4 3")
+            # proiezione parallela all'asse x′ sull'asse ct′
+            # intersezione della retta per (x,y) di pendenza b con l'asse ct′ (x = ox + b·(oy−y'))
+            yy = (oy - y - b * (x - ox)) / (1 - b * b)
+            ix, iy = ox + b * yy, oy - yy
+            s += linea(x, y, ix, iy, BIANCO, 1.4, "4 3")
+            s += punto(x, y, col, 4) + testo(x + 12, y - 12, n, col, 15, math_=True)
+        return svg(360, 310, s)
+    x, y = P
+    s += linea(ox, y, x, y, ROSSO, 1.4, "4 3") + linea(x, y, x, oy, ROSSO, 1.4, "4 3") + punto(x, y, ROSSO, 4) + testo(x + 12, y - 12, "P", ROSSO, 15, math_=True)
+    if tipo == "dilatazione":
+        yy = (oy - y - b * (x - ox)) / (1 - b * b)
+        ix, iy = ox + b * yy, oy - yy
+        s += linea(x, y, ix, iy, VIOLA, 1.4, "4 3")
+        s += linea(ox, oy, ox, y, ARANCIO, 4) + testo(ox - 14, (oy + y) / 2, pedice("Δt", "1"), ARANCIO, 14, math_=True, ancora="end")
+        s += linea(ox, oy, ix, iy, BLU, 4) + testo(ix + 10, (oy + iy) / 2 + 30, pedice("Δt", "2"), BLU, 14, math_=True, ancora="start")
+        s += testo(ox - 14, y, pedice("ct", "P"), ROSSO, 13, math_=True, ancora="end")
+    else:
+        # proiezione parallela all'asse ct′ sull'asse x′
+        xx = ((x - ox) - b * (oy - y)) / (1 - b * b)
+        jx, jy = ox + xx, oy - b * xx
+        s += linea(x, y, jx, jy, VIOLA, 1.4, "4 3")
+        s += linea(ox, oy, x, oy, ARANCIO, 4) + testo((ox + x) / 2, oy + 18, pedice("Δx", "1"), ARANCIO, 14, math_=True)
+        s += linea(ox, oy, jx, jy, BLU, 4) + testo((ox + jx) / 2, (oy + jy) / 2 - 14, pedice("Δx", "2"), BLU, 14, math_=True)
+    return svg(360, 310, s)
+
+
+def f5_massa_energia(moto):
+    if not moto:
+        s = assi_piccoli(30, 60, 60, 50, BIANCO) + testo(20, 6, "S′", BIANCO, 14, math_=True, ancora="start")
+        s += rett(140, 110, 110, 54, BIANCO) + testo(195, 137, "m", BIANCO, 17, math_=True)
+        s += linea(195, 30, 195, 108, ROSSO, 2.2, freccia=True) + linea(195, 250, 195, 166, ROSSO, 2.2, freccia=True)
+        s += testo(212, 30, "laser", ROSSO, 13, ancora="start") + testo(212, 250, "laser", ROSSO, 13, ancora="start")
+        return svg(300, 270, s)
+    s = linea(40, 30, 40, 250, BIANCO, 1.4, "4 3")
+    s += rett(160, 112, 110, 54, BIANCO) + testo(215, 139, "m", BIANCO, 17, math_=True)
+    s += linea(270, 139, 340, 139, BIANCO, 2.5, freccia=True) + testo(330, 122, "v⃗", BIANCO, 15, math_=True)
+    s += linea(40, 30, 210, 110, ROSSO, 2.4, freccia=True) + linea(40, 250, 210, 168, ROSSO, 2.4, freccia=True)
+    s += testo(100, 50, pedice("p⃗", "1"), ROSSO, 15, math_=True) + testo(100, 236, pedice("p⃗", "2"), ROSSO, 15, math_=True)
+    # triangolo delle velocità
+    s += linea(420, 60, 420, 200, BIANCO, 1.6) + linea(420, 200, 560, 200, BIANCO, 1.6) + linea(420, 60, 560, 200, BIANCO, 1.6)
+    s += linea(420, 60, 500, 140, ROSSO, 2.5) + linea(420, 140, 500, 140, ROSSO, 1.4, "4 3")
+    s += testo(470, 92, pedice("p", "1"), ROSSO, 14, math_=True) + testo(446, 154, pedice("p", "x"), ROSSO, 14, math_=True)
+    s += testo(500, 222, "v", BIANCO, 15, math_=True) + testo(522, 120, "c", BIANCO, 15, math_=True)
+    return svg(600, 270, s)
+
+
+# crisi della fisica classica
+
+def f5_particelle():
+    s = ""
+    for x, y in [(60, 90), (120, 50), (180, 90), (110, 120), (60, 170), (130, 190), (190, 160), (210, 220), (70, 230)]:
+        s += f'<circle cx="{x}" cy="{y}" r="15" fill="none" stroke="{BIANCO}" stroke-width="2"/>'
+        s += linea(x - 26, y - 4, x - 20, y + 4, BIANCO, 1.5) + linea(x - 22, y - 6, x - 16, y + 2, BIANCO, 1.5)
+        s += linea(x + 20, y - 18, x + 24, y - 10, BIANCO, 1.5)
+    return svg(250, 260, s)
+
+
+def f5_compton_schemi():
+    def pannello(dx, reale):
+        s = rett(dx + 170, 30, 26, 130, ARANCIO, ARANCIO, 0.9)
+        s += ondina(dx + 20, 95, dx + 168, 95, ROSSO, 5, 8) + testo(dx + 80, 74, "λ", ROSSO, 16, math_=True)
+        s += testo(dx + 60, 120, "raggi X", ROSSO, 12)
+        s += linea(dx + 196, 95, dx + 360, 95, BIANCO, 1.4, "5 4")
+        if reale:
+            s += linea(dx + 198, 95, dx + 300, 30, VERDE, 2.4, freccia=True) + testo(dx + 312, 26, "e⁻", VERDE, 15, ancora="start")
+            s += ondina(dx + 198, 100, dx + 270, 170, ROSSO, 4, 5) + testo(dx + 262, 186, "?", ROSSO, 16)
+            s += arco_angolo(dx + 198, 95, 34, -0.78, 0, ROSSO) + testo(dx + 246, 116, "θ", ROSSO, 15, math_=True)
+            s += testo(dx + 190, 210, "cosa si osserva in realtà", BIANCO, 13)
+        else:
+            s += ondina(dx + 198, 100, dx + 270, 170, ROSSO, 4, 5) + testo(dx + 282, 170, "λ", ROSSO, 16, math_=True, ancora="start")
+            s += testo(dx + 190, 210, "teoria classica", BIANCO, 13)
+        return s
+    return svg(760, 225, pannello(0, False) + pannello(390, True))
+
+
+def f5_compton_picchi():
+    s = ""
+    for i, (ang, sep) in enumerate([(0, 0), (45, 14), (90, 34), (135, 52)]):
+        dx = 20 + i * 180
+        s += linea(dx, 140, dx + 160, 140, BIANCO, 1.6)
+        x1 = dx + 50
+        x2 = x1 + sep
+        pts = []
+        for k in range(161):
+            x = dx + k
+            y = 0
+            if sep == 0:
+                y = 95 * math.exp(-((x - x1) / 9) ** 2)
+            else:
+                h1 = 95 - i * 18
+                y = h1 * math.exp(-((x - x1) / 9) ** 2) + (40 + i * 22) * math.exp(-((x - x2) / 11) ** 2)
+            pts.append((x, 140 - y))
+        s += percorso("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in pts), ARANCIO, 2.2)
+        s += linea(x1, 30, x1, 140, BIANCO, 1.2, "3 3") + testo(x1, 156, "λ", BIANCO, 14, math_=True)
+        if sep:
+            s += linea(x2, 30, x2, 140, BIANCO, 1.2, "3 3") + testo(x2 + 4, 156, "λ′", BIANCO, 14, math_=True)
+        s += testo(dx + 80, 18, f"θ = {ang}°", BIANCO, 14, math_=True)
+    return svg(740, 170, s)
+
+
+def genera_fisica5_aggiunte():
+    return {
+        "forza-filo.svg": f5_forza_filo(),
+        "faraday-1.svg": f5_faraday(1), "faraday-2.svg": f5_faraday(2),
+        "faraday-3.svg": f5_faraday(3), "faraday-4.svg": f5_faraday(4),
+        "conduttore-moto.svg": f5_conduttore(),
+        "barretta-iniziale.svg": f5_barretta_stato(110, pedice("Φ", "in") + "(B⃗) = B " + pedice("S", "in")),
+        "barretta-finale.svg": f5_barretta_stato(300, pedice("Φ", "fin") + "(B⃗) = B " + pedice("S", "fin")),
+        "cariche-ritorno.svg": f5_cariche_ritorno(),
+        "piano-induzione.svg": f5_piano_induzione(),
+        "alternatore-spira.svg": f5_alternatore_spira(),
+        "autoinduzione-circuiti.svg": f5_autoinduzione_circuiti(),
+        "solenoide-generatore.svg": f5_solenoide_generatore(),
+        "circuito-rl.svg": f5_circuito_rl(),
+        "mutua-induzione.svg": f5_mutua(),
+        "e-indotto.svg": f5_e_indotto(),
+        "carica-oscillante.svg": f5_carica_oscillante(),
+        "irradiamento.svg": f5_irradiamento(),
+        "proiettile.svg": f5_proiettile(),
+        "interferometro-parallelo.svg": f5_interferometro(False),
+        "interferometro-perpendicolare.svg": f5_interferometro(True),
+        "simultaneita-laser.svg": f5_simultaneita_laser(),
+        "simultaneita-fermo.svg": f5_simultaneita_treno(False),
+        "simultaneita-moto.svg": f5_simultaneita_treno(True),
+        "contrazione-strada.svg": f5_contrazione_strada(),
+        "sistemi-v.svg": f5_sistemi_v(),
+        "composizione-velocita.svg": f5_composizione(False),
+        "composizione-esempio.svg": f5_composizione(True),
+        "invariante-2d.svg": f5_invariante(),
+        "minkowski-eventi.svg": f5_minkowski_eventi(),
+        "minkowski-dilatazione.svg": f5_minkowski_effetto("dilatazione"),
+        "minkowski-contrazione.svg": f5_minkowski_effetto("contrazione"),
+        "minkowski-simultaneita.svg": f5_minkowski_effetto("simultaneita"),
+        "massa-energia-riposo.svg": f5_massa_energia(False),
+        "massa-energia-moto.svg": f5_massa_energia(True),
+        "particelle-vibranti.svg": f5_particelle(),
+        "compton-schemi.svg": f5_compton_schemi(),
+        "compton-picchi.svg": f5_compton_picchi(),
+    }
+
+
 def genera_fisica5():
     return {
         "magnete-taglio.svg": f5_magnete_taglio(),
@@ -1016,3 +1627,4 @@ if __name__ == "__main__":
     scrivi(DIR_MATE, genera_probabilita())
     scrivi(DIR_FIS, genera_onde())
     scrivi(DIR_FIS, genera_fisica5())
+    scrivi(DIR_FIS, genera_fisica5_aggiunte())

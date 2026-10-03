@@ -8,6 +8,8 @@ tags:
 ---
 ## Corpo a una temperatura T ≠ 0 K
 
+![Particelle della materia che vibrano](particelle-vibranti.svg)
+
 **Temperatura = vibrazione.** La materia è composta da particelle cariche che generano $\vec E$; il loro movimento genera campi variabili, $\vec E$ e $\vec B$ variabili $\Rightarrow$ **onde EM** (vedi [[Elettromagnetismo e Maxwell#Onde elettromagnetiche|onde elettromagnetiche]]).
 
 $$
@@ -189,8 +191,12 @@ I fisici di inizio Novecento ritenevano impossibile che la luce fosse fatta di p
 
 **Consideriamo raggi X su un bersaglio.**
 
+![A sinistra la teoria classica: il raggio X esce con la stessa lunghezza d'onda; a destra ciò che si osserva: esce anche un elettrone e il raggio deviato di θ ha lunghezza d'onda diversa](compton-schemi.svg)
+
 - **Teoria classica:** il raggio X attraversa il materiale e ne esce eventualmente deviato, con la stessa lunghezza d'onda $\lambda$.
-- **Cosa si osserva in realtà?** Compton studia la lunghezza d'onda dei raggi X in uscita a diversi angoli $\theta$ ($0^\circ$, $45^\circ$, $90^\circ$, $135^\circ$). Si vede che oltre ai raggi X con lunghezza d'onda $\lambda$ ci sono anche raggi X con lunghezza d'onda $\lambda'$, tanto più diversa da $\lambda$ quanto più grande è l'angolo. Come mai?
+- **Cosa si osserva in realtà?** Compton studia la lunghezza d'onda dei raggi X in uscita a diversi angoli $\theta$. Si vede che oltre ai raggi X con lunghezza d'onda $\lambda$ ci sono anche raggi X con lunghezza d'onda $\lambda'$, tanto più diversa da $\lambda$ quanto più grande è l'angolo. Come mai?
+
+![Schema delle misure di Compton: a 0° un solo picco in λ, ad angoli maggiori compare un secondo picco in λ′ sempre più lontano](compton-picchi.svg)
 
 ![Un fotone urta un elettrone: l'elettrone parte con quantità di moto p, il fotone esce deviato di un angolo θ con frequenza minore](effetto-compton.svg)
 

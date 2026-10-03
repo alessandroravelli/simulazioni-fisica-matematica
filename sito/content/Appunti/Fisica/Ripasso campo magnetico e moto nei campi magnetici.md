@@ -25,6 +25,8 @@ Sono oggetti dotati di 2 poli: **Nord** e **Sud**. Emettono un campo magnetico e
 
 Un filo percorso da corrente immerso in un campo magnetico subisce una forza:
 
+![Un filo percorso da corrente tra i poli di una calamita a ferro di cavallo](forza-filo.svg)
+
 $$
 \vec F = i\,\vec\ell \times \vec B
 $$

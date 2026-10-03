@@ -11,12 +11,23 @@ Ricordiamo che, come abbiamo già visto nel [[Ripasso campo magnetico e moto nei
 
 ## 4 esperimenti di Faraday
 
-In tutti e quattro c'è un circuito con un solenoide, senza generatore, collegato a un amperometro che inizialmente segna $i = 0\ \text{A}$.
+In tutti e quattro c'è un circuito con un solenoide, senza generatore, collegato a un amperometro.
 
-1. **Magnete.** Con il magnete fermo e il circuito senza generatore $i = 0\ \text{A}$. <span style="color:#f59e0b">Muovo il magnete e leggo $i \neq 0\ \text{A}$.</span>
-2. **Secondo circuito.** Un secondo circuito con generatore è un filo percorso da corrente $\Rightarrow$ genera $\vec B$. Se è fermo $i = 0\ \text{A}$ nel primo. <span style="color:#f59e0b">Muovo il circuito e ottengo $i \neq 0\ \text{A}$.</span>
-3. **Interruttore.** Quando chiudo l'interruttore $i \neq 0\ \text{A}$ nel secondo circuito $\Rightarrow$ $\vec B$ cambia e $i \neq 0\ \text{A}$ nel primo.
-4. **Resistenza variabile.** Se nel secondo circuito ho una resistenza variabile $R_v$ $\Rightarrow$ $i_{eq} = \dfrac{\Delta V}{R_{eq}}$ cambia $\Rightarrow$ $\vec B$ cambia $\Rightarrow$ $i \neq 0\ \text{A}$ nel primo.
+**1)** Magnete fermo e circuito con $i = 0\ \text{A}$ e senza generatore. <span style="color:#f59e0b">Muovo il magnete e leggo $i \neq 0\ \text{A}$.</span>
+
+![Esperimento 1: con il magnete fermo l'amperometro segna zero, muovendo il magnete compare una corrente](faraday-1.svg)
+
+**2)** Il secondo circuito è un filo percorso da corrente $\Rightarrow$ genera $\vec B$. Se è fermo, $i = 0\ \text{A}$ nel primo. <span style="color:#f59e0b">Muovo il circuito e ottengo $i \neq 0\ \text{A}$.</span>
+
+![Esperimento 2: un secondo circuito con generatore e solenoide; muovendolo, nel primo circuito compare una corrente](faraday-2.svg)
+
+**3)** Quando chiudo l'interruttore, $i \neq 0\ \text{A}$ nel secondo circuito $\Rightarrow$ $\vec B$ cambia e $i \neq 0\ \text{A}$ nel primo.
+
+![Esperimento 3: il secondo circuito ha un interruttore aperto](faraday-3.svg)
+
+**4)** Se ho una resistenza variabile $\Rightarrow$ $i_{eq} = \dfrac{\Delta V}{R_{eq}}$ cambia $\Rightarrow$ $\vec B$ cambia $\Rightarrow$ $i \neq 0\ \text{A}$ nel primo.
+
+![Esperimento 4: il secondo circuito ha una resistenza variabile](faraday-4.svg)
 
 $$
 \longrightarrow\quad \textcolor{#f59e0b}{\text{se in un circuito immerso in } \vec B \text{ il campo cambia si genera una corrente indotta}}
@@ -27,6 +38,8 @@ $$
 
 ### Perché nasce la corrente
 
+![A sinistra un conduttore neutro con cariche mescolate; a destra un conduttore in moto in cui le cariche si separano](conduttore-moto.svg)
+
 In un conduttore neutro le cariche positive e negative sono mescolate. Se il conduttore si muove con velocità $\vec v$ in un campo $\vec B$ (uscente), le cariche si spostano: le negative da una parte, le positive dall'altra, e ai capi del conduttore nasce una fem. Le cariche si spostano a causa di
 
 $$
@@ -35,7 +48,9 @@ $$
 
 Consideriamo una sbarretta che scorre su due binari chiusi da un lato, in un campo $\vec B$ uscente.
 
-![Sbarretta conduttrice che scorre su due binari: la superficie del circuito diminuisce mentre la sbarretta avanza](barretta-binari.svg)
+![Posizione iniziale della sbarretta: la superficie del circuito è grande](barretta-iniziale.svg)
+
+![Posizione finale: la sbarretta è avanzata e la superficie è più piccola](barretta-finale.svg)
 
 $$
 \Phi_{in}(\vec B) = B\,S_{in}\cos\theta = B\,S_{in} \qquad \Phi_{fin}(\vec B) = B\,S_{fin}\cos\theta = B\,S_{fin}
@@ -52,6 +67,8 @@ $$
 $$
 
 **Cosa succede alle cariche quando tornano alla sbarretta carica?** La carica $\oplus$ subisce lavoro quando viene riportata al polo $+$:
+
+![Una carica positiva rientra nella sbarretta dall'alto e viene riportata verso il polo positivo](cariche-ritorno.svg)
 
 $$
 W_{-\to+} = \vec F_L \cdot \vec\ell = F_L\,\ell\cos 180^\circ = e\,v\,B\,\ell
@@ -98,11 +115,15 @@ il "$-$" è un contributo di Lenz ed è una legge di conservazione dell'energia:
 
 L'avvolgimento che sta sotto la pentola, percorso dalla corrente alternata degli impianti casalinghi, genera a sua volta un campo magnetico alternato. Siccome il campo varia costantemente, nella pentola si creano costantemente delle correnti che devono bilanciare la variazione di flusso. Queste correnti, per effetto Joule, scaldano la padella.
 
+![Pentola su un piano a induzione: il campo alternato della bobina genera correnti indotte nel fondo della pentola](piano-induzione.svg)
+
 ### Alternatore
 
 Questo strumento permette di caricare la batteria dell'automobile quando si viaggia, oppure per esempio permette di tenere accese le luci delle biciclette mentre avanzano. Ha anche moltissime applicazioni nelle auto elettriche per quanto riguarda il recupero di energia.
 
 Una spira ruota tra i poli N e S di un magnete. Quando l'angolo $\alpha$ tra la spira e le linee di campo passa da $0^\circ$ a $90^\circ$, $180^\circ$, $270^\circ$, $360^\circ$, il flusso attraverso la spira oscilla come un coseno e la corrente indotta come un seno:
+
+![La spira in quattro posizioni durante la rotazione tra i poli del magnete](alternatore-spira.svg)
 
 ![Durante la rotazione il flusso Φ segue un coseno e la corrente indotta i un seno, sfasati di un quarto di giro](alternatore-grafico.svg)
 
@@ -114,6 +135,8 @@ Il meccanismo con cui l'alternatore funziona prevede che ci sia un agente estern
 ## Autoinduzione
 
 A causa della legge di Faraday-Neumann-Lenz, quando chiudiamo l'interruttore di un circuito e inizia a circolare della corrente, questa non può crescere istantaneamente al valore che ci aspettiamo, ma è forzata a crescere più lentamente.
+
+![Circuito con interruttore aperto e chiuso](autoinduzione-circuiti.svg)
 
 1. Chiudo l'interruttore e $i$ circola
 2. $i$ variabile $\Rightarrow$ $\vec B$ variabile
@@ -129,6 +152,8 @@ $$
 ### Autoinduzione e solenoide
 
 Consideriamo un solenoide collegato a un generatore.
+
+![Solenoide collegato a un generatore: la corrente genera un campo B lungo l'asse](solenoide-generatore.svg)
 
 $$
 B = \mu_0\, n\, i = \mu_0\,\frac{N}{\ell}\, i \qquad \Phi_{tot} = B \cdot S \cdot N \cdot \cos 0^\circ \qquad \Phi_{spira} = B \cdot S \cdot \cos 0^\circ
@@ -149,6 +174,8 @@ $L :=$ **induttanza** (coefficiente di autoinduzione), $\quad [L] = \text{H} :=$
 ## Circuito RL
 
 Un circuito in cui sono presenti **resistenze** e **induttanze** (solenoidi), alimentato da un generatore di forza elettromotrice $\text{fem}^\circ$.
+
+![Circuito RL: generatore, resistenza R e induttanza L in serie](circuito-rl.svg)
 
 $$
 \Phi(B) = L \cdot i \qquad \frac{\Delta\Phi}{\Delta t} = L\,\frac{\Delta i}{\Delta t} \quad\longrightarrow\quad -\text{fem} = L\,\frac{\Delta i}{\Delta t}
@@ -202,6 +229,8 @@ $$
 ## Mutua induzione
 
 Due circuiti vicini: il primo con un generatore, il secondo con un amperometro.
+
+![Mutua induzione: un circuito con generatore accanto a un circuito con amperometro](mutua-induzione.svg)
 
 Se $i_1$ varia $\Rightarrow$ $B_1$ varia $\Rightarrow$ $\Phi_2(B_1)$ varia $\Rightarrow$ genero $i_2$ $\Rightarrow$ genero $\text{fem}^{1\to2}$
 
@@ -268,6 +297,8 @@ $$
 $$
 
 In analogia con la legge di Lenz, il campo elettrico indotto generato dalla variazione di campo magnetico si dovrà opporre alla variazione dello stesso campo magnetico: se $\vec B$ aumenta, le linee di $\vec E$ indotto girano in modo che il campo magnetico da esso generato si opponga a $\Delta\vec B$; se $\vec B$ diminuisce, girano nel verso opposto.
+
+![Campo elettrico indotto attorno a un campo magnetico che aumenta e che diminuisce](e-indotto.svg)
 
 Ora abbiamo visto tutte e quattro le equazioni di Maxwell, ma soltanto per la seconda abbiamo visto il caso in cui i campi cambiano nel tempo.
 
@@ -370,6 +401,8 @@ $$
 
 Considero una carica $q$ che oscilla tra 2 punti. Cosa succede ad $\vec E$ e $\vec B$ in un punto fisso dello spazio?
 
+![Una carica oscilla tra due posizioni; si osservano i campi in un punto fisso](carica-oscillante.svg)
+
 $$
 \vec E = \frac{1}{4\pi\varepsilon_0}\,\frac{q}{r^2} \quad\longrightarrow\quad \text{varia con la distanza}
 $$
@@ -422,6 +455,8 @@ $$
 $$
 
 ### Irradiamento
+
+![Un'onda elettromagnetica attraversa una superficie di area A](irradiamento.svg)
 
 Sappiamo che l'irradiamento è definito da
 
