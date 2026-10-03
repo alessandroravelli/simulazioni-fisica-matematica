@@ -60,7 +60,9 @@ In questo caso vogliamo studiare come varia la velocità della proiezione del pu
 > [!info] 
 >  Ricordiamo la formula della velocità tangenziale vista nello studio del moto circolare: 
 >  
-> $$ \longrightarrow\quad v = \omega r $$
+> $$
+> \longrightarrow\quad v = \omega r
+> $$
 
 
 Sfruttando le proprietà della [[trigonometria ]] si ottiene la velocità sull'asse $x$:
@@ -76,7 +78,9 @@ $x$ è descritto da cos e $v$ da sin $\;\longrightarrow\;$ sono sfasati di $\fra
 ![Accelerazione centripeta e sua componente lungo l'asse x](onde-accelerazione.svg)
 >[!info]
 >Ricordiamo la formula dell' [[accelerazione centripeta]] :
->$$\longrightarrow\quad a_c = \omega^2 r$$
+>$$
+>\longrightarrow\quad a_c = \omega^2 r
+>$$
 
 
 Sfruttando le proprietà della [[trigonometria ]] si ottiene l'accelerazione sull'asse $x$:
@@ -139,9 +143,13 @@ Vediamo subito che un onda armonica è caratterizzata da delle grandezze fondame
 ### Velocità di propagazione
 
 Un'onda si propaga nello spazio ad una determinata velocità che è strettamente legata alle caratteristiche dell'onda, viste poco sopra in [[#Moto ondulatorio]]. In particolare, dal momento che la velocità è definita come spazio fratto tempo possiamo sfruttare due caratteristiche di un moto armonico legate allo spazio e al tempo: 
-$$ \text{lunghezza d'onda}\rightarrow\lambda \: [m] \: \qquad \text{frequenza} \rightarrow T \: [s]$$
+$$
+\text{lunghezza d'onda}\rightarrow\lambda \: [m] \: \qquad \text{frequenza} \rightarrow T \: [s]
+$$
 La velocità con cui si propaga un'onda, quindi si può andare a definire in questa maniera:
-$$ v = \frac{\lambda}{T}$$
+$$
+v = \frac{\lambda}{T}
+$$
 
 In maniera pratica rappresenta il fatto che l'onda percorre uno spazio pari alla sua lunghezza d'onda nel tempo in cui completa l'oscillazione.
 
@@ -149,7 +157,9 @@ In maniera pratica rappresenta il fatto che l'onda percorre uno spazio pari alla
 
 Se fino ad ora abbiamo visto che la velocità è determinata dalle caratteristiche dell'onda, è vero anche che questa velocità si può ricavare direttamente dalle proprietà del materiale in cui questa si propaga. Siccome un'onda interagisce col materiale che attraversa è ragionevole pensare che le proprietà di questo materiale determinino, quanto veloce l'onda stessa può attraversarlo. 
 In particolare, la velocità dipende dalle forze di tensione generata all'interno del materiale e dalla densità lineare dell'oggetto. 
-$$v = \sqrt{\dfrac{F_T}{d_L}}$$
+$$
+v = \sqrt{\dfrac{F_T}{d_L}}
+$$
  >[!warning]
  > per quello che dobbiamo studiare, noi non è importante che ricordiate questa formula, ma semplicemente comprendiate che la velocità di un'onda dipende dalle caratteristiche ondulatoria che però derivano completamente dalle proprietà del materiale in cui l'onda si propaga.
  > 
@@ -161,13 +171,20 @@ Fino ad ora abbiamo parlato di [[#Moto armonico]] e abbiamo sempre descritto l'o
 Le onde si propagano sia nello spazio e nel tempo, quindi è necessario utilizzare una funzione d'onda che sia più completa e comprenda anche un'informazione sullo spazio. 
 
 In una corda che oscilla un punto generico di ascissa $x$  inizierà ad oscillare dall'istante $t = x/v$ in cui l'onda lo raggiungerà perciò la funzione d'onda completa ha l'aspetto di una funzione goniometrica traslata: 
-$$ y(x,t)=A \cos\left[\omega\left(t-\frac{x}{v}\right)+\varphi_0\right] $$
+$$
+y(x,t)=A \cos\left[\omega\left(t-\frac{x}{v}\right)+\varphi_0\right]
+$$
 Se ricordiamo la definizione di $\omega$ vista nello studio del [[#Periodo]]  e gli archi associati della [[Goniometria]] possiamo scrivere: 
 
-$$ y(x,t) = A \cos\left[\frac{2 \pi}{\lambda}\left(x-vt\right)+\varphi_0\right]  = A \cos\left[\frac{2 \pi}{\lambda}x- \frac{2 \pi}{T}t+\varphi_0\right]  $$
+$$
+y(x,t) = A \cos\left[\frac{2 \pi}{\lambda}\left(x-vt\right)+\varphi_0\right]  = A \cos\left[\frac{2 \pi}{\lambda}x- \frac{2 \pi}{T}t+\varphi_0\right]
+$$
 
 >[!warning]
 >Queste diverse formulazioni della funzione d'onda armonica sono esattamente equivalenti e vengono utilizzate in funzione della richiesta del problema in cui può essere più utile conoscere alcuni dati piuttosto di altri.
 
 
 ## Interferenza Costruttiva e Distruttiva
+
+
+![sovrapposizione-impulsi](sovrapposizione-impulsi.svg)

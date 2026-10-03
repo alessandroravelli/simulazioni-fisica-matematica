@@ -257,13 +257,19 @@ $$
 >
 > Da $\pi < \alpha < \frac{3\pi}{2}$ segue $\frac{\pi}{2} < \frac{\alpha}{2} < \frac{3\pi}{4}$: l'angolo $\frac{\alpha}{2}$ sta nel secondo quadrante, dove il seno è positivo e il coseno negativo. Quindi nella formula del seno scegliamo il segno **più**, in quella del coseno il segno **meno**:
 >
-> $$\sin\frac{\alpha}{2} = +\sqrt{\frac{1 - \left(-\frac{7}{8}\right)}{2}} = +\sqrt{\frac{15}{16}} = +\frac{\sqrt{15}}{4}$$
+> $$
+> \sin\frac{\alpha}{2} = +\sqrt{\frac{1 - \left(-\frac{7}{8}\right)}{2}} = +\sqrt{\frac{15}{16}} = +\frac{\sqrt{15}}{4}
+> $$
 >
-> $$\cos\frac{\alpha}{2} = -\sqrt{\frac{1 + \left(-\frac{7}{8}\right)}{2}} = -\sqrt{\frac{1}{16}} = -\frac{1}{4}$$
+> $$
+> \cos\frac{\alpha}{2} = -\sqrt{\frac{1 + \left(-\frac{7}{8}\right)}{2}} = -\sqrt{\frac{1}{16}} = -\frac{1}{4}
+> $$
 >
 > Dalla definizione di tangente:
 >
-> $$\tan\frac{\alpha}{2} = \frac{\sin\frac{\alpha}{2}}{\cos\frac{\alpha}{2}} = \frac{\frac{\sqrt{15}}{4}}{-\frac{1}{4}} = -\sqrt{15}$$
+> $$
+> \tan\frac{\alpha}{2} = \frac{\sin\frac{\alpha}{2}}{\cos\frac{\alpha}{2}} = \frac{\frac{\sqrt{15}}{4}}{-\frac{1}{4}} = -\sqrt{15}
+> $$
 
 ## Funzioni lineari in seno e coseno
 
@@ -333,12 +339,20 @@ $$
 $$
 
 > [!example] Esempio
-> $$y = \underbrace{\sqrt3}_{a}\,\sin x + \underbrace{1}_{b}\,\cos x \underbrace{-\,1}_{c}$$
+> $$
+> y = \underbrace{\sqrt3}_{a}\,\sin x + \underbrace{1}_{b}\,\cos x \underbrace{-\,1}_{c}
+> $$
 >
-> $$y = \sqrt{3 + 1} \cdot \sin(x + \varphi) - 1$$
+> $$
+> y = \sqrt{3 + 1} \cdot \sin(x + \varphi) - 1
+> $$
 >
-> $$\varphi \longrightarrow \sin\varphi = \frac{1}{2} \qquad \cos\varphi = \frac{\sqrt3}{2} \qquad \varphi = \frac{\pi}{6}$$
+> $$
+> \varphi \longrightarrow \sin\varphi = \frac{1}{2} \qquad \cos\varphi = \frac{\sqrt3}{2} \qquad \varphi = \frac{\pi}{6}
+> $$
 >
-> $$\longrightarrow\quad y = 2\sin\left(x + \frac{\pi}{6}\right) - 1$$
+> $$
+> \longrightarrow\quad y = 2\sin\left(x + \frac{\pi}{6}\right) - 1
+> $$
 
 ![Grafico di y = 2 sin(x + pi/6) - 1](goniometria-esempio-2sin.svg)

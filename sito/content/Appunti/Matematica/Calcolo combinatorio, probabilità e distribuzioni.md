@@ -58,7 +58,9 @@ Ho $n$ oggetti e voglio prenderne $k$ ($n \ge k$) e mi interessa l'ordine con cu
 > [!example] Esempio
 > Ho 3 oggetti e ne voglio prendere 2.
 >
-> $$A\ B\ C \longrightarrow \begin{matrix} AB & AC & BC \\ BA & CA & CB \end{matrix} \qquad 6 \text{ possibilità}$$
+> $$
+> A\ B\ C \longrightarrow \begin{matrix} AB & AC & BC \\ BA & CA & CB \end{matrix} \qquad 6 \text{ possibilità}
+> $$
 
 **Come lo ricavo?**
 Ho 3 oggetti e ne devo prendere 2: prendo il primo e posso scegliere uno tra tutti e 3, prendo il secondo e posso scegliere uno tra quelli che rimangono ovvero $3 - 1 = 2$.
@@ -185,18 +187,26 @@ Lo studio del calcolo combinatorio ci viene in aiuto molto spesso, quando dobbia
 È possibile che nel calcolo della probabilità di un evento ci venga richiesto di studiare quale sia la probabilità che succeda un evento A o la probabilità che succeda un evento B.
 
 > [!example] Esempio: pescare una carta di fiori o di quadri
-> $$p(\text{fiori}) = \frac{13}{52} = \frac{1}{4} \qquad p(\text{quadri}) = \frac{13}{52} = \frac{1}{4}$$
+> $$
+> p(\text{fiori}) = \frac{13}{52} = \frac{1}{4} \qquad p(\text{quadri}) = \frac{13}{52} = \frac{1}{4}
+> $$
 >
-> $$p(\text{tot}) = \frac{1}{4} + \frac{1}{4}$$
+> $$
+> p(\text{tot}) = \frac{1}{4} + \frac{1}{4}
+> $$
 >
 > Questo caso funziona perché non c'è intersezione tra i due eventi. Questo significa che non c'è nessun elemento che sia contemporaneamente una carta di fiori e una carta di quadri.
 
 > [!example] Esempio: pescare una carta rossa o pescare una figura
-> $$p(\text{rosso}) = \frac{26}{52} = \frac{1}{2} \qquad p(\text{figura}) = \frac{12}{52}$$
+> $$
+> p(\text{rosso}) = \frac{26}{52} = \frac{1}{2} \qquad p(\text{figura}) = \frac{12}{52}
+> $$
 >
 > C'è intersezione perché ci sono 6 figure rosse $\longrightarrow$ l'intersezione tra i 2 è $\frac{6}{52}$.
 >
-> $$\begin{aligned} p(\text{tot}) &= p(\text{rosso}) + p(\text{figura}) - p(\text{intersezione}) \\ &= \frac{1}{2} + \frac{12}{52} - \frac{6}{52} = \frac{13}{26} + \frac{6}{26} - \frac{3}{26} = \frac{16}{26} = \frac{8}{13} \end{aligned}$$
+> $$
+> \begin{aligned} p(\text{tot}) &= p(\text{rosso}) + p(\text{figura}) - p(\text{intersezione}) \\ &= \frac{1}{2} + \frac{12}{52} - \frac{6}{52} = \frac{13}{26} + \frac{6}{26} - \frac{3}{26} = \frac{16}{26} = \frac{8}{13} \end{aligned}
+> $$
 
 $$
 \longrightarrow\quad \textcolor{#f59e0b}{p(A \cup B) = p(A) + p(B) - p(A \cap B)}
@@ -233,9 +243,13 @@ $$
 > [!example] Esempio
 > - Probabilità di pescare l'asso di cuori: $p(\text{asso}) = \frac{1}{52} \approx 1{,}9\%$
 > - Probabilità di A se ho pescato una carta rossa:
->   $$p(\text{asso} \mid \text{rosso}) = \frac{p(\text{asso} \cap \text{rosso})}{p(\text{rosso})} = \frac{2/52}{26/52} = \frac{2}{26} = \frac{1}{13} \approx 7{,}7\%$$
+>   $$
+>   p(\text{asso} \mid \text{rosso}) = \frac{p(\text{asso} \cap \text{rosso})}{p(\text{rosso})} = \frac{2/52}{26/52} = \frac{2}{26} = \frac{1}{13} \approx 7{,}7\%
+>   $$
 > - Probabilità di pescare rosso se ho pescato un asso:
->   $$p(\text{rosso} \mid \text{asso}) = \frac{p(\text{rosso} \cap \text{asso})}{p(\text{asso})} = \frac{2/52}{4/52} = \frac{2}{4} = 50\%$$
+>   $$
+>   p(\text{rosso} \mid \text{asso}) = \frac{p(\text{rosso} \cap \text{asso})}{p(\text{asso})} = \frac{2/52}{4/52} = \frac{2}{4} = 50\%
+>   $$
 
 ### Proprietà della probabilità condizionata
 
@@ -268,15 +282,21 @@ $$
 Se due eventi sono indipendenti, allora la probabilità che succedano entrambi contemporaneamente è semplicemente data dal prodotto tra le loro singole probabilità. Questa formula viene spesso utilizzata per verificare se effettivamente due eventi sono o meno indipendenti: è sufficiente calcolare le singole probabilità dell'evento A e dell'evento B e vedere se il loro prodotto è uguale alla probabilità dell'intersezione.
 
 > [!example] Esempio: lancio 2 dadi diversi, probabilità che esca 5 e 2
-> $$p(5) = \frac{1}{6} \qquad p(2) = \frac{1}{6}$$
+> $$
+> p(5) = \frac{1}{6} \qquad p(2) = \frac{1}{6}
+> $$
 >
 > Come calcolo tutte le possibilità di 2 dadi?
 > - Mi interessa l'ordine? Sì, perché i dadi sono diversi.
 > - Ripetizioni? Sì, posso avere lo stesso numero.
 >
-> $$D^*_{6,2} = 6^2 = 36$$
+> $$
+> D^*_{6,2} = 6^2 = 36
+> $$
 >
-> $$\left.\begin{aligned} p(A \cap B) &= \frac{1}{36} \\ p(A) \cdot p(B) &= \frac{1}{6} \cdot \frac{1}{6} \end{aligned}\right\} \quad \frac{1}{36} = \frac{1}{36}$$
+> $$
+> \left.\begin{aligned} p(A \cap B) &= \frac{1}{36} \\ p(A) \cdot p(B) &= \frac{1}{6} \cdot \frac{1}{6} \end{aligned}\right\} \quad \frac{1}{36} = \frac{1}{36}
+> $$
 >
 > Gli eventi sono indipendenti.
 
@@ -327,11 +347,15 @@ $$
 >
 > Chiamiamo $A$ l'evento "il giorno della gara è asciutto" (quindi $\overline{A}$ = "piove") e $V$ l'evento "Furia vince":
 >
-> $$p(V \mid A) = 0{,}1 \qquad p(V \mid \overline{A}) = 0{,}25 \qquad p(A) = 0{,}3$$
+> $$
+> p(V \mid A) = 0{,}1 \qquad p(V \mid \overline{A}) = 0{,}25 \qquad p(A) = 0{,}3
+> $$
 >
 > $A$ e $\overline{A}$ formano una partizione (uno è il complementare dell'altro), quindi:
 >
-> $$\begin{aligned} p(V) &= p(V \mid A)\, p(A) + p(V \mid \overline{A})\, p(\overline{A}) \\ &= 0{,}1 \cdot 0{,}3 + 0{,}25 \cdot (1 - 0{,}3) = 0{,}205 = 20{,}5\% \end{aligned}$$
+> $$
+> \begin{aligned} p(V) &= p(V \mid A)\, p(A) + p(V \mid \overline{A})\, p(\overline{A}) \\ &= 0{,}1 \cdot 0{,}3 + 0{,}25 \cdot (1 - 0{,}3) = 0{,}205 = 20{,}5\% \end{aligned}
+> $$
 
 ## Formula di Bayes
 
@@ -346,13 +370,19 @@ Molto spesso $p(A)$ si calcola con la disintegrazione.
 >
 > Eventi: $L_1$ = "viene dalla linea 1", $L_2$ = "viene dalla linea 2", $D$ = "è difettoso".
 >
-> $$p(L_1) = \frac{500}{800} = \frac{5}{8} \qquad p(L_2) = \frac{300}{800} = \frac{3}{8} \qquad p(D \mid L_1) = 0{,}02 \qquad p(D \mid L_2) = 0{,}01$$
+> $$
+> p(L_1) = \frac{500}{800} = \frac{5}{8} \qquad p(L_2) = \frac{300}{800} = \frac{3}{8} \qquad p(D \mid L_1) = 0{,}02 \qquad p(D \mid L_2) = 0{,}01
+> $$
 >
 > Per la formula di Bayes $p(L_1 \mid D) = \dfrac{p(D \mid L_1)\, p(L_1)}{p(D)}$; manca $p(D)$, che si trova con la disintegrazione:
 >
-> $$p(D) = p(D \mid L_1)\, p(L_1) + p(D \mid L_2)\, p(L_2) = 0{,}02 \cdot \frac{5}{8} + 0{,}01 \cdot \frac{3}{8} = \frac{13}{800}$$
+> $$
+> p(D) = p(D \mid L_1)\, p(L_1) + p(D \mid L_2)\, p(L_2) = 0{,}02 \cdot \frac{5}{8} + 0{,}01 \cdot \frac{3}{8} = \frac{13}{800}
+> $$
 >
-> $$p(L_1 \mid D) = \frac{0{,}02 \cdot \frac{5}{8}}{\frac{13}{800}} = \frac{10}{13}$$
+> $$
+> p(L_1 \mid D) = \frac{0{,}02 \cdot \frac{5}{8}}{\frac{13}{800}} = \frac{10}{13}
+> $$
 
 ## Distribuzioni di probabilità
 
@@ -390,17 +420,25 @@ $$
 La media, come sappiamo bene, ci restituisce un'informazione su un valore rappresentativo della nostra distribuzione dicendoci indicativamente su che valore si colloca.
 
 > [!example] Esempio: media dei voti
-> $$7 \quad 7 \quad 8 \quad 6 \quad 9 \quad 8 \quad 8$$
+> $$
+> 7 \quad 7 \quad 8 \quad 6 \quad 9 \quad 8 \quad 8
+> $$
 >
 > Fino ad ora la media si calcolava così:
 >
-> $$\frac{7 + 7 + 8 + 6 + 9 + 8 + 8}{7}$$
+> $$
+> \frac{7 + 7 + 8 + 6 + 9 + 8 + 8}{7}
+> $$
 >
 > Calcoliamola come distribuzione:
 >
-> $$p(7) = \frac{2}{7} \quad \text{(prob. che } x \text{ sia 7 tra tutti i voti)} \qquad p(8) = \frac{3}{7} \qquad p(6) = \frac{1}{7} \qquad p(9) = \frac{1}{7}$$
+> $$
+> p(7) = \frac{2}{7} \quad \text{(prob. che } x \text{ sia 7 tra tutti i voti)} \qquad p(8) = \frac{3}{7} \qquad p(6) = \frac{1}{7} \qquad p(9) = \frac{1}{7}
+> $$
 >
-> $$\mu = 7 \cdot \frac{2}{7} + 8 \cdot \frac{3}{7} + 6 \cdot \frac{1}{7} + 9 \cdot \frac{1}{7} = \frac{2 \cdot 7 + 3 \cdot 8 + 6 \cdot 1 + 9 \cdot 1}{7} = \frac{7 + 7 + 8 + 8 + 8 + 6 + 9}{7}$$
+> $$
+> \mu = 7 \cdot \frac{2}{7} + 8 \cdot \frac{3}{7} + 6 \cdot \frac{1}{7} + 9 \cdot \frac{1}{7} = \frac{2 \cdot 7 + 3 \cdot 8 + 6 \cdot 1 + 9 \cdot 1}{7} = \frac{7 + 7 + 8 + 8 + 8 + 6 + 9}{7}
+> $$
 >
 > Uguale a prima!
 
@@ -507,11 +545,17 @@ $$
 >
 > a. $p(X \ge 3) = p(X = 3) + p(X = 4) + p(X = 5)$ (eventi incompatibili):
 >
-> $$p(X = 3) = \binom{5}{3}\left(\frac{1}{4}\right)^3\left(\frac{3}{4}\right)^2 = 10 \cdot \frac{1}{64} \cdot \frac{9}{16} = \frac{45}{512} \approx 0{,}088 = 8{,}8\%$$
+> $$
+> p(X = 3) = \binom{5}{3}\left(\frac{1}{4}\right)^3\left(\frac{3}{4}\right)^2 = 10 \cdot \frac{1}{64} \cdot \frac{9}{16} = \frac{45}{512} \approx 0{,}088 = 8{,}8\%
+> $$
 >
-> $$p(X = 4) = \binom{5}{4}\left(\frac{1}{4}\right)^4\left(\frac{3}{4}\right)^1 = 5 \cdot \frac{1}{256} \cdot \frac{3}{4} = \frac{15}{1024} \approx 0{,}015 = 1{,}5\%$$
+> $$
+> p(X = 4) = \binom{5}{4}\left(\frac{1}{4}\right)^4\left(\frac{3}{4}\right)^1 = 5 \cdot \frac{1}{256} \cdot \frac{3}{4} = \frac{15}{1024} \approx 0{,}015 = 1{,}5\%
+> $$
 >
-> $$p(X = 5) = \binom{5}{5}\left(\frac{1}{4}\right)^5\left(\frac{3}{4}\right)^0 = \frac{1}{1024} \approx 0{,}001 = 0{,}1\%$$
+> $$
+> p(X = 5) = \binom{5}{5}\left(\frac{1}{4}\right)^5\left(\frac{3}{4}\right)^0 = \frac{1}{1024} \approx 0{,}001 = 0{,}1\%
+> $$
 >
 > In tutto circa $8{,}8\% + 1{,}5\% + 0{,}1\% = 10{,}4\%$ (decisamente bassa!).
 >

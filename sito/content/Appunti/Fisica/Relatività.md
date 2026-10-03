@@ -325,7 +325,9 @@ $$
 >
 > $w' = \dfrac{w - v}{1 - w\frac{v}{c^2}}$ vale se $v$ e $w$ hanno lo stesso verso; altrimenti
 >
-> $$w' = \frac{w + v}{1 + w\frac{v}{c^2}} = \frac{\frac{2}{3}c + \frac{2}{3}c}{1 + \frac{4}{9}\,c^2/c^2} = \frac{4/3}{13/9}\,c = \frac{12}{13}\,c$$
+> $$
+> w' = \frac{w + v}{1 + w\frac{v}{c^2}} = \frac{\frac{2}{3}c + \frac{2}{3}c}{1 + \frac{4}{9}\,c^2/c^2} = \frac{4/3}{13/9}\,c = \frac{12}{13}\,c
+> $$
 
 ## Invariante relativistico
 

@@ -85,14 +85,17 @@ In cima (facoltativa ma utile):
 - Collegamento a un'altra nota:      [[Goniometria]]
   con testo diverso:                [[Goniometria|goniometria]]
   a un paragrafo preciso:           [[Goniometria#Formule di bisezione]]
-- Formule come in LaTeX:  $x = r\cos\varphi$  oppure su riga propria
-  tra $$ e $$. Colori: \textcolor{#ef4444}{...}
+- Formule come in LaTeX:  $x = r\cos\varphi$  oppure centrate su riga
+  propria tra $$ e $$. Colori: \textcolor{#ef4444}{...}
+  Le formule centrate scritte su una riga sola ($$ v = \lambda/T $$)
+  vengono riscritte da sole su tre righe a ogni pubblicazione
+  (strumenti/sistema-markdown.mjs), perché il sito le centri.
 - Riquadri:  > [!info] Collegamenti   (anche tip, warning, example,
   todo, note...)
 - Immagini (PNG/JPG): trascinale nella nota, Obsidian scrive
-  ![[nome.png]]. Per le figure SVG usa invece la forma
-  ![descrizione](nome.svg) (con ![[...]] gli SVG non si vedono sul
-  sito).
+  ![[nome.png]]. Per le figure SVG la forma giusta è
+  ![descrizione](nome.svg): se scrivi ![[nome.svg]] lo script sopra
+  la corregge da solo.
 
 Grafo, link entranti e indice si aggiornano da soli.
 

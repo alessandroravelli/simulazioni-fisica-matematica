@@ -395,7 +395,9 @@ $$
 > Introducendo i potenziali: $\vec B = \nabla \times \vec A$ ed $\vec E = -\nabla\phi$ (nel caso statico).
 >
 > Al campo elettromagnetico si associa la quantità
-> $$-\frac{1}{4} F_{\mu\nu} F^{\mu\nu} \qquad \text{dove} \qquad F_{\mu\nu} = \partial_\mu A_\nu - \partial_\nu A_\mu$$
+> $$
+> -\frac{1}{4} F_{\mu\nu} F^{\mu\nu} \qquad \text{dove} \qquad F_{\mu\nu} = \partial_\mu A_\nu - \partial_\nu A_\mu
+> $$
 
 ## Onde elettromagnetiche
 

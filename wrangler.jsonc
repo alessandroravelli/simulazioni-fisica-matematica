@@ -9,6 +9,8 @@
     "not_found_handling": "404-page"
   },
   // Prima di ogni deploy (e di ogni `wrangler dev`) costruisce il sito:
+  // 0. strumenti/sistema-markdown.mjs adatta le note di Obsidian a Quartz
+  //    (formule $$...$$ su una riga → blocco centrato, ![[x.svg]] → ![x](x.svg));
   // 1. Quartz trasforma le note markdown di sito/content in pagine web
   //    dentro dist/ (le dipendenze si installano solo se mancano: su
   //    Cloudflare mancano sempre);
@@ -16,7 +18,7 @@
   //    immagini), che restano normali pagine HTML.
   // dist/ è generata: non va nel repository.
   "build": {
-    "command": "cd sito && (test -d node_modules || npm ci --engine-strict=false) && npx quartz build -o ../dist && cp -R ../public/. ../dist/",
+    "command": "node strumenti/sistema-markdown.mjs sito/content && cd sito && (test -d node_modules || npm ci --engine-strict=false) && npx quartz build -o ../dist && cp -R ../public/. ../dist/",
     "watch_dir": ["sito/content", "public"]
   }
 }
