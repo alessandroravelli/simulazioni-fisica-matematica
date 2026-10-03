@@ -364,11 +364,11 @@ $$
 TT \qquad TC \qquad CT \qquad CC
 $$
 
-| $x$     | casi        | probabilità   |
-| ------- | ----------- | ------------- |
+| $x$     | casi          | probabilità   |
+| ------- | ------------- | ------------- |
 | $x = 0$ | CC (no testa) | $\frac{1}{4}$ |
-| $x = 1$ | TC, CT      | $\frac{1}{2}$ |
-| $x = 2$ | TT          | $\frac{1}{4}$ |
+| $x = 1$ | TC, CT        | $\frac{1}{2}$ |
+| $x = 2$ | TT            | $\frac{1}{4}$ |
 
 $$
 \longrightarrow\quad f(x) =

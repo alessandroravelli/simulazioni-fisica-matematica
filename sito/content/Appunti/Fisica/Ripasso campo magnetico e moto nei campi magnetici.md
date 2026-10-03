@@ -117,6 +117,17 @@ $$
 
 Ricordiamo che $\Phi_\Sigma(\vec E) \propto Q_{tot}$.
 
+In generale sappiamo che il flusso di un campo vettoriale si può scrivere in questa maniera: 
+$$
+\Phi_\Sigma(\vec{B}) = \vec{B}\cdot\vec{S} = B S \cos{\theta}
+$$
+Dove normalmente il vettore $\vec{S}$ è definito dalla dimensione sella superficie e il vettore normale alla superficie stessa
+$$
+\longrightarrow \quad \vec{S} = S \:\vec{n}
+$$
+
+
+
 $\longrightarrow$ <span style="color:#f59e0b">Il campo magnetico ha $Q_{tot} = 0$ sempre! Non esiste carica magnetica singola (coppie NS).</span>
 
 $$
