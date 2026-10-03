@@ -8,6 +8,9 @@ title: 5SCI
 ## Fisica
 
 - [[Ripasso campo magnetico e moto nei campi magnetici]]
+- [[Elettromagnetismo e Maxwell]]
+- [[Relatività]]
+- [[Crisi della fisica classica]]
 
 ## Simulazioni utili
 

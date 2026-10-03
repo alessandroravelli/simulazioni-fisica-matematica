@@ -6,21 +6,20 @@ tags:
   - elettromagnetismo
   - 5SCI
 ---
-> [!todo] Figure
-> I disegni degli appunti originali (magnete, filo, spira, solenoide, selettore di velocità) verranno ridisegnati.
-
 ## Magneti e campo magnetico B
 
 Sono oggetti dotati di 2 poli: **Nord** e **Sud**. Emettono un campo magnetico e i poli **non possono essere divisi**: se li taglio ottengo 2 magneti uguali, ciascuno con il suo N e il suo S.
 
+![Un magnete tagliato a metà diventa due magneti, ognuno con polo nord e polo sud](magnete-taglio.svg)
+
 ### Proprietà di B
 
-| Similitudini con $\vec E$ | Differenze con $\vec E$ |
-| --- | --- |
-| Poli uguali si respingono, poli diversi si attraggono | Non esiste la carica singola come per $\vec E$, ma ci sono sempre coppie NS |
-| Il campo esce da N (come dalle cariche $+$ per $\vec E$) ed entra in S (come nelle cariche $-$) | Non ci possono essere linee di campo aperte come per $\vec E$ |
-| Una carica $q>0$ segue $\vec E$; un magnete si allinea al $\vec B$ esterno (bussola) | $\vec E$ è generato da cariche ferme, $\vec B$ da cariche in moto |
-| Si rappresenta con linee di campo | |
+| Similitudini con $\vec E$                                                                       | Differenze con $\vec E$                                                     |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Poli uguali si respingono, poli diversi si attraggono                                           | Non esiste la carica singola come per $\vec E$, ma ci sono sempre coppie NS |
+| Il campo esce da N (come dalle cariche $+$ per $\vec E$) ed entra in S (come nelle cariche $-$) | Non ci possono essere linee di campo aperte come per $\vec E$               |
+| Una carica $q>0$ segue $\vec E$; un magnete si allinea al $\vec B$ esterno (bussola)            | $\vec E$ è generato da cariche ferme, $\vec B$ da cariche in moto           |
+| Si rappresenta con linee di campo                                                               |                                                                             |
 
 ## Forza magnetica su un filo
 
@@ -48,6 +47,8 @@ Abbiamo accennato prima che il campo magnetico viene generato da cariche in movi
 
 Il campo magnetico avvolge il filo ed è tangente in ogni punto alle circonferenze che avvolgono il filo. Il verso in cui ruota il campo magnetico attorno al filo si ottiene sempre con la mano destra, con il pollice in direzione della corrente e il campo magnetico che ruota nella direzione in cui la mano si chiude.
 
+![Filo verticale percorso da corrente i: il campo B è tangente alle circonferenze attorno al filo](filo-campo.svg)
+
 $$
 \textcolor{#f59e0b}{\text{Legge di Biot-Savart:}} \quad B = \frac{\mu_0}{2\pi}\,\frac{i}{d}
 $$
@@ -67,6 +68,8 @@ $$
 ## Campo magnetico di una spira
 
 Una spira semplicemente è un filo di forma circolare percorso da corrente, e di conseguenza genera un campo magnetico. Usando la regola della mano destra vediamo che il campo magnetico in ogni punto sull'asse della spira è diretto esattamente nella stessa direzione dell'asse.
+
+![Spira di raggio R e campo B in un punto dell'asse a distanza r](spira-campo.svg)
 
 $$
 \text{Sull'asse:} \quad B = \frac{\mu_0\, i\, R^2}{2\left(R^2 + r^2\right)^{3/2}} \qquad \text{Se } r = 0 \;\longrightarrow\; B = \frac{\mu_0\, i}{2R}
@@ -89,11 +92,15 @@ $$
 
 Internamente il campo magnetico è costante e uniforme in ogni punto e assume il valore visto nella formula sopra. Esternamente il campo magnetico non sarebbe nullo ma è molto più debole. Se il solenoide che consideriamo è molto più lungo di quanto sia largo possiamo considerare il campo esterno nullo.
 
+![Linee del campo magnetico di un solenoide: fitte e parallele dentro, rade fuori](solenoide-campo.svg)
+
 ## Forza tra due fili
 
 Abbiamo visto che un filo percorso da corrente genera un campo magnetico e sappiamo allo stesso momento che un filo percorso da corrente all'interno di un campo magnetico subisce una forza: questo ci permette di dimostrare che due fili percorsi da corrente possono attrarsi o respingersi.
 
 Il filo 1, percorso da corrente, genera $\vec B$; il filo 2 subisce il $\vec B$ del filo 1 e sente $\vec F$.
+
+![Due fili paralleli con correnti concordi: il campo del filo 1 attrae il filo 2](due-fili.svg)
 
 $$
 B = \frac{\mu_0}{2\pi}\,\frac{i_1}{d} \quad \text{generato dal filo 1}
@@ -124,6 +131,8 @@ $$
 \Gamma_{\mathcal L}(\vec B) = \sum_{i=1}^{n} \vec B_i \cdot \Delta\vec\ell_i = \sum_{i=1}^{n} B_i\,\Delta\ell_i \cos\theta_i \qquad \text{(prodotto scalare)}
 $$
 
+![A sinistra la circuitazione lungo una linea chiusa in un campo uniforme; a destra una linea che abbraccia un filo e una che non lo abbraccia](circuitazione.svg)
+
 Quello che scopriamo è che $\Gamma$ è non nulla solo se $\mathcal L$ è attraversata da una corrente: per una linea $\mathcal L_1$ concatenata con la corrente $\Gamma_{\mathcal L_1} = \mu_0\, i_{\mathcal L}$, per una linea $\mathcal L_2$ che non la abbraccia $\Gamma_{\mathcal L_2} = 0$.
 
 <span style="color:#f59e0b">Solo le correnti concatenate contribuiscono a $\Gamma$.</span>
@@ -149,6 +158,8 @@ $$
 
 Una carica $q$ di massa $m$ entra con velocità $\vec v$ perpendicolare a un campo $\vec B$ uscente. Se $F_L = F_{centr}$ $\Rightarrow$ moto circolare:
 
+![Carica in moto in un campo B uscente: la forza di Lorentz la fa girare su una circonferenza di raggio R](moto-circolare.svg)
+
 $$
 \begin{cases}
 F_L = q v B \sin\frac{\pi}{2} \\[2pt]
@@ -162,6 +173,8 @@ $$
 
 Considero un'area in cui sono presenti sia campo elettrico che campo magnetico, orientati correttamente. Questi generano due forze su una particella carica che si annullano a vicenda, facendo sì che la particella percorra un percorso rettilineo. Le uniche particelle che soddisfano questa condizione però sono quelle che hanno una velocità ben definita e fissata.
 
+![Selettore di velocità: tra due piastre cariche, forza elettrica e forza di Lorentz su una carica negativa si bilanciano](selettore-velocita.svg)
+
 $$
 \vec F_e = -q\,\vec E \qquad \vec F_L = -q\,\vec v \times \vec B
 $$
@@ -171,3 +184,6 @@ F_e = F_L \;\longrightarrow\; \text{particella indisturbata} \quad\Longrightarro
 $$
 
 Tra tutte le particelle che entrano nel selettore di velocità solo e solamente quelle che hanno una velocità pari al rapporto tra campo elettrico e campo magnetico che abbiamo generato noi passeranno indisturbate, tutte le altre invece verranno deflesse.
+
+> [!info] Collegamenti
+> Il discorso prosegue con l'induzione elettromagnetica e le equazioni di Maxwell: [[Elettromagnetismo e Maxwell]].

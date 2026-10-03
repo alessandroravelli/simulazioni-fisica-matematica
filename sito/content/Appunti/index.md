@@ -11,4 +11,7 @@ Gli appunti delle lezioni, divisi per materia. Ogni argomento rimanda agli altri
 ## Fisica
 
 - [[Ripasso campo magnetico e moto nei campi magnetici]]: magneti, Biot-Savart, spira e solenoide, Gauss e circuitazione per B, forza di Lorentz *(5SCI)*.
+- [[Elettromagnetismo e Maxwell]]: induzione, Faraday-Neumann-Lenz, circuito RL, equazioni di Maxwell, onde elettromagnetiche *(5SCI)*.
+- [[Relatività]]: Michelson-Morley, dilatazione dei tempi, contrazione delle lunghezze, Lorentz, Minkowski, $E = mc^2$ *(5SCI)*.
+- [[Crisi della fisica classica]]: corpo nero, quanti, effetto fotoelettrico, effetto Compton *(5SCI)*.
 - [[Onde suono e luce]]: moto armonico e moto ondulatorio *(in corso)*.
