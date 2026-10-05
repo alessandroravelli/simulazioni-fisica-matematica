@@ -4,6 +4,8 @@ title: 4SCI
 ## Matematica
 
 - [[Goniometria]]
+- [[Equazioni goniometriche]]
+- [[Disequazioni goniometriche]]
 
 ## Fisica
 

@@ -122,9 +122,14 @@ def etichetta_multiplo_pi_mezzi(k):
 
 def grafico(f, xmin, xmax, ymin, ymax, larghezza=640, altezza=260, solido=(0, 2 * PI),
             colore=ROSSO, tick_x=None, tick_y=None, nome=None, nome_pos=None,
-            asintoti=(), linee_y=(), etichetta_x="x", etichetta_y="y", altre=()):
+            asintoti=(), linee_y=(), etichetta_x="x", etichetta_y="y", altre=(),
+            evidenzia=(), verticali=(), etichette=()):
     """Grafico di f: tratto pieno nell'intervallo `solido`, tratteggiato fuori.
-    `altre`: altre curve (funzione, colore) da disegnare sugli stessi assi."""
+    `altre`: altre curve (funzione, colore) da disegnare sugli stessi assi.
+    `evidenzia`: intervalli (a, b) in cui ripassare f con un tratto largo
+    (le soluzioni di una disequazione); `verticali`: (x, colore) linee
+    tratteggiate da f(x) all'asse x; `etichette`: (x, y, testo, colore)
+    in coordinate del grafico."""
     mx, my = 40, 24
     sx = (larghezza - 2 * mx) / (xmax - xmin)
     sy = (altezza - 2 * my) / (ymax - ymin)
@@ -184,7 +189,18 @@ def grafico(f, xmin, xmax, ymin, ymax, larghezza=640, altezza=260, solido=(0, 2 
             tr = "" if pieno else ' stroke-dasharray="5 5"'
             curve += (f'<path d="{d}" fill="none" stroke="{col}" stroke-width="{2.6 if pieno else 1.6}"'
                       f'{tr} stroke-linejoin="round"/>')
+    for a, b in evidenzia:
+        punti = [P(a + (b - a) * i / 200, f(a + (b - a) * i / 200)) for i in range(201)]
+        d = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in punti)
+        curve = (f'<path d="{d}" fill="none" stroke="{ARANCIO}" stroke-width="13" stroke-opacity="0.35" '
+                 f'stroke-linecap="round" stroke-linejoin="round"/>') + curve
+    for xv, col in verticali:
+        a, b = P(xv, f(xv)), P(xv, 0)
+        corpo += linea(a[0], a[1], b[0], b[1], colore=col, spessore=1.8, tratteggio="5 4")
     corpo += f'<defs>{clip}</defs><g clip-path="url(#area)">{curve}</g>'
+    for ex, ey, t, col in etichette:
+        px, py = P(ex, ey)
+        corpo += testo(px, py, t, colore=col, dim=15)
     if nome:
         nx, ny = nome_pos or (larghezza - 150, 30)
         corpo += testo(nx, ny, nome, colore=colore, dim=18, math_=True)
@@ -1613,6 +1629,397 @@ def genera_fisica5():
         "effetto-compton.svg": f5_compton(),
     }
 
+# ============================================ EQUAZIONI E DISEQUAZIONI
+
+def arco_cerchio(pl, da, a, colore=ARANCIO, spessore=13, opacita=0.35):
+    """Arco della circonferenza goniometrica da `da` ad `a` (verso antiorario),
+    ripassato largo e trasparente: le soluzioni sulla circonferenza."""
+    if a - da >= 2 * PI - 1e-6:
+        return arco_cerchio(pl, da, da + PI, colore, spessore, opacita) + \
+            arco_cerchio(pl, da + PI, a, colore, spessore, opacita)
+    x1, y1 = pl.p(math.cos(da), math.sin(da))
+    x2, y2 = pl.p(math.cos(a), math.sin(a))
+    grande = 1 if (a - da) > PI else 0
+    return (f'<path d="M{x1:.1f},{y1:.1f} A{pl.r},{pl.r} 0 {grande} 0 {x2:.1f},{y2:.1f}" fill="none" '
+            f'stroke="{colore}" stroke-width="{spessore}" stroke-opacity="{opacita}" stroke-linecap="round"/>')
+
+
+def raggio(pl, ang, colore, spessore=2.5, tratteggio=None, lung=1.0):
+    return linea(pl.cx, pl.cy, *pl.p(lung * math.cos(ang), lung * math.sin(ang)), colore, spessore, tratteggio)
+
+
+def sul_cerchio(pl, ang, k=1.0):
+    return pl.p(k * math.cos(ang), k * math.sin(ang))
+
+
+def orizzontale(pl, y, etichetta, colore=ARANCIO, da=-1.45, a=1.55, tratteggio=None):
+    x1, yy = pl.p(da, y)
+    x2, _ = pl.p(a, y)
+    return linea(x1, yy, x2, yy, colore, 2.5, tratteggio) + testo(x2 + 8, yy, etichetta, colore, 16, ancora="start")
+
+
+def verticale(pl, x, etichetta, colore=ARANCIO, da=-1.45, a=1.45, sopra=True):
+    xx, y1 = pl.p(x, da)
+    _, y2 = pl.p(x, a)
+    lab = testo(xx + 6, y2 - 12, etichetta, colore, 16, ancora="start") if sopra else \
+        testo(xx + 6, y1 + 14, etichetta, colore, 16, ancora="start")
+    return linea(xx, y1, xx, y2, colore, 2.5) + lab
+
+
+def eq_sin_punto(due_punti):
+    pl = Piano(200, 210, 140)
+    a = math.radians(40)
+    px, py = sul_cerchio(pl, a)
+    s = pl.assi() + pl.cerchio() + orizzontale(pl, math.sin(a), "y = m")
+    s += raggio(pl, a, GRIGIO, 2, "5 4")
+    s += linea(px, py, px, pl.cy, ROSSO, 3.5)
+    s += arco_angolo(pl.cx, pl.cy, 34, 0, a, ROSSO)
+    s += testo(pl.cx + 48, pl.cy - 13, "α", ROSSO, 17, math_=True)
+    s += testo(px + 12, (py + pl.cy) / 2 + 8, "sin α", ROSSO, 16, ancora="start")
+    s += punto(px, py, ARANCIO, 5) + testo(px + 4, py - 18, "P", ARANCIO, 17)
+    if due_punti:
+        q = PI - a
+        qx, qy = sul_cerchio(pl, q)
+        s += raggio(pl, q, VIOLA, 2.5, "5 4")
+        s += arco_angolo(pl.cx, pl.cy, 22, 0, q, VIOLA, 1.8)
+        s += testo(pl.cx - 22, pl.cy - 52, "π − α", VIOLA, 16, math_=True)
+        s += punto(qx, qy, VIOLA, 5) + testo(qx - 6, qy - 18, "Q", VIOLA, 17)
+    return svg(470, 420, s)
+
+
+def eq_caso(funzione, caso):
+    """I tre casi di sin x = m (retta orizzontale) e cos x = m (retta verticale)."""
+    pl = Piano(160, 175, 90)
+    s = pl.assi(0.25, etichette=False) + pl.cerchio()
+    if caso == "sopra":
+        s += orizzontale(pl, 1.5, "y = m", da=-1.5, a=1.5) if funzione == "sin" else \
+            verticale(pl, 1.5, "x = m", da=-1.6, a=1.6)
+    elif caso == "sotto":
+        s += orizzontale(pl, -1.5, "y = m", da=-1.5, a=1.5) if funzione == "sin" else \
+            verticale(pl, -1.5, "x = m", da=-1.6, a=1.6)
+    else:
+        a = math.radians(35)
+        if funzione == "sin":
+            s += orizzontale(pl, math.sin(a), "y = m", da=-1.4, a=1.4)
+            s += raggio(pl, a, ROSSO) + raggio(pl, PI - a, VIOLA)
+            s += arco_angolo(pl.cx, pl.cy, 24, 0, a, ROSSO)
+            s += testo(pl.cx + 36, pl.cy - 10, "α", ROSSO, 15, math_=True)
+            s += arco_angolo(pl.cx, pl.cy, 16, 0, PI - a, VIOLA, 1.6)
+            s += testo(pl.cx - 50, pl.cy - 12, "π − α", VIOLA, 14, math_=True)
+        else:
+            s += verticale(pl, math.cos(a), "x = m", da=-1.4, a=1.4)
+            s += raggio(pl, a, BLU) + raggio(pl, -a, VIOLA)
+            s += arco_angolo(pl.cx, pl.cy, 26, 0, a, BLU)
+            s += testo(pl.cx + 38, pl.cy - 10, "α", BLU, 15, math_=True)
+            s += arco_angolo(pl.cx, pl.cy, 26, -a, 0, VIOLA)
+            s += testo(pl.cx + 40, pl.cy + 13, "−α", VIOLA, 15, math_=True)
+    return svg(370, 350, s)
+
+
+def eq_sin_esempio(segno):
+    pl = Piano(170, 150, 100)
+    a = segno * PI / 6
+    s = pl.assi(0.3, etichette=False) + pl.cerchio()
+    s += orizzontale(pl, math.sin(a), "m = 1/2" if segno > 0 else "m = −1/2", da=-1.4, a=1.45)
+    s += raggio(pl, a, ROSSO, 3)
+    s += arco_angolo(pl.cx, pl.cy, 30, min(0, a), max(0, a), ROSSO)
+    s += testo(pl.cx + 52, pl.cy - 10 * segno, "30°", ROSSO, 14)
+    s += punto(*sul_cerchio(pl, a), ROSSO, 4)
+    return svg(420, 300, s)
+
+
+def eq_sin_arcsin():
+    pl = Piano(170, 160, 110)
+    a = math.asin(2 / 3)
+    s = pl.assi(0.3, etichette=False) + pl.cerchio()
+    s += orizzontale(pl, 2 / 3, "m = 2/3", da=-1.4, a=1.45)
+    s += raggio(pl, a, ARANCIO, 3) + raggio(pl, PI - a, VIOLA, 3)
+    s += arco_angolo(pl.cx, pl.cy, 34, 0, a, ARANCIO)
+    s += testo(pl.cx + 58, pl.cy - 14, "41,8°", ARANCIO, 14)
+    s += arco_angolo(pl.cx, pl.cy, 22, 0, PI - a, VIOLA, 1.8)
+    s += testo(pl.cx + pl.r + 30, pl.cy - 44, "180° − 41,8°", VIOLA, 15, ancora="start")
+    s += punto(*sul_cerchio(pl, a), ARANCIO, 4) + punto(*sul_cerchio(pl, PI - a), VIOLA, 4)
+    return svg(430, 320, s)
+
+
+def eq_cos_punto(due_punti):
+    pl = Piano(200, 210, 140)
+    a = math.radians(52)
+    px, py = sul_cerchio(pl, a)
+    s = pl.assi() + pl.cerchio()
+    if due_punti:
+        s += verticale(pl, math.cos(a), "x = m", sopra=False)
+    s += raggio(pl, a, GRIGIO, 2, "5 4")
+    s += linea(pl.cx, pl.cy, px, pl.cy, BLU, 3.5)
+    s += arco_angolo(pl.cx, pl.cy, 34, 0, a, BLU)
+    s += testo(pl.cx + 44, pl.cy - 18, "α", BLU, 17, math_=True)
+    s += testo((pl.cx + px) / 2, pl.cy + 20, "cos α", BLU, 16)
+    s += punto(px, py, ARANCIO, 5) + testo(px + 10, py - 18, "P", ARANCIO, 17)
+    if due_punti:
+        qx, qy = sul_cerchio(pl, -a)
+        s += raggio(pl, -a, VIOLA, 2.5)
+        s += arco_angolo(pl.cx, pl.cy, 24, -a, 0, VIOLA)
+        s += testo(px + 26, pl.cy + 40, "−α", VIOLA, 17, math_=True)
+        s += punto(qx, qy, VIOLA, 5) + testo(qx + 16, qy + 6, "Q", VIOLA, 17, ancora="start")
+    return svg(470, 440, s)
+
+
+def eq_tan_punto(due_punti):
+    pl = Piano(210, 220, 130)
+    a = math.radians(42)
+    px, py = sul_cerchio(pl, a)
+    tx, ty = pl.p(1, math.tan(a))
+    s = pl.assi() + pl.cerchio()
+    s += linea(pl.cx + pl.r, pl.cy + pl.r * 1.35, pl.cx + pl.r, pl.cy - pl.r * 1.35, VERDE, 2)
+    da = PI + a if due_punti else 0
+    if due_punti:
+        s += linea(*sul_cerchio(pl, PI + a, 1.15), *pl.p(1.25, 1.25 * math.tan(a)), ARANCIO, 2.5)
+    else:
+        s += linea(pl.cx, pl.cy, tx, ty, ARANCIO, 2.5)
+    s += linea(tx, pl.cy, tx, ty, VERDE, 4)
+    s += arco_angolo(pl.cx, pl.cy, 30, 0, a, ARANCIO)
+    s += testo(pl.cx + 42, pl.cy - 12, "α", ARANCIO, 17, math_=True)
+    s += testo(tx + 14, (pl.cy + ty) / 2, "m = tan α" if due_punti else "tan α", VERDE, 16, ancora="start")
+    s += punto(px, py, ARANCIO, 5) + testo(px - 20, py - 22, "P", ARANCIO, 17)
+    if due_punti:
+        qx, qy = sul_cerchio(pl, PI + a)
+        s += arco_angolo(pl.cx, pl.cy, 20, 0, PI + a, VIOLA, 1.8)
+        s += testo(pl.cx - 54, pl.cy - 26, "π + α", VIOLA, 16, math_=True)
+        s += punto(qx, qy, VIOLA, 5) + testo(qx + 18, qy + 20, "Q", VIOLA, 17)
+    return svg(470, 440, s)
+
+
+def eq_lineare():
+    pl = Piano(210, 200, 130)
+    a, b = math.radians(55), math.radians(155)
+    A, B = (math.cos(a), math.sin(a)), (math.cos(b), math.sin(b))
+    dx, dy = A[0] - B[0], A[1] - B[1]
+    s = pl.assi() + pl.cerchio()
+    s += linea(*pl.p(B[0] - 0.45 * dx, B[1] - 0.45 * dy), *pl.p(A[0] + 0.4 * dx, A[1] + 0.4 * dy), ARANCIO, 2.5)
+    s += raggio(pl, a, GRIGIO) + raggio(pl, b, GRIGIO)
+    s += arco_angolo(pl.cx, pl.cy, 28, 0, a, ARANCIO)
+    s += testo(pl.cx + 40, pl.cy - 16, "α", ARANCIO, 17, math_=True)
+    s += arco_angolo(pl.cx, pl.cy, 16, 0, b, VIOLA, 1.6)
+    s += testo(pl.cx - 32, pl.cy - 32, "β", VIOLA, 17, math_=True)
+    s += punto(*pl.p(*A), ARANCIO, 5) + punto(*pl.p(*B), VIOLA, 5)
+    x2, y2 = pl.p(A[0] + 0.4 * dx, A[1] + 0.4 * dy)
+    s += testo(x2 - 6, y2 - 16, "a y + b x + c = 0", ARANCIO, 15, ancora="end", math_=True)
+    return svg(440, 400, s)
+
+
+def genera_equazioni():
+    f = {
+        "eqgonio-sin-punto.svg": eq_sin_punto(False),
+        "eqgonio-sin-due-punti.svg": eq_sin_punto(True),
+        "eqgonio-sin-m-maggiore.svg": eq_caso("sin", "sopra"),
+        "eqgonio-sin-m-intermedio.svg": eq_caso("sin", "mezzo"),
+        "eqgonio-sin-m-minore.svg": eq_caso("sin", "sotto"),
+        "eqgonio-sin-30.svg": eq_sin_esempio(1),
+        "eqgonio-sin-meno-30.svg": eq_sin_esempio(-1),
+        "eqgonio-sin-arcsin.svg": eq_sin_arcsin(),
+        "eqgonio-cos-punto.svg": eq_cos_punto(False),
+        "eqgonio-cos-due-punti.svg": eq_cos_punto(True),
+        "eqgonio-cos-m-maggiore.svg": eq_caso("cos", "sopra"),
+        "eqgonio-cos-m-intermedio.svg": eq_caso("cos", "mezzo"),
+        "eqgonio-cos-m-minore.svg": eq_caso("cos", "sotto"),
+        "eqgonio-tan-punto.svg": eq_tan_punto(False),
+        "eqgonio-tan-due-punti.svg": eq_tan_punto(True),
+        "eqgonio-lineare.svg": eq_lineare(),
+    }
+    f["eqgonio-tan-grafico.svg"] = grafico(
+        math.tan, -0.9, 3 * PI + 0.6, -3.2, 3.2, solido=(0, 3 * PI), colore=VERDE,
+        tick_x=tick_pi_mezzi(6), nome="tan(x)", nome_pos=(210, 30),
+        asintoti=(PI / 2, 3 * PI / 2, 5 * PI / 2), altezza=300)
+    return f
+
+
+# ------------------------------------------------------- disequazioni
+
+def dis_sin_circonferenza():
+    pl = Piano(190, 190, 130)
+    s = pl.assi() + pl.cerchio()
+    s += arco_cerchio(pl, PI / 6, 5 * PI / 6)
+    s += orizzontale(pl, 0.5, "y = 1/2", da=-1.4, a=1.45, tratteggio="6 5")
+    s += raggio(pl, PI / 6, VERDE) + raggio(pl, 5 * PI / 6, VIOLA)
+    s += arco_angolo(pl.cx, pl.cy, 40, 0, PI / 6, VERDE)
+    s += testo(pl.cx + 62, pl.cy - 12, "π/6", VERDE, 15)
+    s += arco_angolo(pl.cx, pl.cy, 22, 0, 5 * PI / 6, VIOLA, 1.8)
+    s += testo(pl.cx - 50, pl.cy - 44, "5π/6", VIOLA, 15)
+    s += punto(*sul_cerchio(pl, PI / 6), VERDE, 5) + punto(*sul_cerchio(pl, 5 * PI / 6), VIOLA, 5)
+    return svg(470, 380, s)
+
+
+def dis_esempio_circonferenza(soluzione):
+    pl = Piano(190, 180, 120)
+    y = -math.sqrt(3) / 2
+    s = pl.assi(0.3) + pl.cerchio()
+    if soluzione:
+        s += arco_cerchio(pl, -PI / 3, 4 * PI / 3)
+        s += arco_angolo(pl.cx, pl.cy, 22, 0, 4 * PI / 3, VIOLA, 1.8)
+        s += testo(pl.cx - 44, pl.cy - 34, "π + π/3", VIOLA, 14)
+        s += arco_angolo(pl.cx, pl.cy, 34, -PI / 3, 0, VERDE)
+        s += testo(pl.cx + 50, pl.cy + 22, "π/3", VERDE, 14)
+    s += orizzontale(pl, y, "−√3/2", da=-1.3, a=1.35)
+    s += raggio(pl, 4 * PI / 3, VIOLA) + raggio(pl, 5 * PI / 3, VERDE)
+    s += punto(*sul_cerchio(pl, 4 * PI / 3), VIOLA, 5) + punto(*sul_cerchio(pl, 5 * PI / 3), VERDE, 5)
+    s += testo(pl.cx + 14, pl.cy + pl.r + 14, "−1", dim=14, ancora="start")
+    return svg(440, 360, s)
+
+
+def dis_cos_circonferenza():
+    pl = Piano(190, 215, 130)
+    c = math.sqrt(2) / 2
+    s = pl.assi() + pl.cerchio()
+    s += arco_cerchio(pl, -PI / 4, PI / 4)
+    s += verticale(pl, c, "x = √2/2", da=-1.35, a=1.35)
+    s += raggio(pl, PI / 4, VERDE) + raggio(pl, -PI / 4, VIOLA)
+    s += arco_angolo(pl.cx, pl.cy, 34, 0, PI / 4, VERDE)
+    s += testo(pl.cx + 50, pl.cy - 16, "π/4", VERDE, 15)
+    px, py = sul_cerchio(pl, PI / 4, 1.12)
+    s += punto(*sul_cerchio(pl, PI / 4), VERDE, 5) + punto(*sul_cerchio(pl, -PI / 4), VIOLA, 5)
+    qx, qy = sul_cerchio(pl, -PI / 4, 1.2)
+    s += testo(qx + 4, qy, "7π/4", VIOLA, 15, ancora="start")
+    return svg(460, 430, s)
+
+
+def dis_cos_4x():
+    pl = Piano(190, 180, 120)
+    s = pl.assi() + pl.cerchio()
+    s += arco_cerchio(pl, PI / 3, 5 * PI / 3)
+    s += verticale(pl, 0.5, "t = 1/2", da=-1.3, a=1.3)
+    s += raggio(pl, PI / 3, ARANCIO) + raggio(pl, 5 * PI / 3, ARANCIO)
+    s += arco_angolo(pl.cx, pl.cy, 26, 0, PI / 3, ARANCIO)
+    s += testo(pl.cx + 30, pl.cy - 40, "π/3", ARANCIO, 15, ancora="start")
+    s += arco_angolo(pl.cx, pl.cy, 16, 0, 5 * PI / 3, ARANCIO, 1.6)
+    qx, qy = sul_cerchio(pl, 1.15 * PI, 0.62)
+    s += testo(qx, qy + 20, "5π/3", ARANCIO, 15)
+    s += punto(*sul_cerchio(pl, PI / 3), ARANCIO, 5) + punto(*sul_cerchio(pl, 5 * PI / 3), ARANCIO, 5)
+    return svg(440, 360, s)
+
+
+def dis_lineare():
+    pl = Piano(220, 200, 120)
+    s = ""
+    # semipiano X + Y ≥ −1 (sopra la retta), limitato alla figura
+    pts = [pl.p(-1.75, 0.75), pl.p(-1.75, 1.45), pl.p(1.6, 1.45), pl.p(1.6, -1.45), pl.p(0.45, -1.45)]
+    s += '<polygon points="' + " ".join(f"{x:.1f},{y:.1f}" for x, y in pts) + \
+        f'" fill="{ARANCIO}" fill-opacity="0.13"/>'
+    s += pl.assi(0.3, etichette=False) + pl.cerchio()
+    s += testo(pl.cx + pl.r * 1.3 + 8, pl.cy + 14, "X", dim=17, math_=True)
+    s += testo(pl.cx + 14, pl.cy - pl.r * 1.3 - 4, "Y", dim=17, math_=True)
+    s += arco_cerchio(pl, -PI / 2, PI)
+    s += linea(*pl.p(-1.75, 0.75), *pl.p(0.45, -1.45), ARANCIO, 2.5)
+    s += testo(*pl.p(-1.55, 0.98), "X + Y = −1", ARANCIO, 15)
+    for ang, t, dx, dy in [(0, "0", 14, -12), (PI / 2, "π/2", 22, -14), (PI, "π", -18, 16), (3 * PI / 2, "3π/2", -34, 16)]:
+        x, y = sul_cerchio(pl, ang)
+        s += testo(x + dx, y + dy, t, dim=15)
+    s += punto(*pl.p(-1, 0), ARANCIO, 5) + punto(*pl.p(0, -1), ARANCIO, 5)
+    return svg(460, 400, s)
+
+
+def asse_intervalli(valori, larghezza=640, x0=150):
+    """Posizioni (in pixel) di valori multipli di π su un asse da 0 a 2π."""
+    scala = (larghezza - x0 - 40) / (2 * PI)
+    return {v: x0 + v * scala for v in valori}
+
+
+def dis_sistema():
+    valori = [(0, "0"), (PI / 3, "π/3"), (PI / 2, "π/2"), (3 * PI / 2, "3π/2"), (5 * PI / 3, "5π/3"), (2 * PI, "2π")]
+    X = asse_intervalli([v for v, _ in valori])
+    s = ""
+    for v, t in valori:
+        s += linea(X[v], 34, X[v], 196, GRIGIO, 1.5) + testo(X[v], 20, t, dim=15)
+    righe = [(70, ROSSO, "cos x ≥ 0", [(0, PI / 2), (3 * PI / 2, 2 * PI)]),
+             (115, VERDE, "cos x ≤ 1/2", [(PI / 3, 5 * PI / 3)]),
+             (170, GRIGIO, "soluzione", [(PI / 3, PI / 2), (3 * PI / 2, 5 * PI / 3)])]
+    for y, col, t, tratti in righe:
+        s += testo(16, y, t, col, 15, ancora="start")
+        for a, b in tratti:
+            s += linea(X[a], y, X[b], y, col, 3.5) + punto(X[a], y, col, 5) + punto(X[b], y, col, 5)
+    return svg(640, 210, s)
+
+
+def dis_raddoppio():
+    valori = [(0, "0"), (PI / 2, "π/2"), (PI, "π"), (3 * PI / 2, "3π/2"), (2 * PI, "2π")]
+    X = asse_intervalli([v for v, _ in valori], 600, 40)
+    s = linea(X[0] - 10, 60, X[2 * PI] + 20, 60, GRIGIO, 1.5, freccia=True)
+    for v, t in valori:
+        s += linea(X[v], 52, X[v], 68, GRIGIO, 1.5) + testo(X[v], 30, t, dim=15)
+    for a, b, ok in [(0, PI / 2, True), (PI / 2, PI, False), (PI, 3 * PI / 2, True), (3 * PI / 2, 2 * PI, False)]:
+        if ok:
+            s += linea(X[a], 60, X[b], 60, ARANCIO, 5)
+        s += testo((X[a] + X[b]) / 2, 90, "SÌ" if ok else "NO", ARANCIO if ok else GRIGIO, 15, grassetto=True)
+    return svg(600, 110, s)
+
+
+def dis_segno():
+    valori = [(0, "0"), (PI / 6, "π/6"), (PI / 2, "π/2"), (PI, "π"), (3 * PI / 2, "3π/2"), (11 * PI / 6, "11π/6"), (2 * PI, "2π")]
+    X = asse_intervalli([v for v, _ in valori], 680, 80)
+    s = ""
+    for v, t in valori:
+        s += linea(X[v], 36, X[v], 170, GRIGIO, 1.5) + testo(X[v], 20, t, dim=15)
+    num = ["+", "+", "−", "+", "−", "−"]
+    den = ["+", "−", "−", "−", "−", "+"]
+    s += testo(20, 60, "N", ROSSO, 17, ancora="start", grassetto=True)
+    s += testo(20, 110, "D", VERDE, 17, ancora="start", grassetto=True)
+    for i in range(6):
+        a, b = valori[i][0], valori[i + 1][0]
+        xm = (X[a] + X[b]) / 2
+        s += testo(xm, 60, num[i], ROSSO, 20) + testo(xm, 110, den[i], VERDE, 20)
+        segno = "+" if num[i] == den[i] else "−"
+        s += testo(xm, 196, segno, GRIGIO, 20)
+        if segno == "−":
+            s += f'<circle cx="{xm:.1f}" cy="196" r="15" fill="none" stroke="{ARANCIO}" stroke-width="2.5"/>'
+    for v in (0, PI / 2, PI, 3 * PI / 2, 2 * PI):           # N = 0: valori accettati
+        s += punto(X[v], 60, ROSSO, 5)
+    for v in (PI / 6, 11 * PI / 6):                          # D = 0: valori esclusi
+        s += f'<circle cx="{X[v]:.1f}" cy="110" r="5" fill="none" stroke="{VERDE}" stroke-width="2"/>'
+    return svg(680, 220, s)
+
+
+def genera_disequazioni():
+    s3 = math.sqrt(3) / 2
+    c2 = math.sqrt(2) / 2
+    base = dict(xmin=-0.7, xmax=2 * PI + 1.0, solido=(0, 2 * PI), larghezza=560, altezza=260)
+    f = {
+        "disgonio-sin-circonferenza.svg": dis_sin_circonferenza(),
+        "disgonio-esempio-circonferenza.svg": dis_esempio_circonferenza(False),
+        "disgonio-esempio-circonferenza-sol.svg": dis_esempio_circonferenza(True),
+        "disgonio-cos-circonferenza.svg": dis_cos_circonferenza(),
+        "disgonio-cos-4x.svg": dis_cos_4x(),
+        "disgonio-lineare.svg": dis_lineare(),
+        "disgonio-sistema.svg": dis_sistema(),
+        "disgonio-raddoppio.svg": dis_raddoppio(),
+        "disgonio-segno.svg": dis_segno(),
+    }
+    f["disgonio-sin-grafico.svg"] = grafico(
+        math.sin, ymin=-1.35, ymax=1.45, colore=ROSSO,
+        tick_x=[(PI / 6, "π/6", VERDE), (5 * PI / 6, "5π/6", VIOLA),
+                (3 * PI / 2, "3π/2", None), (2 * PI, "2π", None)],
+        tick_y=[(1, "1"), (0.5, "1/2")], linee_y=[(0.5, ARANCIO)], evidenzia=[(PI / 6, 5 * PI / 6)],
+        etichette=[(5.6, 0.68, "y = 1/2", ARANCIO)], **base)
+    tick_es = [(PI / 2, "π/2", None), (PI, "π", None), (3 * PI / 2, "3π/2", None), (2 * PI, "2π", None)]
+    et_es = [(4 * PI / 3, 0.35, "4π/3", VIOLA), (5 * PI / 3, 0.35, "5π/3", VERDE)]
+    for nome, ev in [("disgonio-esempio-grafico.svg", ()),
+                     ("disgonio-esempio-grafico-sol.svg", [(0, 4 * PI / 3), (5 * PI / 3, 2 * PI)])]:
+        f[nome] = grafico(
+            math.sin, ymin=-1.35, ymax=1.45, colore=ROSSO, tick_x=tick_es,
+            tick_y=[(1, "1"), (-s3, "−√3/2")], linee_y=[(-s3, ARANCIO)],
+            verticali=[(4 * PI / 3, VIOLA), (5 * PI / 3, VERDE)], evidenzia=ev, etichette=et_es, **base)
+    f["disgonio-cos-grafico.svg"] = grafico(
+        math.cos, ymin=-1.35, ymax=1.45, colore=BLU,
+        tick_x=[(PI / 4, "π/4", VERDE), (PI, "π", None), (3 * PI / 2, "3π/2", None), (2 * PI, "2π", None)],
+        tick_y=[(1, "1"), (c2, "√2/2")], linee_y=[(c2, ARANCIO)],
+        verticali=[(PI / 4, VERDE), (7 * PI / 4, VIOLA)], evidenzia=[(0, PI / 4), (7 * PI / 4, 2 * PI)],
+        etichette=[(7 * PI / 4, -0.3, "7π/4", VIOLA)], **base)
+    f["disgonio-tan.svg"] = grafico(
+        math.tan, -0.5, PI + 0.6, -3.0, 3.6, solido=(0, PI), colore=VERDE,
+        tick_x=[(PI / 3, "π/3", None), (PI / 2, "π/2", None), (PI, "π", None)],
+        tick_y=[(math.sqrt(3), "√3")], linee_y=[(math.sqrt(3), ARANCIO)], asintoti=(PI / 2,),
+        evidenzia=[(PI / 3, PI / 2 - 0.12)], verticali=[(PI / 3, GRIGIO)],
+        etichette=[(2.6, 2.05, "y = √3", ARANCIO)], larghezza=420, altezza=300)
+    return f
+
 
 def scrivi(cartella, figure):
     os.makedirs(cartella, exist_ok=True)
@@ -1625,6 +2032,8 @@ def scrivi(cartella, figure):
 if __name__ == "__main__":
     scrivi(DIR_MATE, genera_goniometria())
     scrivi(DIR_MATE, genera_probabilita())
+    scrivi(DIR_MATE, genera_equazioni())
+    scrivi(DIR_MATE, genera_disequazioni())
     scrivi(DIR_FIS, genera_onde())
     scrivi(DIR_FIS, genera_fisica5())
     scrivi(DIR_FIS, genera_fisica5_aggiunte())

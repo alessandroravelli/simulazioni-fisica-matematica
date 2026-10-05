@@ -10,6 +10,7 @@ Le funzioni goniometriche sono fondamentali per poter rappresentare dei comporta
 
 > [!info] Collegamenti
 > Il fenomeno periodico per eccellenza sono le onde: in fisica seno e coseno descrivono il moto armonico, vedi [[Onde suono e luce]].
+> Il seguito: [[Equazioni goniometriche]] e [[Disequazioni goniometriche]].
 
 ## Funzioni goniometriche
 

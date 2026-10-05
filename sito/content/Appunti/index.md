@@ -7,6 +7,8 @@ Gli appunti delle lezioni, divisi per materia. Ogni argomento rimanda agli altri
 
 - [[Calcolo combinatorio, probabilità e distribuzioni]]: disposizioni, permutazioni e combinazioni, probabilità condizionata, Bayes, distribuzioni binomiale, di Poisson e normale.
 - [[Goniometria]]: funzioni goniometriche, archi associati, formule di addizione, duplicazione e bisezione, funzioni lineari in seno e coseno.
+- [[Equazioni goniometriche]]: equazioni elementari in seno, coseno e tangente, con argomento diverso da $x$, di secondo grado, lineari e omogenee.
+- [[Disequazioni goniometriche]]: metodo grafico e circonferenza goniometrica, sostituzione, secondo grado, fratte e prodotto, lineari e di secondo grado in seno e coseno.
 
 ## Fisica
 
