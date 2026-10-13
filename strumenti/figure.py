@@ -2099,6 +2099,302 @@ def genera_disequazioni():
     return f
 
 
+# ================================================================ SUONO
+
+def polilinea(punti, colore, spessore=2.2, tratteggio=None):
+    return percorso("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in punti), colore, spessore, tratteggio)
+
+
+def suono_compressioni():
+    """Strato d'aria con compressioni e rarefazioni, pressione e spostamento."""
+    w, h = 620, 430
+    x0, x1 = 110, 600
+    lam = (x1 - x0) / 2.5
+    k = 2 * PI / lam
+    s = ""
+    # particelle: posizione di riposo + spostamento s(x) = −s0 sin(kx) → compressioni dove cos(kx) = 1
+    import random
+    rnd = random.Random(3)
+    for riga in range(9):
+        y = 22 + riga * 8
+        xr = x0
+        while xr < x1:
+            spost = -9 * math.sin(k * (xr - x0))
+            xp = xr + spost
+            if x0 <= xp <= x1:
+                s += punto(xp, y + rnd.uniform(-2.5, 2.5), BLU, 1.8)
+            xr += 7
+    s += linea(x0, 98, x1, 98, GRIGIO, 1.5, freccia=True)
+    s += testo(x1, 112, "direzione di propagazione", dim=13, ancora="end")
+    # pressione: massima nelle compressioni (cos), spostamento sfasato di π/2 (sin)
+    ass = [(185, "variazione", "di pressione", ROSSO, lambda x: math.cos(k * (x - x0))),
+           (330, "spostamento", "dell'aria", VERDE, lambda x: -math.sin(k * (x - x0)))]
+    for y0, t1, t2, col, f in ass:
+        s += linea(x0, y0, x1 + 6, y0, freccia=True) + linea(x0, y0 + 52, x0, y0 - 54, freccia=True)
+        s += testo(x0 - 10, y0 - 10, t1, dim=13, ancora="end") + testo(x0 - 10, y0 + 6, t2, dim=13, ancora="end")
+        s += polilinea([(x, y0 - 38 * f(x)) for x in range(int(x0), int(x1) + 1, 3)], col, 2.4)
+        s += testo(x1 + 4, y0 + 16, "x", dim=16, math_=True)
+    for n in range(3):                                    # compressioni
+        xc = x0 + n * lam
+        s += linea(xc, 14, xc, 380, GRIGIO, 1, "4 4")
+        s += testo(xc, 398, "compressione", ROSSO, 12)
+    for n in range(2):                                    # rarefazioni
+        xr = x0 + (n + 0.5) * lam
+        s += linea(xr, 14, xr, 380, GRIGIO, 1, "2 5")
+        s += testo(xr, 414, "rarefazione", BLU, 12)
+    return svg(w, h, s)
+
+
+def suono_velocita():
+    dati = [("aria", 340, BLU), ("elio", 965, BLU), ("acqua", 1482, BLU), ("gomma vulc.", 60, ARANCIO),
+            ("piombo", 1230, GRIGIO), ("bronzo", 3150, ARANCIO), ("nichel", 4970, VIOLA), ("ferro", 5130, GRIGIO)]
+    w, x0, x1 = 560, 120, 520
+    sc = (x1 - x0) / 5500
+    s = ""
+    for i, (nome, v, col) in enumerate(dati):
+        y = 20 + i * 30
+        s += testo(x0 - 8, y + 9, nome, dim=14, ancora="end")
+        s += rett(x0, y, v * sc, 18, col, col, 0.75, 1)
+        s += testo(x0 + v * sc + 6, y + 9, str(v), col, 13, ancora="start")
+    yb = 20 + len(dati) * 30 + 6
+    s += linea(x0, 12, x0, yb) + linea(x0, yb, x1 + 10, yb, freccia=True)
+    for v in range(0, 5001, 1000):
+        s += linea(x0 + v * sc, yb, x0 + v * sc, yb + 5) + testo(x0 + v * sc, yb + 17, str(v), dim=12)
+    s += testo(x1 + 10, yb + 34, "v (m/s)", dim=13, ancora="end")
+    return svg(w, yb + 44, s)
+
+
+def suono_eco():
+    w, h = 560, 200
+    xp, xm, yb = 70, 500, 170
+    s = omino(xp, yb, GRIGIO)
+    s += rett(xm, 30, 14, yb - 30, GRIGIO, GRIGIO, 0.5, 1.5)
+    for i in range(6):                                    # onda emessa (archi verso destra)
+        x = xp + 50 + i * 62
+        s += percorso(f"M{x:.0f},{yb - 120} Q{x + 18:.0f},{yb - 95} {x:.0f},{yb - 70}", ROSSO, 2)
+    for i in range(5):                                    # onda riflessa (archi verso sinistra)
+        x = xm - 30 - i * 66
+        s += percorso(f"M{x:.0f},{yb - 62} Q{x - 18:.0f},{yb - 40} {x:.0f},{yb - 18}", BLU, 2)
+    s += linea(xp + 60, yb - 128, xm - 20, yb - 128, ROSSO, 1.5, freccia=True)
+    s += testo((xp + xm) / 2, yb - 140, "onda emessa", ROSSO, 13)
+    s += linea(xm - 20, yb - 8, xp + 60, yb - 8, BLU, 1.5, freccia=True)
+    s += testo((xp + xm) / 2 + 60, yb + 8, "onda riflessa", BLU, 13)
+    s += testo(xm + 7, 20, "parete", dim=13)
+    s += linea(xp, yb + 20, xm, yb + 20, GRIGIO, 1.2) + linea(xp, yb + 14, xp, yb + 26) + linea(xm, yb + 14, xm, yb + 26)
+    s += testo((xp + xm) / 2, yb + 36, "d", dim=16, math_=True)
+    return svg(w, h + 50, s)
+
+
+def suono_rumore_suono():
+    import random
+    rnd = random.Random(7)
+    w, h = 560, 150
+    s = ""
+    for dx, titolo, col in ((0, "rumore: onda non periodica", ARANCIO), (290, "suono: onda periodica", ROSSO)):
+        x0, y0 = dx + 20, 85
+        s += linea(x0, y0, x0 + 250, y0, freccia=True) + linea(x0, y0 + 55, x0, y0 - 60, freccia=True)
+        s += testo(x0 + 252, y0 + 14, "t", dim=15, math_=True) + testo(x0 + 125, 12, titolo, col, 13)
+        if dx == 0:
+            pts = [(x0 + i * 3, y0 - rnd.uniform(-40, 40) * (0.5 + 0.5 * rnd.random())) for i in range(80)]
+        else:
+            per = 55
+            f = lambda u: 0.8 * math.sin(2 * PI * u / per) + 0.45 * math.sin(4 * PI * u / per + 1)
+            pts = [(x0 + u, y0 - 32 * f(u)) for u in range(0, 240, 2)]
+        s += polilinea(pts, col, 2)
+    return svg(w, h, s)
+
+
+def suono_caratteristica(tipo):
+    """Due onde a confronto: altezza (frequenza), intensità (ampiezza), timbro (forma)."""
+    w, h = 300, 150
+    s = ""
+    righe = {
+        "altezza": [("grave", lambda u: math.sin(2 * PI * u / 90), 30, BLU), ("acuto", lambda u: math.sin(2 * PI * u / 30), 30, ROSSO)],
+        "intensita": [("debole", lambda u: math.sin(2 * PI * u / 55), 12, BLU), ("forte", lambda u: math.sin(2 * PI * u / 55), 30, ROSSO)],
+        "timbro": [("diapason", lambda u: math.sin(2 * PI * u / 55), 26, BLU),
+                   ("strumento", lambda u: 0.6 * math.sin(2 * PI * u / 55) + 0.35 * math.sin(6 * PI * u / 55 + 0.7)
+                    + 0.25 * math.sin(4 * PI * u / 55), 30, ROSSO)],
+    }[tipo]
+    for i, (nome, f, amp, col) in enumerate(righe):
+        y0 = 38 + i * 74
+        s += linea(70, y0, w - 8, y0, GRIGIO, 1)
+        s += testo(62, y0, nome, col, 13, ancora="end")
+        s += polilinea([(70 + u, y0 - amp * f(u)) for u in range(0, w - 80, 2)], col, 2.2)
+    return svg(w, h, s)
+
+
+def suono_udibilita():
+    w = 600
+    x0, x1 = 110, 580
+    lg = lambda f: x0 + (math.log10(f) - 0) / 6 * (x1 - x0)   # da 1 Hz a 10^6 Hz
+    s = rett(x0, 10, lg(20) - x0, 130, GRIGIO, GRIGIO, 0.12, 0)
+    s += rett(lg(20000), 10, x1 - lg(20000), 130, GRIGIO, GRIGIO, 0.12, 0)
+    s += testo((x0 + lg(20)) / 2, 22, "infrasuoni", dim=13) + testo((lg(20000) + x1) / 2, 22, "ultrasuoni", dim=13)
+    dati = [("uomo", 20, 20000, ROSSO), ("cane", 65, 45000, TEAL), ("pipistrello", 11, 120000, VIOLA)]
+    for i, (nome, a, b, col) in enumerate(dati):
+        y = 42 + i * 32
+        s += rett(lg(a), y, lg(b) - lg(a), 16, col, col, 0.8, 1)
+        s += testo(x0 - 8, y + 8, nome, col, 14, ancora="end")
+        s += testo(lg(a) - 4, y + 8, f"{a}", col, 12, ancora="end") + testo(lg(b) + 4, y + 8, f"{b:,}".replace(",", "."), col, 12, ancora="start")
+    yb = 150
+    s += linea(x0, yb, x1 + 8, yb, freccia=True)
+    for e in range(0, 7):
+        s += linea(lg(10 ** e), yb - 4, lg(10 ** e), yb + 4) + testo(lg(10 ** e), yb + 18, "1" if e == 0 else f"10{'⁰¹²³⁴⁵⁶'[e]}", dim=13)
+    s += testo(x1 + 8, yb + 36, "f (Hz)", dim=13, ancora="end")
+    return svg(w, yb + 46, s)
+
+
+def suono_pianoforte():
+    note = ["do", "re", "mi", "fa", "sol", "la", "si", "do"]
+    freq = [264, 297, 330, 352, 396, 440, 495, 528]
+    rapporti = ["9/8", "10/9", "16/15", "9/8", "10/9", "9/8", "16/15"]
+    w = 600
+    x0, lt, yt, ht = 30, 67, 70, 170
+    s = ""
+    for i, nome in enumerate(note):
+        x = x0 + i * lt
+        s += rett(x, yt, lt, ht, GRIGIO, "#ffffff", 1, 1.5)
+        s += testo(x + lt / 2, yt + ht - 34, nome, "#334155", 15, grassetto=True)
+        s += testo(x + lt / 2, yt + ht - 14, f"{freq[i]} Hz", "#64748b", 12)
+    for i in (0, 1, 3, 4, 5):                              # tasti neri
+        x = x0 + (i + 1) * lt - 20
+        s += rett(x, yt, 40, ht * 0.6, "#1e293b", "#1e293b", 1, 1)
+    for i, r in enumerate(rapporti):                       # rapporti tra note vicine
+        xa, xb = x0 + i * lt + lt / 2, x0 + (i + 1) * lt + lt / 2
+        s += percorso(f"M{xa:.0f},{yt - 6} Q{(xa + xb) / 2:.0f},{yt - 30} {xb:.0f},{yt - 6}", ARANCIO, 1.6)
+        s += testo((xa + xb) / 2, yt - 34, r, ARANCIO, 14, grassetto=True)
+    yo = yt + ht + 22
+    xa, xb = x0 + lt / 2, x0 + 7 * lt + lt / 2
+    s += linea(xa, yo, xb, yo, VIOLA, 2) + linea(xa, yo - 6, xa, yo + 6, VIOLA, 2) + linea(xb, yo - 6, xb, yo + 6, VIOLA, 2)
+    s += testo((xa + xb) / 2, yo + 18, "ottava: 528 Hz / 264 Hz = 2", VIOLA, 14, grassetto=True)
+    return svg(w, yo + 34, s)
+
+
+def suono_percezione(scala_log):
+    """Sensazione sonora in funzione dell'intensità: asse I lineare (curva) o logaritmico (retta)."""
+    w, h = 420, 270
+    x0, y0, x1, y1 = 60, 220, 390, 25
+    s = linea(x0, y0, x1 + 8, y0, freccia=True) + linea(x0, y0, x0, y1 - 8, freccia=True)
+    s += testo(x0 + 10, y1 - 6, "sensazione", dim=13, ancora="start")
+    if scala_log:
+        s += polilinea([(x0, y0), (x1, y1 + 10)], ROSSO, 2.6)
+        for e in range(0, 13, 2):
+            x = x0 + e / 12 * (x1 - x0)
+            s += linea(x, y0 - 4, x, y0 + 4) + testo(x, y0 + 18, f"10^{e - 12}" if False else ["10⁻¹²", "10⁻¹⁰", "10⁻⁸", "10⁻⁶", "10⁻⁴", "10⁻²", "1"][e // 2], dim=12)
+        s += testo(x1 + 8, y0 + 34, "I (W/m²) — scala logaritmica", dim=12, ancora="end")
+        s += testo(300, 160, "ogni fattore 10 di I", ROSSO, 13) + testo(300, 176, "aggiunge lo stesso «gradino»", ROSSO, 13)
+    else:
+        pts = [(x0 + u, y0 - (y0 - y1 - 10) * math.log10(1 + 999 * u / (x1 - x0)) / 3) for u in range(0, int(x1 - x0) + 1, 2)]
+        s += polilinea(pts, ROSSO, 2.6)
+        s += testo(x1 + 8, y0 + 20, "I (W/m²) — scala lineare", dim=12, ancora="end")
+        s += testo(x0 + 70, 120, "piccoli aumenti di I", VERDE, 13, ancora="start") + testo(x0 + 70, 136, "si sentono molto", VERDE, 13, ancora="start")
+        s += testo(x1 - 4, 76, "grandi aumenti di I", ARANCIO, 13, ancora="end") + testo(x1 - 4, 92, "si sentono poco", ARANCIO, 13, ancora="end")
+    return svg(w, h, s)
+
+
+def suono_decibel():
+    w = 640
+    x0, x1 = 50, 590
+    X = lambda db: x0 + db / 180 * (x1 - x0)
+    s = "<defs><linearGradient id='gdb' x1='0' x2='1'><stop offset='0' stop-color='#22c55e'/><stop offset='0.45' stop-color='#f59e0b'/><stop offset='0.75' stop-color='#ef4444'/><stop offset='1' stop-color='#991b1b'/></linearGradient></defs>"
+    yb = 120
+    s += f'<rect x="{x0}" y="{yb}" width="{x1 - x0}" height="16" rx="8" fill="url(#gdb)"/>'
+    for db in range(0, 181, 20):
+        s += linea(X(db), yb + 16, X(db), yb + 22) + testo(X(db), yb + 34, f"{db}", dim=12)
+        s += testo(X(db), yb + 52, ["10⁻¹²", "10⁻¹⁰", "10⁻⁸", "10⁻⁶", "10⁻⁴", "10⁻²", "1", "10²", "10⁴", "10⁶"][db // 20], "#64748b", 11)
+    s += testo(x1 + 12, yb + 34, "dB", dim=12, ancora="start")
+    s += testo(x0 - 4, yb + 70, "I (W/m²)", "#64748b", 11, ancora="start")
+    esempi = [(0, "soglia di udibilità", 1), (30, "bisbiglio", 0), (60, "conversazione", 1), (75, "traffico", 0),
+              (85, "rischio se prolungato", 2), (100, "discoteca", 1), (130, "soglia del dolore", 0), (140, "aereo in decollo", 2)]
+    alt = [92, 66, 40]
+    for db, t, livello in esempi:
+        col = ROSSO if db >= 85 else GRIGIO
+        s += linea(X(db), yb, X(db), alt[livello] + 6, col, 1.2)
+        s += testo(X(db), alt[livello], t, col, 12, ancora="start" if db == 0 else "middle")
+    return svg(w, yb + 80, s)
+
+
+def suono_battimenti():
+    w, h = 600, 300
+    x0, x1 = 64, 590
+    f1, f2 = 1 / 26, 1 / 29
+    s = ""
+    for i, (f, col, nome) in enumerate(((lambda u: math.sin(2 * PI * f1 * u), BLU, "f₁"), (lambda u: math.sin(2 * PI * f2 * u), VIOLA, "f₂"))):
+        y0 = 40 + i * 60
+        s += linea(x0, y0, x1, y0, GRIGIO, 1) + testo(x0 - 6, y0, nome, col, 14, ancora="end")
+        s += polilinea([(x0 + u, y0 - 18 * f(u)) for u in range(0, x1 - x0, 2)], col, 1.8)
+    y0 = 220
+    s += linea(x0, y0, x1, y0, GRIGIO, 1) + testo(x0 - 6, y0, "somma", ROSSO, 12, ancora="end")
+    s += polilinea([(x0 + u, y0 - 30 * (math.sin(2 * PI * f1 * u) + math.sin(2 * PI * f2 * u))) for u in range(0, x1 - x0, 2)], ROSSO, 2)
+    inv = lambda u: 60 * abs(math.cos(PI * (f1 - f2) * u))
+    s += polilinea([(x0 + u, y0 - inv(u)) for u in range(0, x1 - x0, 3)], GRIGIO, 1.2, "4 4")
+    s += polilinea([(x0 + u, y0 + inv(u)) for u in range(0, x1 - x0, 3)], GRIGIO, 1.2, "4 4")
+    s += testo((x0 + x1) / 2, h - 8, "il volume cresce e cala con frequenza |f₁ − f₂|", GRIGIO, 13)
+    return svg(w + 20, h, s)
+
+
+def suono_doppler():
+    w, h = 600, 330
+    cy = 190
+    v, vs = 1.0, 0.45
+    s = ""
+    xs_now = 360
+    for n in range(1, 6):                                 # fronti emessi n periodi fa
+        t = n * 34
+        cx = xs_now - vs * t
+        s += f'<circle cx="{cx:.1f}" cy="{cy}" r="{v * t:.1f}" fill="none" stroke="{BLU}" stroke-width="1.8"/>'
+    s += rett(xs_now - 22, cy - 13, 44, 26, ROSSO, ROSSO, 0.85, 1)
+    s += linea(xs_now + 26, cy, xs_now + 70, cy, ROSSO, 2.5, freccia=True)
+    s += testo(xs_now + 52, cy - 14, pedice("v", "s"), ROSSO, 15, math_=True)
+    s += omino(585, cy + 70, GRIGIO) + omino(28, cy + 70, GRIGIO)
+    s += testo(596, cy + 92, "suono più acuto", ROSSO, 13, ancora="end") + testo(10, cy + 92, "suono più grave", BLU, 13, ancora="start")
+    s += testo(500, 14, "davanti: fronti ravvicinati, λ minore", ROSSO, 13) + testo(110, 14, "dietro: fronti distanziati, λ maggiore", BLU, 13)
+    return svg(w + 10, h + 10, s)
+
+
+def suono_onda_urto():
+    w, h = 600, 260
+    cy = 130
+    xs = 540
+    vs, v = 2.0, 1.0
+    s = ""
+    for n in range(1, 6):
+        t = n * 45
+        cx = xs - vs * t
+        r = v * t
+        s += f'<circle cx="{cx:.1f}" cy="{cy}" r="{r:.1f}" fill="none" stroke="{BLU}" stroke-width="1.6" stroke-dasharray="5 4"/>'
+        s += punto(cx, cy, BLU, 3)
+    seno = v / vs
+    lung = 520
+    dx = lung * math.sqrt(1 - seno ** 2)
+    s += polilinea([(xs - dx, cy - lung * seno), (xs, cy), (xs - dx, cy + lung * seno)], ARANCIO, 2.6)
+    s += rett(xs - 18, cy - 8, 36, 16, ROSSO, ROSSO, 0.85, 1)
+    s += linea(xs + 22, cy, xs + 52, cy, ROSSO, 2.5, freccia=True)
+    s += testo(xs + 4, cy - 22, pedice("v", "s") + " &gt; v", ROSSO, 15, math_=True)
+    s += testo(150, 24, "onda d'urto (cono)", ARANCIO, 14)
+    return svg(w, h, s)
+
+
+def genera_suono():
+    return {
+        "suono-compressioni.svg": suono_compressioni(),
+        "suono-velocita.svg": suono_velocita(),
+        "suono-eco.svg": suono_eco(),
+        "suono-rumore-suono.svg": suono_rumore_suono(),
+        "suono-altezza.svg": suono_caratteristica("altezza"),
+        "suono-intensita.svg": suono_caratteristica("intensita"),
+        "suono-timbro.svg": suono_caratteristica("timbro"),
+        "suono-udibilita.svg": suono_udibilita(),
+        "suono-pianoforte.svg": suono_pianoforte(),
+        "suono-percezione-lineare.svg": suono_percezione(False),
+        "suono-percezione-log.svg": suono_percezione(True),
+        "suono-decibel.svg": suono_decibel(),
+        "suono-battimenti.svg": suono_battimenti(),
+        "suono-doppler.svg": suono_doppler(),
+        "suono-onda-urto.svg": suono_onda_urto(),
+    }
+
+
 def scrivi(cartella, figure):
     os.makedirs(cartella, exist_ok=True)
     for nome, contenuto in figure.items():
@@ -2113,5 +2409,6 @@ if __name__ == "__main__":
     scrivi(DIR_MATE, genera_equazioni())
     scrivi(DIR_MATE, genera_disequazioni())
     scrivi(DIR_FIS, genera_onde())
+    scrivi(DIR_FIS, genera_suono())
     scrivi(DIR_FIS, genera_fisica5())
     scrivi(DIR_FIS, genera_fisica5_aggiunte())
