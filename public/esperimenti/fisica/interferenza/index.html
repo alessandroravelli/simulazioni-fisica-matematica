@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interferenza tra onde</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<script src="../../../assets/js/incorporato.js"></script>
+<link rel="stylesheet" href="../../../assets/js/lib/katex/katex.min.css">
+<style>
+  .legenda-pallino.onda-2 { background: #a855f7; }
+  .legenda-pallino.massimo { background: var(--serie-3); }
+  .legenda-pallino.minimo { background: transparent; border: 2px solid var(--serie-2); box-sizing: border-box; }
+  .scelta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .scelta .bottone[aria-pressed="false"] { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  #canvas-schema { height: 320px; }
+  #canvas-casse { height: 280px; }
+</style>
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Interferenza tra onde</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Due sorgenti <strong>in fase</strong> (per esempio due altoparlanti
+      collegati allo stesso amplificatore) emettono onde con la stessa
+      lunghezza d'onda &lambda;. In un punto P la perturbazione totale è la
+      <strong>somma</strong> delle due onde. Se le sorgenti sono in fase,
+      quello che decide se in P le onde arrivano in fase o in opposizione di
+      fase è solo la <strong>differenza di cammino</strong>
+      &Delta;d = d<sub>2</sub> &minus; d<sub>1</sub> tra le distanze delle
+      due sorgenti da P:
+    </p>
+    <div id="formula-condizioni" class="formula"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Due onde che si incontrano nel punto P</p>
+    <div class="scelta" role="group" aria-label="Tipo di interferenza">
+      <button id="bottone-costruttiva" class="bottone" type="button" aria-pressed="true">Costruttiva (&Delta;d = &lambda;)</button>
+      <button id="bottone-distruttiva" class="bottone" type="button" aria-pressed="false">Distruttiva (&Delta;d = &lambda;/2)</button>
+      <button id="bottone-riavvia" class="bottone" type="button" aria-pressed="false">Riavvia</button>
+    </div>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino serie-1"></span>Onda 1 (da S₁)</span>
+      <span class="legenda-voce"><span class="legenda-pallino onda-2"></span>Onda 2 (da S₂)</span>
+      <span class="legenda-voce"><span class="legenda-pallino serie-3"></span>Somma in P</span>
+    </div>
+    <canvas id="canvas-schema" class="grafico-area"></canvas>
+    <div id="risultati-schema" class="risultati"></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Due altoparlanti uno di fronte all'altro</p>
+    <p>
+      Le casse sono a distanza D, in fase, e mettiamo l'origine
+      dell'asse x a metà tra le due. Un punto P di ascissa x dista
+      d<sub>1</sub> dalla cassa di sinistra e d<sub>2</sub> da quella di
+      destra:
+    </p>
+    <div id="formula-casse" class="formula"></div>
+    <p>
+      I massimi sono quindi distanti &lambda;/2 l'uno dall'altro, e i minimi
+      stanno a metà tra due massimi. Le loro posizioni dipendono solo da
+      &lambda;: cambiando D si spostano le casse e i punti
+      <strong>entrano o escono</strong> dall'intervallo tra le casse. I
+      punti fuori dall'intervallo sono disegnati trasparenti: lì la formula
+      non vale (oltre una cassa, infatti, &Delta;d = D è sempre lo stesso),
+      servono solo a vedere quali punti stanno per entrare.
+    </p>
+    <form class="form-parametri">
+      <div class="campo">
+        <label for="input-lambda">&lambda; = <span id="valore-lambda"></span> m</label>
+        <input id="input-lambda" type="range" min="0.2" max="3" step="0.05" value="1">
+      </div>
+      <div class="campo">
+        <label for="input-D">Distanza tra le casse D = <span id="valore-D"></span> m</label>
+        <input id="input-D" type="range" min="0.5" max="9" step="0.05" value="4">
+      </div>
+    </form>
+    <form class="form-parametri">
+      <div class="campo-checkbox">
+        <input id="input-massimi" type="checkbox" checked>
+        <label for="input-massimi">Interferenza costruttiva (massimi)</label>
+      </div>
+      <div class="campo-checkbox">
+        <input id="input-minimi" type="checkbox" checked>
+        <label for="input-minimi">Interferenza distruttiva (minimi)</label>
+      </div>
+      <div class="campo-checkbox">
+        <input id="input-onde" type="checkbox">
+        <label for="input-onde">Mostra le due onde separate</label>
+      </div>
+    </form>
+    <div class="legenda">
+      <span class="legenda-voce"><span class="legenda-pallino massimo"></span>Massimo: &Delta;d = k&lambda;</span>
+      <span class="legenda-voce"><span class="legenda-pallino minimo"></span>Minimo: &Delta;d = (2k+1)&lambda;/2</span>
+    </div>
+    <canvas id="canvas-casse" class="grafico-area"></canvas>
+    <div id="risultati-casse" class="risultati"></div>
+  </section>
+
+</main>
+<script src="../../../assets/js/lib/katex/katex.min.js"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -18,6 +18,7 @@ Esperimenti interattivi per vedere la matematica e la fisica in movimento: cambi
 
 - [[Moto armonico e onde meccaniche]]: dal moto circolare al moto armonico, onde su una corda e in una molla.
 - [[Onda progressiva in 3D]]: un'onda nello spazio e nel tempo, e l'onda sferica.
+- [[Interferenza tra onde]]: interferenza costruttiva e distruttiva, massimi e minimi tra due altoparlanti.
 - [[Polarizzazione della luce]]: polarizzatori e legge di Malus.
 - [[Radiazione di corpo nero]]: legge di Planck e legge di Wien.
 - [[Induzione elettromagnetica]]: un magnete, una spira e la legge di Lenz.

@@ -186,11 +186,16 @@ $$
 
 ## Interferenza Costruttiva e Distruttiva
 
+> [!example] Simulazione
+> Interferenza costruttiva e distruttiva, e i massimi e minimi tra due altoparlanti: [[Interferenza tra onde]].
+
 Due o più onde che si propagano nello spazio e nel tempo possono sovrapporsi in uno o più punti. La perturbazione totale provocata è data dalla <font color="#f59e0b">SOMMA</font> delle singole perturbazioni. 
 
 >[!warning]
 >Come facciamo a sommare delle funzioni generiche tipo: 
->$$ y_1(x,t) = A \cos{\omega(t-\frac{x}{v})} \quad \text{ e } \quad y_2(x,t) = A \cos{\omega(t-\frac{x}{v})}$$
+>$$
+>y_1(x,t) = A \cos{\omega(t-\frac{x}{v})} \quad \text{ e } \quad y_2(x,t) = A \cos{\omega(t-\frac{x}{v})}
+>$$
 >In generale si usa prostaferesi che però noi non vediamo!
 
 ![sovrapposizione-impulsi](sovrapposizione-impulsi.svg)

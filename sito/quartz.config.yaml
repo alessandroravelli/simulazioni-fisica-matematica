@@ -24,6 +24,9 @@ configuration:
     - private
     - templates
     - .obsidian
+    - .claude
+    - .copilot
+    - copilot
   theme:
     fontOrigin: local
     cdnCaching: true

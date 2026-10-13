@@ -11,3 +11,8 @@ sito/public/
 .quartz-cache/
 sito/content/.obsidian/
 sito/content/private/
+
+# Cartelle create dai plugin di Obsidian (Copilot): non vanno né sul sito né su GitHub
+sito/content/.claude/
+sito/content/.copilot/
+sito/content/copilot/
