@@ -189,10 +189,15 @@ $$
 > [!example] Simulazione
 > Interferenza costruttiva e distruttiva, e i massimi e minimi tra due altoparlanti: [[Interferenza tra onde]].
 
-Due o più onde che si propagano nello spazio e nel tempo possono sovrapporsi in uno o più punti. La perturbazione totale provocata è data dalla <font color="#f59e0b">SOMMA</font> delle singole perturbazioni. 
+### Principio di sovrapposizione
+
+Due o più onde che si propagano nello spazio e nel tempo possono sovrapporsi in uno o più punti. La perturbazione totale provocata è data dalla <font color="#f59e0b">SOMMA</font> delle singole perturbazioni.
+
+> [!tip] Principio di sovrapposizione
+> Se due o più onde si propagano nello stesso mezzo, in ogni punto la perturbazione totale è la somma delle perturbazioni che ciascuna onda produrrebbe da sola.
 
 >[!warning]
->Come facciamo a sommare delle funzioni generiche tipo: 
+>Come facciamo a sommare delle funzioni generiche tipo:
 >$$
 >y_1(x,t) = A \cos{\omega(t-\frac{x}{v})} \quad \text{ e } \quad y_2(x,t) = A \cos{\omega(t-\frac{x}{v})}
 >$$
@@ -200,4 +205,73 @@ Due o più onde che si propagano nello spazio e nel tempo possono sovrapporsi in
 
 ![sovrapposizione-impulsi](sovrapposizione-impulsi.svg)
 
-Sue onde che oscillano in "fase" generano uno spostamento doppio nel punto in cui si incontrano. Due onde che oscillano in "opposizione di fase" generano uno spostamento nullo nel punto in cui si incontrano. 
+Due impulsi che si incontrano su una corda: se gli spostamenti sono uguali e nello stesso verso, nel punto di incontro lo spostamento è **doppio**; se sono uguali e opposti, lo spostamento è **nullo**. Dopo l'incontro ciascuna onda prosegue invariata, come se l'altra non ci fosse mai stata.
+
+### Interferenza costruttiva e distruttiva
+
+Quando due o più onde si sovrappongono si ha **interferenza**:
+
+- è **costruttiva** se la perturbazione risultante è **maggiore** di quella delle singole onde;
+- è **distruttiva** se la perturbazione risultante è **minore**.
+
+Per due onde periodiche conta come oscillano in un punto fissato:
+
+- sono **in fase** se in quel punto raggiungono insieme i massimi (e insieme i minimi);
+- sono **in opposizione di fase** se quando una è al massimo l'altra è al minimo.
+
+Due onde che oscillano in fase generano uno spostamento doppio nel punto in cui si incontrano. Due onde che oscillano in opposizione di fase generano uno spostamento nullo nel punto in cui si incontrano.
+
+![Due onde in fase di ampiezze A1 e A2: la somma ha ampiezza A1 + A2](interferenza-in-fase.svg)
+
+**In fase** $\longrightarrow$ massima interferenza costruttiva: l'onda risultante ha ampiezza $A_1 + A_2$.
+
+![Due onde in opposizione di fase di ampiezze A1 e A2: la somma ha ampiezza |A1 − A2|](interferenza-opposizione.svg)
+
+**In opposizione di fase** $\longrightarrow$ massima interferenza distruttiva: l'onda risultante ha ampiezza $|A_1 - A_2|$.
+
+Se le due onde hanno la stessa ampiezza $A$, nel primo caso l'onda risultante ha ampiezza $2A$, nel secondo ampiezza $0$: le due onde si cancellano completamente.
+
+> [!note]
+> Se le due onde non sono né in fase né in opposizione di fase, l'interferenza è **in parte costruttiva o in parte distruttiva**, a seconda di quanto sono sfasate.
+
+### Sorgenti coerenti
+
+Per osservare un'interferenza stabile servono sorgenti che oscillano "d'accordo" tra loro.
+
+> [!tip] Sorgenti coerenti
+> Due sorgenti sono **coerenti** se oscillano con la stessa frequenza e con una **differenza di fase costante nel tempo**: raggiungono insieme i loro massimi (sorgenti in fase), oppure una li raggiunge sempre con lo stesso ritardo rispetto all'altra.
+
+Esempi: due punte che oscillano insieme sulla superficie dell'acqua, oppure due altoparlanti collegati allo stesso amplificatore. Le onde circolari prodotte dalle due punte formano una **figura di interferenza** stabile: ci sono linee lungo le quali l'acqua è molto agitata (i massimi delle due onde arrivano sempre insieme: interferenza costruttiva) e linee lungo le quali è quasi ferma (a un massimo dell'una corrisponde un minimo dell'altra: interferenza distruttiva).
+
+### Condizioni per l'interferenza costruttiva e distruttiva
+
+Consideriamo due sorgenti $S_1$ e $S_2$ **in fase**, che emettono onde con la stessa lunghezza d'onda $\lambda$ e la stessa ampiezza. Che cosa succede in un punto dipende solo dalla **differenza tra le distanze** del punto dalle due sorgenti.
+
+![Il punto P dista 4λ da S1 e 3λ da S2: le onde arrivano in fase](interferenza-cammini-costruttiva.svg)
+
+Il punto $P$ dista $4\lambda$ da $S_1$ e $3\lambda$ da $S_2$. Le distanze differiscono di $\lambda$: lungo i due cammini "stanno" un numero intero di lunghezze d'onda, quindi le due onde arrivano in $P$ **in fase** e l'interferenza in $P$ è **costruttiva**.
+
+![Il punto Q dista 4λ da S1 e 7λ/2 da S2: le onde arrivano in opposizione di fase](interferenza-cammini-distruttiva.svg)
+
+Il punto $Q$ dista $4\lambda$ da $S_1$ e $\frac{7}{2}\lambda$ da $S_2$. Le distanze differiscono di $\frac{\lambda}{2}$: le due onde arrivano in $Q$ **in opposizione di fase**, il massimo dell'una insieme al minimo dell'altra, e l'interferenza in $Q$ è **distruttiva**.
+
+In generale, per due sorgenti che oscillano in fase:
+
+> [!success] Interferenza costruttiva
+> Si ha nei punti $P$ in cui la differenza delle distanze dalle sorgenti è un **multiplo intero** della lunghezza d'onda:
+> $$
+> \overline{S_1P} - \overline{S_2P} = k\lambda \qquad k = 0, \pm 1, \pm 2, \dots
+> $$
+
+> [!failure] Interferenza distruttiva
+> Si ha nei punti $Q$ in cui la differenza delle distanze dalle sorgenti è un **multiplo dispari di mezza** lunghezza d'onda:
+> $$
+> \overline{S_1Q} - \overline{S_2Q} = (2k+1)\frac{\lambda}{2} \qquad k = 0, \pm 1, \pm 2, \dots
+> $$
+
+Queste condizioni valgono anche per onde che si propagano nello spazio tridimensionale, per esempio le onde sonore.
+
+> [!warning] Sorgenti in opposizione di fase
+> Se le due sorgenti oscillano **in opposizione di fase** (per esempio due altoparlanti con i fili invertiti), partono già sfasate di mezza lunghezza d'onda e le due condizioni si **scambiano**:
+> - $\Delta d = k\lambda$ $\longrightarrow$ interferenza **distruttiva**;
+> - $\Delta d = (2k+1)\dfrac{\lambda}{2}$ $\longrightarrow$ interferenza **costruttiva**.

@@ -478,6 +478,80 @@ def onde_vettori(tipo):
     return svg(420, 400, s)
 
 
+def onde_somma(opposizione):
+    """Due onde in fase (o in opposizione di fase) e la loro somma, in un punto, nel tempo."""
+    w, h = 480, 350
+    x0, x1 = 84, w - 20
+    A1, A2 = 1.0, 0.7
+    fase2 = PI if opposizione else 0.0
+    periodi = 3.5
+
+    def curva(f, y0, scala, colore, spessore=2.2):
+        punti = []
+        for i in range(301):
+            u = i / 300
+            punti.append((x0 + (x1 - x0) * u, y0 - scala * f(2 * PI * periodi * u)))
+        return percorso("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in punti), colore, spessore)
+
+    def assi(y0, ytop, ybot):
+        return (linea(x0, y0, x1 + 8, y0, freccia=True) + linea(x0, ybot, x0, ytop, freccia=True)
+                + testo(x1 + 10, y0 + 16, "t", dim=17, math_=True))
+
+    sc = 44
+    s = assi(80, 22, 140)
+    s += curva(lambda t: A1 * math.sin(t), 80, sc, BLU)
+    s += curva(lambda t: A2 * math.sin(t + fase2), 80, sc, ARANCIO)
+    s += testo(x0 - 10, 80 - sc * A1 - 4, pedice("A", "1"), BLU, 16, ancora="end", math_=True)
+    y_a2 = 80 + sc * A2 if opposizione else 80 - sc * A2 + 8
+    s += testo(x0 - 10, y_a2, pedice("A", "2"), ARANCIO, 16, ancora="end", math_=True)
+    somma = (A1 - A2) if opposizione else (A1 + A2)
+    s += assi(250, 166, 336)
+    s += curva(lambda t: A1 * math.sin(t) + A2 * math.sin(t + fase2), 250, sc, ROSSO, 2.6)
+    for yy in (250 - sc * somma, 250 + sc * somma):
+        s += linea(x0, yy, x1, yy, GRIGIO, 1, "4 4")
+    etichetta = "|A₁ − A₂|" if opposizione else "A₁ + A₂"
+    s += testo(x0 - 10, 250 - sc * somma, etichetta, ROSSO, 15, ancora="end", math_=True)
+    s += testo(x1, 166, "somma", ROSSO, 14, ancora="end")
+    return svg(w, h, s)
+
+
+def onde_cammini(d2_lambda, nome, colore_esito):
+    """Due sorgenti in fase e un punto a distanza 4λ da S1 e d2·λ da S2."""
+    lam = 56
+    P = (230, 46)
+    alto = 0.85 * 3 * lam
+    d1, d2 = 4 * lam, d2_lambda * lam
+    a1 = math.acos(alto / d1)
+    a2 = math.acos(alto / d2)
+    S1 = (P[0] - d1 * math.sin(a1), P[1] + alto)
+    S2 = (P[0] + d2 * math.sin(a2), P[1] + alto)
+    s = ""
+    for S, d, col in ((S1, d1, BLU), (S2, d2, VIOLA)):
+        ux, uy = (P[0] - S[0]) / d, (P[1] - S[1]) / d
+        nx, ny = -uy, ux
+        punti = []
+        for i in range(241):
+            q = d * i / 240
+            hh = 7 * math.sin(2 * PI * q / lam)
+            punti.append((S[0] + ux * q + nx * hh, S[1] + uy * q + ny * hh))
+        s += percorso("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in punti), col, 2.4)
+        n = 1
+        while n * lam < d - 1:                       # una tacca per ogni λ
+            q = n * lam
+            s += punto(S[0] + ux * q, S[1] + uy * q, col, 2.6)
+            n += 1
+        s += punto(S[0], S[1], ROSSO, 5)
+    s += testo(S1[0] - 4, S1[1] + 18, pedice("S", "1"), dim=17, math_=True)
+    s += testo(S2[0] + 4, S2[1] + 18, pedice("S", "2"), dim=17, math_=True)
+    s += punto(P[0], P[1], colore_esito, 5) + testo(P[0], P[1] - 18, nome, colore_esito, 18, math_=True)
+    m1 = ((S1[0] + P[0]) / 2 - 26, (S1[1] + P[1]) / 2 - 6)
+    m2 = ((S2[0] + P[0]) / 2 + 28, (S2[1] + P[1]) / 2 - 6)
+    s += testo(*m1, "4λ", BLU, 17, ancora="end")
+    t2 = "3λ" if d2_lambda == 3 else "7λ/2"
+    s += testo(*m2, t2, VIOLA, 17, ancora="start")
+    return svg(400, 250, s)
+
+
 def genera_onde():
     return {
         "onde-proiezione.svg": onde_proiezione(),
@@ -487,6 +561,10 @@ def genera_onde():
             math.sin, -1.6, 4 * PI + 1.2, -1.45, 1.45, solido=(0, 4 * PI), colore=ROSSO,
             tick_y=[(1, "A"), (-1, "−A")], linee_y=((1, GRIGIO), (-1, GRIGIO)),
             etichetta_x="t", larghezza=640),
+        "interferenza-in-fase.svg": onde_somma(False),
+        "interferenza-opposizione.svg": onde_somma(True),
+        "interferenza-cammini-costruttiva.svg": onde_cammini(3, "P", VERDE),
+        "interferenza-cammini-distruttiva.svg": onde_cammini(3.5, "Q", ROSSO),
     }
 
 
