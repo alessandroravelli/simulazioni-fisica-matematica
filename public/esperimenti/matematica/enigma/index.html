@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macchina Enigma</title>
+<link rel="stylesheet" href="../../../assets/css/style.css">
+<script src="../../../assets/js/incorporato.js"></script>
+<style>
+  .rotori-impostazioni { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+  .slot {
+    border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.7rem 0.8rem;
+    display: flex; flex-direction: column; gap: 0.4rem; flex: 1 1 7.5rem; max-width: 11rem;
+  }
+  .slot .titolo-slot { font-size: 0.8rem; color: var(--fg-muted); font-weight: 600; }
+  .slot select { width: 100%; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 0.4rem; padding: 0.3rem 0.4rem; }
+  .slot label { font-size: 0.78rem; color: var(--fg-muted); }
+  .errore { color: #ef4444; font-size: 0.85rem; min-height: 1.2em; margin: 0.3rem 0 0; }
+  .riga-bottoni { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.8rem; }
+  .bottone.secondario { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  .chiave { font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; color: var(--fg-muted); margin-top: 0.8rem; word-break: break-word; }
+
+  .macchina { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .finestre { display: flex; gap: 0.8rem; }
+  .finestra { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .finestra .lettera {
+    font-family: ui-monospace, Menlo, monospace; font-size: 1.6rem; font-weight: 700;
+    width: 2.6rem; height: 2.6rem; display: grid; place-items: center;
+    border: 2px solid var(--border); border-radius: 0.4rem; background: var(--bg);
+  }
+  .finestra .nome { font-size: 0.75rem; color: var(--fg-muted); }
+  .freccina { font: inherit; background: none; border: 1px solid var(--border); border-radius: 0.3rem; color: var(--fg); width: 2rem; cursor: pointer; line-height: 1.2; }
+  .freccina:hover { border-color: var(--accent); color: var(--accent); }
+
+  .tasti { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; width: 100%; }
+  .fila { display: flex; gap: clamp(0.15rem, 1vw, 0.35rem); justify-content: center; }
+  .lampada, .tasto {
+    width: clamp(1.6rem, 7.6vw, 2.6rem); height: clamp(1.6rem, 7.6vw, 2.6rem); border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700; font-family: ui-monospace, Menlo, monospace;
+    font-size: clamp(0.8rem, 3.4vw, 1rem);
+  }
+  .lampada { border: 2px solid var(--border); color: var(--fg-muted); background: var(--bg); transition: background 0.1s, color 0.1s; }
+  .lampada.accesa { background: #facc15; color: #1c1f26; border-color: #eab308; box-shadow: 0 0 14px #facc15; }
+  .tasto { border: 2px solid var(--fg-muted); background: var(--bg-alt); color: var(--fg); cursor: pointer; font: inherit; font-weight: 700; }
+  .tasto:active, .tasto.premuto { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .etichetta-sezione { font-size: 0.8rem; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .nastri { display: grid; grid-template-columns: 1fr; gap: 0.5rem; width: 100%; }
+  .nastro { font-family: ui-monospace, Menlo, monospace; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem 0.7rem; min-height: 2.4rem; word-break: break-all; }
+  .nastro b { color: var(--fg-muted); font-family: -apple-system, sans-serif; font-weight: 600; font-size: 0.8rem; margin-right: 0.5rem; }
+
+  #schema { width: 100%; max-width: 640px; display: block; margin: 0 auto; }
+  #schema .scatola { fill: var(--bg); stroke: var(--border); stroke-width: 1.5; }
+  #schema .contatto { fill: var(--border); }
+  #schema .testo { fill: var(--fg-muted); font-size: 10px; font-family: ui-monospace, Menlo, monospace; }
+  #schema .titolo { fill: var(--fg); font-size: 11px; font-weight: 600; font-family: -apple-system, sans-serif; }
+  #schema .andata { stroke: var(--accent); stroke-width: 2.5; fill: none; }
+  #schema .ritorno { stroke: var(--serie-2); stroke-width: 2.5; fill: none; }
+  #schema .in { fill: var(--accent); font-weight: 700; }
+  #schema .out { fill: var(--serie-2); font-weight: 700; }
+  .catena { font-size: 0.9rem; line-height: 1.8; margin-top: 0.8rem; }
+  .catena .a { color: var(--accent); font-weight: 600; }
+  .catena .r { color: var(--serie-2); font-weight: 600; }
+
+  textarea { font: inherit; font-family: ui-monospace, Menlo, monospace; width: 100%; min-height: 6rem; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem; }
+</style>
+</head>
+<body>
+<header>
+  <a class="torna" href="../../../simulazioni/">&larr; Torna all'elenco</a>
+  <h1>Macchina Enigma</h1>
+</header>
+<main>
+
+  <section class="riquadro">
+    <p>
+      Enigma è la macchina cifrante elettromeccanica usata dalle forze armate
+      tedesche nella Seconda guerra mondiale. Ogni volta che si preme un tasto
+      la corrente attraversa il <strong>pannello delle prese</strong>, i
+      <strong>rotori</strong>, il <strong>riflettore</strong>, torna indietro
+      per un'altra strada e accende una <strong>lampada</strong>: è la lettera
+      cifrata. Prima che passi la corrente il rotore di destra scatta di una
+      posizione, quindi la stessa lettera, premuta due volte, viene cifrata in
+      modo diverso.
+    </p>
+    <p>
+      Per decifrare basta impostare la macchina <strong>con la stessa
+      chiave</strong> e battere il testo cifrato: Enigma è
+      <em>reciproca</em>. I cablaggi sono quelli storici, quindi i messaggi
+      sono compatibili con le macchine vere (e con gli altri simulatori).
+    </p>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Impostazioni (la chiave)</p>
+    <form class="form-parametri" onsubmit="return false">
+      <div class="campo">
+        <label for="input-modello">Modello</label>
+        <select id="input-modello"></select>
+      </div>
+      <div class="campo">
+        <label for="input-riflettore">Riflettore</label>
+        <select id="input-riflettore"></select>
+      </div>
+    </form>
+    <div id="slot-rotori" class="rotori-impostazioni"></div>
+    <div class="campo campo-larga">
+      <label for="input-pannello">Pannello delle prese (coppie di lettere separate da spazi, es. AB CD EF)</label>
+      <input id="input-pannello" type="text" autocomplete="off" spellcheck="false" value="">
+    </div>
+    <p id="errore-pannello" class="errore"></p>
+    <div class="riga-bottoni">
+      <button id="bottone-iniziale" class="bottone" type="button">Torna alla posizione iniziale</button>
+      <button id="bottone-casuale" class="bottone secondario" type="button">Chiave casuale</button>
+      <button id="bottone-copia" class="bottone secondario" type="button">Copia la chiave</button>
+    </div>
+    <p id="chiave" class="chiave"></p>
+  </section>
+
+  <section class="riquadro macchina">
+    <div id="finestre" class="finestre"></div>
+    <span class="etichetta-sezione">Lampade</span>
+    <div id="lampade" class="tasti"></div>
+    <span class="etichetta-sezione">Tastiera (anche dalla tastiera del computer)</span>
+    <div id="tastiera" class="tasti"></div>
+    <div class="nastri">
+      <div class="nastro"><b>battuto</b><span id="nastro-in"></span></div>
+      <div class="nastro"><b>lampade</b><span id="nastro-out"></span></div>
+    </div>
+    <div class="riga-bottoni">
+      <button id="bottone-cancella" class="bottone secondario" type="button">Cancella i nastri</button>
+    </div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Il percorso della corrente (ultimo tasto premuto)</p>
+    <svg id="schema" role="img" aria-label="Percorso della corrente nella macchina"></svg>
+    <div id="catena" class="catena">Premi un tasto per vedere il percorso.</div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Cifra o decifra un messaggio intero</p>
+    <p>
+      Il messaggio viene elaborato partendo dalla <strong>posizione
+      iniziale</strong> della chiave. Enigma aveva solo 26 lettere: per
+      <strong>cifrare</strong> gli spazi diventano X (si usava la X come
+      separatore) e il resto della punteggiatura viene tolto; il risultato è
+      scritto a gruppi di cinque lettere, come nei messaggi veri. Per
+      <strong>decifrare</strong> gli spazi tra i gruppi vengono ignorati e le X
+      del risultato tornano spazi.
+    </p>
+    <textarea id="messaggio" placeholder="Scrivi qui il testo in chiaro, oppure incolla quello cifrato"></textarea>
+    <div class="riga-bottoni">
+      <button id="bottone-cifra" class="bottone" type="button">Cifra</button>
+      <button id="bottone-decifra" class="bottone" type="button">Decifra</button>
+    </div>
+    <div class="nastro" style="margin-top: 0.8rem"><b>risultato</b><span id="risultato"></span></div>
+  </section>
+
+  <section class="riquadro">
+    <p class="grafico-titolo">Quante chiavi?</p>
+    <div id="conteggio"></div>
+  </section>
+
+</main>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

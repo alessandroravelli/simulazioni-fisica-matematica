@@ -13,6 +13,7 @@ Esperimenti interattivi per vedere la matematica e la fisica in movimento: cambi
 
 - [[Equazioni differenziali del primo ordine]]: verifica della soluzione con il grafico.
 - [[Equazioni differenziali del secondo ordine (omogenee)]]: lo stesso, con due condizioni iniziali.
+- [[Macchina Enigma]]: la macchina cifrante della Seconda guerra mondiale, per il laboratorio di crittografia.
 
 ## Fisica
 
