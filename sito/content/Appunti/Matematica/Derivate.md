@@ -389,7 +389,9 @@ $$
 Una funzione si dice derivabile in un intervallo se la derivata esiste in ogni punto di quell'intervallo. Dobbiamo quindi capire come studiare la derivata: abbiamo già visto in precedenza che la derivata è essa stessa una funzione classica, perciò i meccanismi con cui studiamo la sua continuità sono gli stessi che utilizzavamo con le funzioni la prima volta che le abbiamo viste.
 
 > [!tip] Criterio pratico
-> Se $f(x)$ è continua in $x_0$ e
+> **Prima** controllo che $f(x)$ sia continua in $x_0$: se non lo è, $f$ non è derivabile in $x_0$ e mi fermo qui.
+>
+> **Poi** guardo se $f'$ è continua in $x_0$: se
 > $$
 > \lim_{x \to x_0^-} f'(x) = \lim_{x \to x_0^+} f'(x) = l \qquad l \in \mathbb{R} \ \text{(finito)}
 > $$
@@ -397,9 +399,10 @@ Una funzione si dice derivabile in un intervallo se la derivata esiste in ogni p
 
 Come si studia la derivabilità di una funzione:
 
-1. una volta calcolata la derivata della funzione originale, studio il suo dominio;
-2. una volta riconosciuto il suo dominio, studio i limiti destro e sinistro della derivata nei punti estremi del dominio o, eventualmente, se la funzione è definita a tratti, studio i limiti destro e sinistro nel punto in cui le due funzioni si incollano;
-3. i valori che ottengo come risultato dei limiti mi dicono se la funzione derivata è continua o meno e di conseguenza se la funzione è derivabile.
+1. controllo che la funzione sia continua (di norma lo abbiamo già fatto studiando la funzione);
+2. una volta calcolata la derivata della funzione originale, studio il suo dominio;
+3. una volta riconosciuto il suo dominio, studio i limiti destro e sinistro della derivata nei punti estremi del dominio o, eventualmente, se la funzione è definita a tratti, studio i limiti destro e sinistro nel punto in cui le due funzioni si incollano;
+4. i valori che ottengo come risultato dei limiti mi dicono se la funzione derivata è continua o meno e di conseguenza se la funzione è derivabile.
 
 > [!warning] Attenzione
 > Il fatto che una funzione sia continua non garantisce il fatto che sia derivabile. Viceversa, però, se una funzione è derivabile allora è garantita la sua continuità.
