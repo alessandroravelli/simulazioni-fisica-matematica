@@ -2395,6 +2395,136 @@ def genera_suono():
     }
 
 
+# ============================================================== DERIVATE
+
+def piano_xy(xmin, xmax, ymin, ymax, w=340, h=270, ey="f(x)", mx=34, my=24):
+    """Assi cartesiani: restituisce la funzione P(x, y) -> pixel e il disegno degli assi."""
+    sx = (w - 2 * mx) / (xmax - xmin)
+    sy = (h - 2 * my) / (ymax - ymin)
+    P = lambda x, y: (mx + (x - xmin) * sx, h - my - (y - ymin) * sy)
+    x0, y0 = P(0, 0)
+    s = linea(mx - 14, y0, w - mx + 14, y0, freccia=True) + linea(x0, h - 6, x0, 8, freccia=True)
+    s += testo(w - mx + 16, y0 + 15, "x", dim=17, math_=True)
+    s += testo(x0 + 8, 14, ey, dim=16, ancora="start", math_=True)
+    return P, s
+
+
+def curva_xy(P, f, a, b, colore, ymin=-1e9, ymax=1e9, n=300, spessore=2.6):
+    pts = []
+    for i in range(n + 1):
+        x = a + (b - a) * i / n
+        y = f(x)
+        if ymin <= y <= ymax:
+            pts.append(P(x, y))
+    return polilinea(pts, colore, spessore)
+
+
+def der_tangente_seno():
+    w, h = 560, 300
+    a = 2.2
+    P, s = piano_xy(-7.2, 7.4, -2.1, 2.5, w, h, "y")
+    s += curva_xy(P, math.sin, -7.2, 7.4, ROSSO)
+    m, q = math.cos(a), math.sin(a) - math.cos(a) * a
+    s += curva_xy(P, lambda x: m * x + q, 0.1, 5.1, BLU, n=2)
+    s += punto(*P(a, math.sin(a)), BLU, 5)
+    s += testo(*P(-4.7, 1.4), "y = sin(x)", ROSSO, 15, math_=True)
+    s += testo(*P(3.35, 2.1), "y = mx + q", BLU, 15, math_=True)
+    return svg(w, h, s)
+
+
+def der_secante():
+    w, h = 600, 420
+    f = lambda x: 3 * math.sin(0.62 * (x - 1))
+    df = lambda x: 3 * 0.62 * math.cos(0.62 * (x - 1))
+    x0, xq = 2.2, 3.25
+    P, s = piano_xy(-1.7, 6.5, -3.6, 4.4, w, h, "y", mx=32, my=20)
+    p, q = P(x0, f(x0)), P(xq, f(xq))
+    ax0, ay0 = P(0, 0)
+    # linee tratteggiate verso gli assi
+    for xx in (x0, xq):
+        px, py = P(xx, f(xx))
+        s += linea(px, py, px, ay0, GRIGIO, 1.4, "5 4") + linea(px, py, ax0, py, GRIGIO, 1.4, "5 4")
+    s += curva_xy(P, f, -1.7, 6.2, ROSSO)
+    # tangente in P (blu) e secante PQ (arancione)
+    s += curva_xy(P, lambda x: f(x0) + df(x0) * (x - x0), 0.2, 3.65, BLU, n=2)
+    mq = (f(xq) - f(x0)) / (xq - x0)
+    s += curva_xy(P, lambda x: f(x0) + mq * (x - x0), 0.6, 4.5, ARANCIO, n=2)
+    # cateti h e f(x0+h) − f(x0)
+    s += linea(p[0], p[1], q[0], p[1], VERDE, 5) + linea(q[0], p[1], q[0], q[1], VERDE, 5)
+    s += punto(*p, BLU, 5) + punto(*q, ARANCIO, 5)
+    s += testo(p[0] - 14, p[1] - 14, "P", BLU, 17) + testo(q[0] + 15, q[1] + 15, "Q", ARANCIO, 17)
+    s += testo(ax0 - 8, p[1], "f(x₀)", dim=15, ancora="end", math_=True)
+    s += testo(ax0 - 8, q[1], "f(x₀ + h)", dim=15, ancora="end", math_=True)
+    s += testo(p[0], ay0 + 18, "x₀", dim=15, math_=True) + testo(q[0], ay0 + 18, "x₀ + h", dim=15, math_=True)
+    s += testo(*P(3.2, 4.1), "retta tangente", BLU, 15, ancora="end")
+    s += testo(*P(4.55, 3.9), "retta PQ", ARANCIO, 15, ancora="start")
+    s += testo(*P(6.5, 3.2), "f(x₀ + h) − f(x₀)", VERDE, 15, ancora="end", math_=True)
+    s += linea(*P(5.3, 3.0), q[0] + 8, (p[1] + q[1]) / 2, VERDE, 1.4, freccia=True)
+    s += testo((p[0] + q[0]) / 2, p[1] + 16, "h", VERDE, 16, math_=True)
+    return svg(w, h, s)
+
+
+def cerchietto(x, y, colore, r=5):
+    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="none" stroke="{colore}" stroke-width="2.2"/>'
+
+
+def der_angoloso(derivata):
+    if derivata:
+        P, s = piano_xy(-1.4, 5.2, -0.6, 3, ey="f ′(x)")
+        s += linea(*P(-1.4, 2), *P(2, 2), ROSSO, 2.6) + linea(*P(2, 1), *P(5.2, 1), ROSSO, 2.6)
+        s += linea(*P(2, 1), *P(2, 0), GRIGIO, 1.4, "5 4") + linea(*P(2, 1), *P(0, 1), GRIGIO, 1.4, "5 4")
+        s += cerchietto(*P(2, 2), ROSSO) + cerchietto(*P(2, 1), ROSSO)
+        for y, t in ((2, "2"), (1, "1")):
+            x, yy = P(0, y)
+            s += testo(x - 8, yy - (14 if y == 2 else 0), t, dim=15, ancora="end")
+    else:
+        f = lambda x: 1.5 + (2 * (x - 2) if x < 2 else x - 2)
+        P, s = piano_xy(-1, 5.2, -1.3, 4.6)
+        s += linea(*P(2, 1.5), *P(2, 0), GRIGIO, 1.4, "5 4") + linea(*P(2, 1.5), *P(0, 1.5), GRIGIO, 1.4, "5 4")
+        s += curva_xy(P, f, 0.3, 4.8, ARANCIO)
+        s += punto(*P(2, 1.5), ARANCIO, 4.5)
+        x, yy = P(0, 1.5)
+        s += testo(x - 8, yy, "3/2", dim=15, ancora="end")
+    x, yy = P(2, 0)
+    s += testo(x, yy + 17, "2", dim=15)
+    return svg(340, 270, s)
+
+
+# forme d'esempio con tangente verticale in x = 0
+_f_cuspide = lambda x: 0.6 + 1.4 * math.exp(-1.3 * math.sqrt(abs(x)))
+_df_cuspide = lambda x: -math.copysign(1, x) * 1.4 * 1.3 * math.exp(-1.3 * math.sqrt(abs(x))) / (2 * math.sqrt(abs(x)))
+_f_flesso = lambda x: 2 + math.copysign(1, x) * 1.3 * (1 - math.exp(-1.3 * math.sqrt(abs(x))))
+_df_flesso = lambda x: 1.3 * 1.3 * math.exp(-1.3 * math.sqrt(abs(x))) / (2 * math.sqrt(abs(x)))
+
+
+def der_verticale(f, df, derivata, ymin_f=-0.5, ymax_f=3.6):
+    if derivata:
+        y_min = -4 if df(0.5) < 0 else -0.8
+        P, s = piano_xy(-5, 5, y_min, 4, ey="f ′(x)")
+        s += curva_xy(P, df, -5, -0.003, ROSSO, y_min, 4, n=800)
+        s += curva_xy(P, df, 0.003, 5, ROSSO, y_min, 4, n=800)
+    else:
+        P, s = piano_xy(-5, 5, ymin_f, ymax_f)
+        s += curva_xy(P, f, -5, 5, ARANCIO, n=800)
+        s += punto(*P(0, f(0)), ARANCIO, 4.5)
+        x, yy = P(0, f(0))
+        s += testo(x - 10, yy - 2, "2", dim=15, ancora="end")
+    return svg(340, 270, s)
+
+
+def genera_derivate():
+    return {
+        "derivate-tangente-seno.svg": der_tangente_seno(),
+        "derivate-secante.svg": der_secante(),
+        "derivate-angoloso-derivata.svg": der_angoloso(True),
+        "derivate-angoloso-funzione.svg": der_angoloso(False),
+        "derivate-cuspide-derivata.svg": der_verticale(_f_cuspide, _df_cuspide, True),
+        "derivate-cuspide-funzione.svg": der_verticale(_f_cuspide, _df_cuspide, False),
+        "derivate-flesso-derivata.svg": der_verticale(_f_flesso, _df_flesso, True),
+        "derivate-flesso-funzione.svg": der_verticale(_f_flesso, _df_flesso, False),
+    }
+
+
 def scrivi(cartella, figure):
     os.makedirs(cartella, exist_ok=True)
     for nome, contenuto in figure.items():
@@ -2408,6 +2538,7 @@ if __name__ == "__main__":
     scrivi(DIR_MATE, genera_probabilita())
     scrivi(DIR_MATE, genera_equazioni())
     scrivi(DIR_MATE, genera_disequazioni())
+    scrivi(DIR_MATE, genera_derivate())
     scrivi(DIR_FIS, genera_onde())
     scrivi(DIR_FIS, genera_suono())
     scrivi(DIR_FIS, genera_fisica5())

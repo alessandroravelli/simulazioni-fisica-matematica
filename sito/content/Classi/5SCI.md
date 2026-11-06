@@ -4,6 +4,7 @@ title: 5SCI
 ## Matematica
 
 - [[Calcolo combinatorio, probabilità e distribuzioni]]
+- [[Derivate]]
 
 ## Fisica
 
